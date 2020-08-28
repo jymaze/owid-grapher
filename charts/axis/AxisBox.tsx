@@ -15,7 +15,7 @@ import { Bounds } from "charts/utils/Bounds"
 import { AxisScale } from "./AxisScale"
 import { VerticalAxis, VerticalAxisView } from "./VerticalAxis"
 import { HorizontalAxis, HorizontalAxisView } from "./HorizontalAxis"
-import { AxisSpec, AxisConfigProps } from "./AxisSpec"
+import { AxisSpec } from "./AxisSpec"
 import { ScaleType } from "charts/core/ChartConstants"
 import { extend } from "charts/utils/Util"
 import classNames from "classnames"
@@ -32,13 +32,13 @@ interface AxisBoxProps {
 // e.g. if the y axis becomes wider because a label is present, the x axis then has less
 // space to work with, and vice versa
 export class AxisBox {
-    props: AxisBoxProps
+    private props: AxisBoxProps
 
-    @observable targetYDomain: [number, number] = [1, 100]
-    @observable targetXDomain: [number, number] = [1, 100]
-    @observable prevYDomain: [number, number] = [1, 100]
-    @observable prevXDomain: [number, number] = [1, 100]
-    @observable animProgress?: number
+    @observable private targetYDomain: [number, number] = [1, 100]
+    @observable private targetXDomain: [number, number] = [1, 100]
+    @observable private prevYDomain: [number, number] = [1, 100]
+    @observable private prevXDomain: [number, number] = [1, 100]
+    @observable private animProgress?: number
     private frameStart?: number
 
     constructor(props: AxisBoxProps) {
