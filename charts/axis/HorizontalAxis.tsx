@@ -17,7 +17,7 @@ interface HorizontalAxisProps {
 
 // Axis layout model. Computes the space needed for displaying an axis.
 export class HorizontalAxis {
-    static labelPadding = 5
+    private static labelPadding = 5
 
     props: HorizontalAxisProps
     constructor(props: HorizontalAxisProps) {
@@ -55,9 +55,12 @@ export class HorizontalAxis {
 
     @computed get height() {
         const { props, labelOffset } = this
+        const firstFormattedTick = props.scale.getFormattedTicks()[0]
+        const fontSize = this.tickFontSize
+
         return (
-            Bounds.forText(props.scale.getFormattedTicks()[0], {
-                fontSize: this.tickFontSize
+            Bounds.forText(firstFormattedTick, {
+                fontSize
             }).height +
             labelOffset +
             5
@@ -68,7 +71,7 @@ export class HorizontalAxis {
         return this.props.scale
     }
 
-    @computed get baseTicks(): Tickmark[] {
+    @computed private get baseTicks(): Tickmark[] {
         const { domain } = this.scale
         let ticks = this.scale
             .getTickValues()
@@ -98,7 +101,7 @@ export class HorizontalAxis {
     }
 
     // calculates coordinates for ticks, sorted by priority
-    @computed get tickPlacements() {
+    @computed private get tickPlacements() {
         const { scale, labelOffset } = this
         return sortBy(this.baseTicks, tick => tick.priority).map(tick => {
             const bounds = Bounds.forText(
@@ -149,7 +152,7 @@ export class HorizontalAxisView extends React.Component<{
     maxX?: number
     showTickMarks?: boolean
     isInteractive: boolean
-    onScaleTypeChange?: (scaleType: ScaleType) => void
+    onScaleTypeChange?: (scaleType: ScaleType) => void // We need this because on DiscreteBar scaleType change behaves differently
 }> {
     @computed get controls() {
         const { bounds, axis, onScaleTypeChange, maxX } = this.props
