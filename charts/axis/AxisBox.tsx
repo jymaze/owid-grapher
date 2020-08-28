@@ -23,8 +23,8 @@ import classNames from "classnames"
 interface AxisBoxProps {
     bounds: Bounds
     fontSize: number
-    xAxis: AxisSpec
-    yAxis: AxisSpec
+    xAxisSpec: AxisSpec
+    yAxisSpec: AxisSpec
 }
 
 // AxisBox has the important task of coordinating two axes so that they work together!
@@ -46,7 +46,7 @@ export class AxisBox {
     }
 
     @computed.struct private get currentYDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.yAxis.domain
+        if (this.animProgress === undefined) return this.props.yAxisSpec.domain
 
         const [prevMinY, prevMaxY] = this.prevYDomain
         const [targetMinY, targetMaxY] = this.targetYDomain
@@ -54,7 +54,7 @@ export class AxisBox {
         // If we have a log axis and are animating from linear to log do not set domain min to 0
         const progress = this.animProgress
             ? this.animProgress
-            : this.props.yAxis.scaleType === ScaleType.log
+            : this.props.yAxisSpec.scaleType === ScaleType.log
             ? 0.01
             : 0
 
@@ -65,7 +65,7 @@ export class AxisBox {
     }
 
     @computed.struct private get currentXDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.xAxis.domain
+        if (this.animProgress === undefined) return this.props.xAxisSpec.domain
 
         const [prevMinX, prevMaxX] = this.prevXDomain
         const [targetMinX, targetMaxX] = this.targetXDomain
@@ -73,7 +73,7 @@ export class AxisBox {
         // If we have a log axis and are animating from linear to log do not set domain min to 0
         const progress = this.animProgress
             ? this.animProgress
-            : this.props.xAxis.scaleType === ScaleType.log
+            : this.props.xAxisSpec.scaleType === ScaleType.log
             ? 0.01
             : 0
 
@@ -84,17 +84,17 @@ export class AxisBox {
     }
 
     @action.bound setupAnimation() {
-        this.targetYDomain = this.props.yAxis.domain
-        this.targetXDomain = this.props.xAxis.domain
+        this.targetYDomain = this.props.yAxisSpec.domain
+        this.targetXDomain = this.props.xAxisSpec.domain
         this.animProgress = 1
 
         reaction(
-            () => [this.props.yAxis.domain, this.props.xAxis.domain],
+            () => [this.props.yAxisSpec.domain, this.props.xAxisSpec.domain],
             () => {
                 this.prevXDomain = this.currentXDomain
                 this.prevYDomain = this.currentYDomain
-                this.targetYDomain = this.props.yAxis.domain
-                this.targetXDomain = this.props.xAxis.domain
+                this.targetYDomain = this.props.yAxisSpec.domain
+                this.targetXDomain = this.props.xAxisSpec.domain
                 this.animProgress = 0
                 requestAnimationFrame(this.frame)
             }
@@ -115,17 +115,17 @@ export class AxisBox {
     }
 
     @computed get yAxisSpec() {
-        return extend({}, this.props.yAxis, { domain: this.currentYDomain })
+        return extend({}, this.props.yAxisSpec, { domain: this.currentYDomain })
     }
 
     @computed get xAxisSpec() {
-        return extend({}, this.props.xAxis, { domain: this.currentXDomain })
+        return extend({}, this.props.xAxisSpec, { domain: this.currentXDomain })
     }
 
     // We calculate an initial width/height for the axes in isolation
     @computed private get xAxisHeight() {
         return new HorizontalAxis({
-            scale: new AxisScale(this.xAxisSpec).extend({
+            scale: new AxisScale(this.xAxisSpec).clone({
                 range: [0, this.props.bounds.width]
             }),
             labelText: this.xAxisSpec.label,
@@ -135,7 +135,7 @@ export class AxisBox {
 
     @computed private get yAxisWidth() {
         return new VerticalAxis({
-            scale: new AxisScale(this.yAxisSpec).extend({
+            scale: new AxisScale(this.yAxisSpec).clone({
                 range: [0, this.props.bounds.height]
             }),
             labelText: this.yAxisSpec.label,
@@ -151,13 +151,13 @@ export class AxisBox {
     }
 
     @computed get xScale() {
-        return new AxisScale(this.xAxisSpec).extend({
+        return new AxisScale(this.xAxisSpec).clone({
             range: this.innerBounds.xRange()
         })
     }
 
     @computed get yScale() {
-        return new AxisScale(this.yAxisSpec).extend({
+        return new AxisScale(this.yAxisSpec).clone({
             range: this.innerBounds.yRange()
         })
     }
@@ -207,7 +207,7 @@ interface AxisGridLinesProps {
 export class AxisGridLines extends React.Component<AxisGridLinesProps> {
     render() {
         const { orient, bounds } = this.props
-        const scale = this.props.scale.extend({
+        const scale = this.props.scale.clone({
             range: orient === "left" ? bounds.yRange() : bounds.xRange()
         })
 

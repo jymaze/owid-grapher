@@ -184,7 +184,7 @@ export class DiscreteBarTransform extends ChartTransform {
     }
 
     @computed get isLogScale() {
-        return this.chart.yAxis.scaleType === ScaleType.log
+        return this.chart.yAxisConfig.scaleType === ScaleType.log
     }
 
     @computed get allData(): DiscreteBarDatum[] {

@@ -159,8 +159,8 @@ export class StackedBarChart extends React.Component<{
         return new AxisBox({
             bounds: bounds.padRight(sidebarWidth + 20),
             fontSize: chart.baseFontSize,
-            xAxis: xAxisSpec,
-            yAxis: yAxisSpec
+            xAxisSpec,
+            yAxisSpec
         })
     }
 
@@ -168,7 +168,7 @@ export class StackedBarChart extends React.Component<{
         return this.axisBox.yScale
     }
 
-    @computed get yAxis() {
+    @computed private get verticaAxis() {
         const that = this
         return new VerticalAxis({
             get scale() {
@@ -425,7 +425,7 @@ export class StackedBarChart extends React.Component<{
             sidebarWidth,
             activeColors,
             tooltip,
-            yAxis,
+            verticaAxis,
             barWidth,
             mapXValueToOffset,
             ticks
@@ -458,7 +458,7 @@ export class StackedBarChart extends React.Component<{
                 />
                 <VerticalAxisView
                     bounds={bounds}
-                    axis={yAxis}
+                    axis={verticaAxis}
                     isInteractive={this.chart.isInteractive}
                 />
                 <AxisGridLines

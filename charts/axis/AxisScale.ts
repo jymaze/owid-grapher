@@ -216,7 +216,7 @@ export class AxisScale {
         return parseFloat(this.d3_scale(value).toFixed(1))
     }
 
-    extend(props: any) {
+    clone(props: any) {
         return new AxisScale(extend(toJS(this), props))
     }
 }

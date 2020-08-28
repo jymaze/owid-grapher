@@ -251,11 +251,11 @@ export class ScatterPlot extends React.Component<{
             get fontSize() {
                 return that.chart.baseFontSize
             },
-            get xAxis() {
-                return that.transform.xAxis
+            get xAxisSpec() {
+                return that.transform.xAxisSpec
             },
-            get yAxis() {
-                return that.transform.yAxis
+            get yAxisSpec() {
+                return that.transform.yAxisSpec
             }
         })
     }

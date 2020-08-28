@@ -336,23 +336,23 @@ export class ScatterTransform extends ChartTransform {
                 }
                 // Exclude points that go beyond min/max of X axis
                 else if (
-                    (chart.xAxis.removePointsOutsideDomain &&
-                        chart.xAxis.min !== undefined &&
-                        point.x < chart.xAxis.min) ||
-                    (chart.xAxis.removePointsOutsideDomain &&
-                        chart.xAxis.max !== undefined &&
-                        point.x > chart.xAxis.max)
+                    (chart.xAxisConfig.removePointsOutsideDomain &&
+                        chart.xAxisConfig.min !== undefined &&
+                        point.x < chart.xAxisConfig.min) ||
+                    (chart.xAxisConfig.removePointsOutsideDomain &&
+                        chart.xAxisConfig.max !== undefined &&
+                        point.x > chart.xAxisConfig.max)
                 ) {
                     dataByYear.delete(year)
                 }
                 // Exclude points that go beyond min/max of Y axis
                 else if (
-                    (chart.yAxis.removePointsOutsideDomain &&
-                        chart.yAxis.min !== undefined &&
-                        point.y < chart.yAxis.min) ||
-                    (chart.yAxis.removePointsOutsideDomain &&
-                        chart.yAxis.max !== undefined &&
-                        point.y > chart.yAxis.max)
+                    (chart.yAxisConfig.removePointsOutsideDomain &&
+                        chart.yAxisConfig.min !== undefined &&
+                        point.y < chart.yAxisConfig.min) ||
+                    (chart.yAxisConfig.removePointsOutsideDomain &&
+                        chart.yAxisConfig.max !== undefined &&
+                        point.y > chart.yAxisConfig.max)
                 ) {
                     dataByYear.delete(year)
                 }
@@ -467,14 +467,14 @@ export class ScatterTransform extends ChartTransform {
     @computed private get yScaleType() {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.yAxis.scaleType
+            : this.chart.yAxisConfig.scaleType
     }
 
     @computed private get yAxisLabelBase(): string | undefined {
         return this.yDimension && this.yDimension.displayName
     }
 
-    @computed get yAxis(): AxisSpec {
+    @computed get yAxisSpec(): AxisSpec {
         const {
             chart,
             yDomainDefault,
@@ -486,7 +486,7 @@ export class ScatterTransform extends ChartTransform {
 
         const props: Partial<AxisSpec> = {}
         props.scaleType = yScaleType
-        const label = chart.yAxis.label ?? yAxisLabelBase
+        const label = chart.yAxisConfig.label ?? yAxisLabelBase
         if (isRelativeMode) {
             props.domain = yDomainDefault
             props.scaleTypeOptions = [ScaleType.linear]
@@ -504,7 +504,7 @@ export class ScatterTransform extends ChartTransform {
         }
 
         return extend(
-            chart.yAxis.toSpec({ defaultDomain: yDomainDefault }),
+            chart.yAxisConfig.toSpec({ defaultDomain: yDomainDefault }),
             props
         ) as AxisSpec
     }
@@ -512,7 +512,7 @@ export class ScatterTransform extends ChartTransform {
     @computed private get xScaleType(): ScaleType {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.xAxis.scaleType
+            : this.chart.xAxisConfig.scaleType
     }
 
     @computed private get xAxisLabelBase(): string | undefined {
@@ -522,7 +522,7 @@ export class ScatterTransform extends ChartTransform {
         else return xDimName
     }
 
-    @computed get xAxis(): AxisSpec {
+    @computed get xAxisSpec(): AxisSpec {
         const {
             chart,
             xDomainDefault,
@@ -537,7 +537,7 @@ export class ScatterTransform extends ChartTransform {
         if (isRelativeMode) {
             props.domain = xDomainDefault
             props.scaleTypeOptions = [ScaleType.linear]
-            const label = chart.xAxis.label || xAxisLabelBase
+            const label = chart.xAxisConfig.label || xAxisLabelBase
             if (label && label.length > 1) {
                 props.label =
                     "Average annual change in " +
@@ -547,25 +547,25 @@ export class ScatterTransform extends ChartTransform {
             }
             props.tickFormat = (v: number) => formatValue(v, { unit: "%" })
         } else {
-            props.label = chart.xAxis.label || xAxisLabelBase
+            props.label = chart.xAxisConfig.label || xAxisLabelBase
             props.tickFormat = xDimension && xDimension.formatValueShort
         }
 
         return extend(
-            chart.xAxis.toSpec({ defaultDomain: xDomainDefault }),
+            chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
             props
         ) as AxisSpec
     }
 
     @computed get yFormatTooltip(): (d: number) => string {
         return this.isRelativeMode || !this.yDimension
-            ? this.yAxis.tickFormat
+            ? this.yAxisSpec.tickFormat
             : this.yDimension.formatValueLong
     }
 
     @computed get xFormatTooltip(): (d: number) => string {
         return this.isRelativeMode || !this.xDimension
-            ? this.xAxis.tickFormat
+            ? this.xAxisSpec.tickFormat
             : this.xDimension.formatValueLong
     }
 
