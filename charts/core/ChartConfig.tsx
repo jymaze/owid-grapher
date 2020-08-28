@@ -770,20 +770,20 @@ export class ChartConfig {
         this.props.maxTime = value[1]
     }
 
-    @computed get xAxis() {
+    @computed get xAxisConfig() {
         return new AxisConfig(this.props.xAxis)
     }
 
-    @computed get yAxis() {
+    @computed get yAxisConfig() {
         return new AxisConfig(this.props.yAxis)
     }
 
     @computed get xAxisProps() {
-        return this.xAxis.props
+        return this.xAxisConfig.props
     }
 
     @computed get yAxisProps() {
-        return this.yAxis.props
+        return this.yAxisConfig.props
     }
 
     // Get the dimension slots appropriate for this type of chart

@@ -251,15 +251,15 @@ class ComparisonLineSection extends React.Component<{ editor: ChartEditor }> {
 export class EditorCustomizeTab extends React.Component<{
     editor: ChartEditor
 }> {
-    @computed get xAxis() {
-        return this.props.editor.chart.xAxis.props
+    @computed private get xAxisConfigProps() {
+        return this.props.editor.chart.xAxisConfig.props
     }
-    @computed get yAxis() {
-        return this.props.editor.chart.yAxis.props
+    @computed private get yAxisConfigProps() {
+        return this.props.editor.chart.yAxisConfig.props
     }
 
     render() {
-        const { xAxis, yAxis } = this
+        const { xAxisConfigProps, yAxisConfigProps } = this
         const { features } = this.props.editor
         const { chart } = this.props.editor
 
@@ -272,15 +272,19 @@ export class EditorCustomizeTab extends React.Component<{
                                 <FieldsRow>
                                     <NumberField
                                         label={`Min`}
-                                        value={yAxis.min}
-                                        onValue={value => (yAxis.min = value)}
+                                        value={yAxisConfigProps.min}
+                                        onValue={value =>
+                                            (yAxisConfigProps.min = value)
+                                        }
                                         allowDecimal
                                         allowNegative
                                     />
                                     <NumberField
                                         label={`Max`}
-                                        value={yAxis.max}
-                                        onValue={value => (yAxis.max = value)}
+                                        value={yAxisConfigProps.max}
+                                        onValue={value =>
+                                            (yAxisConfigProps.max = value)
+                                        }
                                         allowDecimal
                                         allowNegative
                                     />
@@ -290,11 +294,11 @@ export class EditorCustomizeTab extends React.Component<{
                                         <Toggle
                                             label={`Remove points outside domain`}
                                             value={
-                                                yAxis.removePointsOutsideDomain ||
+                                                yAxisConfigProps.removePointsOutsideDomain ||
                                                 false
                                             }
                                             onValue={value =>
-                                                (yAxis.removePointsOutsideDomain =
+                                                (yAxisConfigProps.removePointsOutsideDomain =
                                                     value || undefined)
                                             }
                                         />
@@ -304,10 +308,11 @@ export class EditorCustomizeTab extends React.Component<{
                                     <Toggle
                                         label={`Enable log/linear selector`}
                                         value={
-                                            yAxis.canChangeScaleType || false
+                                            yAxisConfigProps.canChangeScaleType ||
+                                            false
                                         }
                                         onValue={value =>
-                                            (yAxis.canChangeScaleType =
+                                            (yAxisConfigProps.canChangeScaleType =
                                                 value || undefined)
                                         }
                                     />
@@ -318,7 +323,7 @@ export class EditorCustomizeTab extends React.Component<{
                             <BindString
                                 label="Label"
                                 field="label"
-                                store={yAxis}
+                                store={yAxisConfigProps}
                             />
                         )}
                     </Section>
@@ -330,15 +335,19 @@ export class EditorCustomizeTab extends React.Component<{
                                 <FieldsRow>
                                     <NumberField
                                         label={`Min`}
-                                        value={xAxis.min}
-                                        onValue={value => (xAxis.min = value)}
+                                        value={xAxisConfigProps.min}
+                                        onValue={value =>
+                                            (xAxisConfigProps.min = value)
+                                        }
                                         allowDecimal
                                         allowNegative
                                     />
                                     <NumberField
                                         label={`Max`}
-                                        value={xAxis.max}
-                                        onValue={value => (xAxis.max = value)}
+                                        value={xAxisConfigProps.max}
+                                        onValue={value =>
+                                            (xAxisConfigProps.max = value)
+                                        }
                                         allowDecimal
                                         allowNegative
                                     />
@@ -348,11 +357,11 @@ export class EditorCustomizeTab extends React.Component<{
                                         <Toggle
                                             label={`Remove points outside domain`}
                                             value={
-                                                xAxis.removePointsOutsideDomain ||
+                                                xAxisConfigProps.removePointsOutsideDomain ||
                                                 false
                                             }
                                             onValue={value =>
-                                                (xAxis.removePointsOutsideDomain =
+                                                (xAxisConfigProps.removePointsOutsideDomain =
                                                     value || undefined)
                                             }
                                         />
@@ -362,10 +371,11 @@ export class EditorCustomizeTab extends React.Component<{
                                     <Toggle
                                         label={`Enable log/linear selector`}
                                         value={
-                                            xAxis.canChangeScaleType || false
+                                            xAxisConfigProps.canChangeScaleType ||
+                                            false
                                         }
                                         onValue={value =>
-                                            (xAxis.canChangeScaleType =
+                                            (xAxisConfigProps.canChangeScaleType =
                                                 value || undefined)
                                         }
                                     />
@@ -376,7 +386,7 @@ export class EditorCustomizeTab extends React.Component<{
                             <BindString
                                 label="Label"
                                 field="label"
-                                store={xAxis}
+                                store={xAxisConfigProps}
                             />
                         )}
                     </Section>

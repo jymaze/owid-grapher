@@ -200,7 +200,7 @@ export class SlopeChart extends React.Component<{
             )
 
         const { bounds, chart } = this.props
-        const { yAxis } = chart
+        const { yAxisConfig: yAxis } = chart
         const { data } = this.transform
         const {
             legend,

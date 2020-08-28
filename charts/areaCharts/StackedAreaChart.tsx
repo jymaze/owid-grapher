@@ -278,12 +278,12 @@ export class StackedAreaChart extends React.Component<{
 
     @computed private get axisBox(): AxisBox {
         const { bounds, transform, legend, chart } = this
-        const { xAxis, yAxis } = transform
+        const { xAxisSpec, yAxisSpec } = transform
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
             fontSize: chart.baseFontSize,
-            xAxis,
-            yAxis
+            xAxisSpec,
+            yAxisSpec
         })
     }
 
@@ -391,7 +391,7 @@ export class StackedAreaChart extends React.Component<{
                                     <td style={{ textAlign: "right" }}>
                                         {value.isFake
                                             ? "No data"
-                                            : transform.yAxis.tickFormat(
+                                            : transform.yAxisSpec.tickFormat(
                                                   value.origY as number,
                                                   { noTrailingZeroes: false }
                                               )}
@@ -414,7 +414,7 @@ export class StackedAreaChart extends React.Component<{
                                 <td style={{ textAlign: "right" }}>
                                     <span>
                                         <strong>
-                                            {transform.yAxis.tickFormat(
+                                            {transform.yAxisSpec.tickFormat(
                                                 transform.stackedData[
                                                     transform.stackedData
                                                         .length - 1

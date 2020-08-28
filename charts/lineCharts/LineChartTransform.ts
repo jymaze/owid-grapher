@@ -49,7 +49,7 @@ export class LineChartTransform extends ChartTransform {
 
     @computed get initialData(): LineChartSeries[] {
         const { chart } = this
-        const { yAxis } = chart
+        const { yAxisConfig: yAxis } = chart
         const { selectedKeys, selectedKeysByKey } = chart
         const filledDimensions = chart.filledDimensions
 
@@ -191,10 +191,10 @@ export class LineChartTransform extends ChartTransform {
         })
     }
 
-    @computed get xAxis(): AxisSpec {
+    @computed get xAxisSpec(): AxisSpec {
         const { xDomain } = this
         return {
-            label: this.chart.xAxis.label || "",
+            label: this.chart.xAxisConfig.label || "",
             tickFormat: this.chart.formatYearTickFunction,
             domain: xDomain,
             scaleType: ScaleType.linear,
@@ -220,11 +220,11 @@ export class LineChartTransform extends ChartTransform {
         const { chart, yDomainDefault } = this
         return [
             Math.min(
-                defaultTo(chart.yAxis.domain[0], Infinity),
+                defaultTo(chart.yAxisConfig.domain[0], Infinity),
                 yDomainDefault[0]
             ),
             Math.max(
-                defaultTo(chart.yAxis.domain[1], -Infinity),
+                defaultTo(chart.yAxisConfig.domain[1], -Infinity),
                 yDomainDefault[1]
             )
         ]
@@ -233,7 +233,7 @@ export class LineChartTransform extends ChartTransform {
     @computed get yScaleType() {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.yAxis.scaleType
+            : this.chart.yAxisConfig.scaleType
     }
 
     @computed get yTickFormat() {
@@ -252,7 +252,7 @@ export class LineChartTransform extends ChartTransform {
         return this.allValues.every(val => val.y % 1 === 0)
     }
 
-    @computed get yAxis(): AxisSpec {
+    @computed get yAxisSpec(): AxisSpec {
         const { chart, yDomain, yScaleType, yTickFormat, isRelativeMode } = this
         return {
             label: "",
@@ -261,7 +261,7 @@ export class LineChartTransform extends ChartTransform {
             scaleType: yScaleType,
             scaleTypeOptions: isRelativeMode
                 ? [ScaleType.linear]
-                : chart.yAxis.scaleTypeOptions,
+                : chart.yAxisConfig.scaleTypeOptions,
             hideFractionalTicks: this.yAxisHideFractionalTicks
         }
     }
@@ -272,15 +272,15 @@ export class LineChartTransform extends ChartTransform {
 
     // Filter the data so it fits within the domains
     @computed get groupedData(): LineChartSeries[] {
-        const { xAxis } = this
+        const { xAxisSpec } = this
         const groupedData = cloneDeep(this.predomainData)
 
         for (const g of groupedData) {
             // The values can include non-numerical values, so we need to filter with isNaN()
             g.values = g.values.filter(
                 d =>
-                    d.x >= xAxis.domain[0] &&
-                    d.x <= xAxis.domain[1] &&
+                    d.x >= xAxisSpec.domain[0] &&
+                    d.x <= xAxisSpec.domain[1] &&
                     !isNaN(d.y)
             )
         }

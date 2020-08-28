@@ -239,32 +239,38 @@ export class StackedAreaTransform extends ChartTransform {
         return [0, defaultTo(max(yValues), 100)]
     }
 
-    @computed get xAxis(): AxisSpec {
+    @computed get xAxisSpec(): AxisSpec {
         const { chart, xDomainDefault } = this
-        return extend(chart.xAxis.toSpec({ defaultDomain: xDomainDefault }), {
-            tickFormat: this.chart.formatYearFunction,
-            hideFractionalTicks: true,
-            hideGridlines: true
-        }) as AxisSpec
+        return extend(
+            chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
+            {
+                tickFormat: this.chart.formatYearFunction,
+                hideFractionalTicks: true,
+                hideGridlines: true
+            }
+        ) as AxisSpec
     }
 
     @computed private get yDimensionFirst() {
         return find(this.chart.filledDimensions, d => d.property === "y")
     }
 
-    @computed get yAxis(): AxisSpec {
+    @computed get yAxisSpec(): AxisSpec {
         const { chart, yDomainDefault, isRelativeMode, yDimensionFirst } = this
         const tickFormat = yDimensionFirst
             ? yDimensionFirst.formatValueShort
             : identity
 
-        return extend(chart.yAxis.toSpec({ defaultDomain: yDomainDefault }), {
-            domain: isRelativeMode
-                ? [0, 100]
-                : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
-            tickFormat: isRelativeMode
-                ? (v: number) => formatValue(v, { unit: "%" })
-                : tickFormat
-        }) as AxisSpec
+        return extend(
+            chart.yAxisConfig.toSpec({ defaultDomain: yDomainDefault }),
+            {
+                domain: isRelativeMode
+                    ? [0, 100]
+                    : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
+                tickFormat: isRelativeMode
+                    ? (v: number) => formatValue(v, { unit: "%" })
+                    : tickFormat
+            }
+        ) as AxisSpec
     }
 }

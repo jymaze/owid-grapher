@@ -102,12 +102,12 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
         return this.props.bounds
     }
 
-    @computed get xScale(): AxisScale {
-        return this.props.xScale.extend({ range: this.bounds.xRange() })
+    @computed private get xScale(): AxisScale {
+        return this.props.xScale.clone({ range: this.bounds.xRange() })
     }
 
-    @computed get yScale(): AxisScale {
-        return this.props.yScale.extend({ range: this.bounds.yRange() })
+    @computed private get yScale(): AxisScale {
+        return this.props.yScale.clone({ range: this.bounds.yRange() })
     }
 
     @computed get labelFontFamily(): string {
@@ -163,12 +163,12 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
                     }}
                 >
                     <span>
-                        {transform.yAxis.label}{" "}
+                        {transform.yAxisSpec.label}{" "}
                         <strong>{transform.yFormatTooltip(value.y)}</strong>
                     </span>
                     <br />
                     <span>
-                        {transform.xAxis.label}{" "}
+                        {transform.xAxisSpec.label}{" "}
                         <strong>
                             {transform.xFormatTooltip(value.x)}
                             {!value.time.span && value.time.y !== value.time.x
@@ -608,11 +608,11 @@ export class TimeScatter extends React.Component<{
             get fontSize() {
                 return that.chart.baseFontSize
             },
-            get xAxis() {
-                return that.transform.xAxis
+            get xAxisSpec() {
+                return that.transform.xAxisSpec
             },
-            get yAxis() {
-                return that.transform.yAxis
+            get yAxisSpec() {
+                return that.transform.yAxisSpec
             }
         })
     }

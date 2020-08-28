@@ -150,7 +150,7 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed get isLogScale() {
-        return this.chart.yAxis.scaleType === ScaleType.log
+        return this.chart.yAxisConfig.scaleType === ScaleType.log
     }
 
     @computed get xRange() {
@@ -161,17 +161,17 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed get xScale() {
-        const xAxis = this.chart.yAxis.toSpec({
+        const xAxisSpec = this.chart.yAxisConfig.toSpec({
             defaultDomain: this.xDomainDefault
         }) // XXX
-        return new AxisScale(xAxis).extend({
+        return new AxisScale(xAxisSpec).clone({
             domain: this.xDomainDefault,
             range: this.xRange,
             tickFormat: this.chart.discreteBarTransform.tickFormat
         })
     }
 
-    @computed get xAxis() {
+    @computed private get horizontalAxis() {
         const that = this
         return new HorizontalAxis({
             get scale() {
@@ -183,14 +183,14 @@ export class DiscreteBarChart extends React.Component<{
         })
     }
 
-    @computed get innerBounds() {
+    @computed private get innerBounds() {
         return this.bounds
             .padLeft(this.legendWidth + this.leftEndLabelWidth)
-            .padBottom(this.xAxis.height)
+            .padBottom(this.horizontalAxis.height)
             .padRight(this.rightEndLabelWidth)
     }
 
-    @computed get hasFloatingAddButton() {
+    @computed private get hasFloatingAddButton() {
         return (
             this.chartView.controls.hasFloatingAddButton &&
             this.chart.showAddEntityControls
@@ -198,21 +198,21 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     // Leave space for extra bar at bottom to show "Add country" button
-    @computed get totalBars() {
+    @computed private get totalBars() {
         return this.hasFloatingAddButton
             ? this.currentData.length + 1
             : this.currentData.length
     }
 
-    @computed get barHeight() {
+    @computed private get barHeight() {
         return (0.8 * this.innerBounds.height) / this.totalBars
     }
 
-    @computed get barSpacing() {
+    @computed private get barSpacing() {
         return this.innerBounds.height / this.totalBars - this.barHeight
     }
 
-    @computed get barPlacements() {
+    @computed private get barPlacements() {
         const { currentData, xScale } = this
         return currentData.map(d => {
             const isNegative = d.value < 0
@@ -227,7 +227,7 @@ export class DiscreteBarChart extends React.Component<{
         })
     }
 
-    @computed get barWidths() {
+    @computed private get barWidths() {
         return this.barPlacements.map(b => b.width)
     }
 
@@ -299,7 +299,7 @@ export class DiscreteBarChart extends React.Component<{
         const {
             currentData,
             bounds,
-            xAxis,
+            horizontalAxis,
             xScale,
             innerBounds,
             barHeight,
@@ -310,7 +310,7 @@ export class DiscreteBarChart extends React.Component<{
         let yOffset = innerBounds.top + barHeight / 2
 
         const onScaleTypeChange = (scaleType: ScaleType) => {
-            this.chart.yAxis.scaleType = scaleType
+            this.chart.yAxisConfig.scaleType = scaleType
         }
 
         return (
@@ -327,9 +327,9 @@ export class DiscreteBarChart extends React.Component<{
                     maxX={this.chartView.tabBounds.width}
                     bounds={bounds}
                     isInteractive={this.chart.isInteractive}
-                    axis={xAxis}
+                    axis={horizontalAxis}
                     onScaleTypeChange={
-                        this.chart.yAxis.canChangeScaleType
+                        this.chart.yAxisConfig.canChangeScaleType
                             ? onScaleTypeChange
                             : undefined
                     }

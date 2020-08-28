@@ -262,11 +262,11 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
     }
 
     @computed private get xScale(): AxisScale {
-        return this.props.xScale.extend({ range: this.bounds.xRange() })
+        return this.props.xScale.clone({ range: this.bounds.xRange() })
     }
 
     @computed private get yScale(): AxisScale {
-        return this.props.yScale.extend({ range: this.bounds.yRange() })
+        return this.props.yScale.clone({ range: this.bounds.yRange() })
     }
 
     // When focusing multiple entities, we hide some information to declutter

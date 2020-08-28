@@ -81,11 +81,14 @@ export class StackedBarTransform extends ChartTransform {
     // TODO: Make XAxis generic
     @computed get xAxisSpec(): AxisSpec {
         const { chart, xDomainDefault } = this
-        return extend(chart.xAxis.toSpec({ defaultDomain: xDomainDefault }), {
-            tickFormat: this.chart.formatYearFunction,
-            hideFractionalTicks: true,
-            hideGridlines: true
-        }) as AxisSpec
+        return extend(
+            chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
+            {
+                tickFormat: this.chart.formatYearFunction,
+                hideFractionalTicks: true,
+                hideGridlines: true
+            }
+        ) as AxisSpec
     }
 
     @computed get yDomainDefault(): [number, number] {
@@ -108,10 +111,13 @@ export class StackedBarTransform extends ChartTransform {
     @computed get yAxisSpec(): AxisSpec {
         const { chart, yDomainDefault, yTickFormat } = this
 
-        return extend(chart.yAxis.toSpec({ defaultDomain: yDomainDefault }), {
-            domain: [yDomainDefault[0], yDomainDefault[1]], // Stacked chart must have its own y domain
-            tickFormat: yTickFormat
-        }) as AxisSpec
+        return extend(
+            chart.yAxisConfig.toSpec({ defaultDomain: yDomainDefault }),
+            {
+                domain: [yDomainDefault[0], yDomainDefault[1]], // Stacked chart must have its own y domain
+                tickFormat: yTickFormat
+            }
+        ) as AxisSpec
     }
 
     @computed get allStackedValues(): StackedBarValue[] {
