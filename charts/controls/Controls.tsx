@@ -105,12 +105,12 @@ class ShareMenu extends React.Component<ShareMenuProps, ShareMenuState> {
     }
 
     @computed get isDisabled(): boolean {
-        return !this.props.chart.props.slug
+        return !this.props.chart.script.slug
     }
 
     @computed get editUrl(): string | undefined {
         return Cookies.get("isAdmin") || ENV === "development"
-            ? `${ADMIN_BASE_URL}/admin/charts/${this.props.chart.props.id}/edit`
+            ? `${ADMIN_BASE_URL}/admin/charts/${this.props.chart.script.id}/edit`
             : undefined
     }
 
@@ -401,7 +401,7 @@ class FilterSmallCountriesToggle extends React.Component<{
             <label className="clickable">
                 <input
                     type="checkbox"
-                    checked={!!this.props.chart.props.minPopulationFilter}
+                    checked={!!this.props.chart.script.minPopulationFilter}
                     onChange={() =>
                         this.props.chart.toggleMinPopulationFilter()
                     }
@@ -444,7 +444,7 @@ class TimelineControl extends React.Component<{ chart: ChartRuntime }> {
     render() {
         // Todo: cleanup this method
         const { chart } = this.props
-        if (chart.props.tab === "table") {
+        if (chart.script.tab === "table") {
             const { dataTableTransform } = chart
             const years = dataTableTransform.timelineYears
             if (years.length === 0) {
@@ -469,7 +469,7 @@ class TimelineControl extends React.Component<{ chart: ChartRuntime }> {
                     singleYearMode={chart.multiMetricTableMode}
                 />
             )
-        } else if (chart.props.tab === "map") {
+        } else if (chart.script.tab === "map") {
             const { mapTransform } = chart
             const years = mapTransform.timelineYears
             if (years.length === 0) {
@@ -588,7 +588,7 @@ export class Controls {
 
     @computed get hasTimeline(): boolean {
         const { chart } = this.props
-        if (chart.tab === "table") return !chart.props.hideTimeline
+        if (chart.tab === "table") return !chart.script.hideTimeline
         if (chart.tab === "map") {
             return chart.mapTransform.hasTimeline
         } else if (chart.tab === "chart") {
@@ -632,7 +632,7 @@ export class Controls {
     }
 
     @computed get hasRelatedQuestion(): boolean {
-        const { relatedQuestions } = this.props.chart.props
+        const { relatedQuestions } = this.props.chart.script
         return (
             !!relatedQuestions &&
             !!relatedQuestions.length &&
@@ -983,7 +983,7 @@ export class ControlsFooterView extends React.Component<{
                     )}
                 {chart.tab === "chart" &&
                     chart.isScatter &&
-                    chart.hasSelection && <ZoomToggle chart={chart.props} />}
+                    chart.hasSelection && <ZoomToggle chart={chart.script} />}
 
                 {(chart.tab === "table" || chart.isScatter) &&
                     chart.hasCountriesSmallerThanFilterOption && (
@@ -1010,7 +1010,7 @@ export class ControlsFooterView extends React.Component<{
             hasRelatedQuestion
         } = props.controls
         const { chart, chartView } = props.controls.props
-        const { relatedQuestions } = chart.props
+        const { relatedQuestions } = chart.script
 
         const timelineElement = hasTimeline && (
             <div className="footerRowSingle">
