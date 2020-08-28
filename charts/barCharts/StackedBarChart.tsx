@@ -5,7 +5,7 @@ import { select } from "d3-selection"
 import { easeLinear } from "d3-ease"
 
 import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
-import { ChartConfig } from "charts/core/ChartConfig"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
 import { AxisBox, AxisGridLines } from "charts/axis/AxisBox"
 import { AxisTickMarks } from "charts/axis/AxisTickMarks"
@@ -104,7 +104,7 @@ class StackedBarSegment extends React.Component<StackedBarSegmentProps> {
 @observer
 export class StackedBarChart extends React.Component<{
     bounds: Bounds
-    chart: ChartConfig
+    chart: ChartRuntime
 }> {
     base!: SVGGElement
     readonly minBarSpacing = 4

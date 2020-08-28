@@ -3,7 +3,7 @@ import classnames from "classnames"
 import ReactDOM from "react-dom"
 import { ChartView } from "charts/core/ChartView"
 import { Bounds } from "charts/utils/Bounds"
-import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
+import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
 import { faChartLine } from "@fortawesome/free-solid-svg-icons/faChartLine"
 import {
     computed,
@@ -1347,7 +1347,7 @@ export class CovidExplorer extends React.Component<{
             : ""
     }
 
-    @observable.ref chart: ChartConfig = new ChartConfig(
+    @observable.ref chart: ChartRuntime = new ChartRuntime(
         {
             slug: covidDashboardSlug,
             type: this.constrainedParams.type,

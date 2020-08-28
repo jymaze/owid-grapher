@@ -38,7 +38,7 @@ import { makeSitemap } from "./sitemap"
 
 import * as React from "react"
 import { embedSnippet } from "./embedCharts"
-import { ChartScript } from "charts/core/ChartConfig"
+import { ChartScript } from "charts/core/ChartRuntime"
 import { getVariableData } from "db/model/Variable"
 import { bakeImageExports } from "./svgPngExport"
 import { Post } from "db/model/Post"

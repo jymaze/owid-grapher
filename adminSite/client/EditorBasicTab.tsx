@@ -3,7 +3,7 @@ import { observable, action, reaction, IReactionDisposer } from "mobx"
 import { observer } from "mobx-react"
 
 import { includes, sample, sampleSize } from "charts/utils/Util"
-import { DimensionSlot } from "charts/core/ChartConfig"
+import { DimensionSlot } from "charts/core/ChartRuntime"
 import { ChartTypeDefs, ChartTypeName } from "charts/core/ChartConstants"
 import { ChartDimension, ChartDimensionSpec } from "charts/core/ChartDimension"
 

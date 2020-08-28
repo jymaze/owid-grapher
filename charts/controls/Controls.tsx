@@ -5,10 +5,10 @@ import * as Cookies from "js-cookie"
 import copy from "copy-to-clipboard"
 
 import {
-    ChartConfig,
+    ChartRuntime,
     ChartScript,
     HighlightToggleConfig
-} from "charts/core/ChartConfig"
+} from "charts/core/ChartRuntime"
 import { getQueryParams, getWindowQueryParams } from "utils/client/url"
 import { ChartView } from "charts/core/ChartView"
 import { Timeline } from "./Timeline"
@@ -79,7 +79,7 @@ class EmbedMenu extends React.Component<{
 }
 
 interface ShareMenuProps {
-    chart: ChartConfig
+    chart: ChartRuntime
     chartView: any
     onDismiss: () => void
 }
@@ -256,7 +256,7 @@ class ShareMenu extends React.Component<ShareMenuProps, ShareMenuState> {
 
 @observer
 class SettingsMenu extends React.Component<{
-    chart: ChartConfig
+    chart: ChartRuntime
     onDismiss: () => void
 }> {
     @action.bound onClickOutside() {
@@ -287,7 +287,7 @@ class SettingsMenu extends React.Component<{
 
 @observer
 class HighlightToggle extends React.Component<{
-    chart: ChartConfig
+    chart: ChartRuntime
     highlightToggle: HighlightToggleConfig
 }> {
     @computed get chart() {
@@ -335,7 +335,7 @@ class HighlightToggle extends React.Component<{
 }
 
 @observer
-class AbsRelToggle extends React.Component<{ chart: ChartConfig }> {
+class AbsRelToggle extends React.Component<{ chart: ChartRuntime }> {
     @action.bound onToggle() {
         this.props.chart.toggleRelativeMode()
     }
@@ -390,7 +390,7 @@ class ZoomToggle extends React.Component<{
 
 @observer
 class FilterSmallCountriesToggle extends React.Component<{
-    chart: ChartConfig
+    chart: ChartRuntime
 }> {
     render() {
         const label = `Hide countries < ${formatValue(
@@ -414,7 +414,7 @@ class FilterSmallCountriesToggle extends React.Component<{
 }
 
 @observer
-class TimelineControl extends React.Component<{ chart: ChartConfig }> {
+class TimelineControl extends React.Component<{ chart: ChartRuntime }> {
     @action.bound onMapTargetChange({
         targetStartYear
     }: {
@@ -548,9 +548,9 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
 }
 
 export class Controls {
-    props: { chart: ChartConfig; chartView: ChartView; width: number }
+    props: { chart: ChartRuntime; chartView: ChartView; width: number }
     constructor(props: {
-        chart: ChartConfig
+        chart: ChartRuntime
         chartView: ChartView
         width: number
     }) {
@@ -776,7 +776,7 @@ export class ControlsOverlay extends React.Component<{
 @observer
 export class ControlsOverlayView extends React.Component<{
     chartView: ChartView
-    chart: ChartConfig
+    chart: ChartRuntime
     controls: Controls
     children: JSX.Element
 }> {
@@ -826,7 +826,7 @@ export class ControlsOverlayView extends React.Component<{
 @observer
 export class ControlsFooterView extends React.Component<{
     controls: Controls
-    chart: ChartConfig
+    chart: ChartRuntime
 }> {
     @action.bound onShareMenu() {
         this.props.controls.isShareMenuActive = !this.props.controls

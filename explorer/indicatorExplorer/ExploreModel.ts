@@ -1,7 +1,7 @@
 import { observable, computed, autorun, IReactionDisposer, action } from "mobx"
 
 import { ChartType, ChartTypeName } from "charts/core/ChartConstants"
-import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
+import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
 import { ExploreUrl } from "./ExploreUrl"
 import { RootStore, StoreEntry } from "./Store"
 import { Indicator } from "./Indicator"
@@ -33,7 +33,7 @@ export class ExploreModel {
 
     @observable indicatorId?: number = undefined
 
-    chart: ChartConfig
+    chart: ChartRuntime
     url: ExploreUrl
     store: RootStore
     disposers: IReactionDisposer[] = []
@@ -56,7 +56,7 @@ export class ExploreModel {
 
     constructor(store: RootStore) {
         this.store = store
-        this.chart = new ChartConfig()
+        this.chart = new ChartRuntime()
         this.url = new ExploreUrl(this, this.chart.url)
 
         // We need these updates in an autorun because the chart config objects aren't really meant

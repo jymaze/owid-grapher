@@ -1,6 +1,6 @@
 import * as fs from "fs"
 
-import { ChartScript } from "charts/core/ChartConfig"
+import { ChartScript } from "charts/core/ChartRuntime"
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
 import { Post } from "db/model/Post"
 import { RelatedChart } from "site/client/blocks/RelatedCharts/RelatedCharts"

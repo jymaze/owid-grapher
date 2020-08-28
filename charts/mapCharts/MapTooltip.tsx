@@ -10,7 +10,7 @@ import {
     SparkBarsProps
 } from "../sparkBars/SparkBars"
 import { CovidTimeSeriesValue } from "site/client/covid/CovidTimeSeriesValue"
-import { ChartConfig } from "charts/core/ChartConfig"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 
 interface MapTooltipProps {
     inputYear?: number
@@ -19,7 +19,7 @@ interface MapTooltipProps {
     tooltipDatum?: ChoroplethDatum
     tooltipTarget: { x: number; y: number; featureId: string }
     isEntityClickable?: boolean
-    chart: ChartConfig
+    chart: ChartRuntime
 }
 
 @observer

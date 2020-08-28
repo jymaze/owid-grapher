@@ -3,7 +3,7 @@ import { select } from "d3-selection"
 import { min, max, maxBy } from "../utils/Util"
 import { computed, action } from "mobx"
 import { observer } from "mobx-react"
-import { ChartConfig } from "charts/core/ChartConfig"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
 import { AxisScale } from "charts/axis/AxisScale"
 import {
@@ -33,7 +33,7 @@ const labelToBarPadding = 5
 @observer
 export class DiscreteBarChart extends React.Component<{
     bounds: Bounds
-    chart: ChartConfig
+    chart: ChartRuntime
     chartView: ChartView
 }> {
     base: React.RefObject<SVGGElement> = React.createRef()

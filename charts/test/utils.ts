@@ -1,10 +1,10 @@
-import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
+import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
 
 import * as fixtures from "./fixtures"
 import { first } from "lodash"
 
 export function createConfig(props?: Partial<ChartScript>) {
-    const config = new ChartConfig(new ChartScript(props))
+    const config = new ChartRuntime(new ChartScript(props))
     // ensureValidConfig() is only run on non-node environments, so we have
     // to manually trigger it.
     config.ensureValidConfig()
@@ -27,6 +27,6 @@ export function setupChart(
         owidDataset: variableSet
     })
 
-    const chart = new ChartConfig(props)
+    const chart = new ChartRuntime(props)
     return chart
 }

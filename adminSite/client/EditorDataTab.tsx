@@ -2,7 +2,7 @@ import * as React from "react"
 import { clone, map } from "charts/utils/Util"
 import { computed, action, observable } from "mobx"
 import { observer } from "mobx-react"
-import { ChartConfig } from "charts/core/ChartConfig"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import {
     EditableList,
@@ -18,7 +18,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons/faTimes"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 interface EntityDimensionKeyItemProps extends EditableListItemProps {
-    chart: ChartConfig
+    chart: ChartRuntime
     entityDimensionKey: EntityDimensionKey
 }
 
@@ -67,7 +67,7 @@ class EntityDimensionKeyItem extends React.Component<
 }
 
 @observer
-class KeysSection extends React.Component<{ chart: ChartConfig }> {
+class KeysSection extends React.Component<{ chart: ChartRuntime }> {
     @observable.ref dragKey?: EntityDimensionKey
 
     @action.bound onAddKey(key: EntityDimensionKey) {

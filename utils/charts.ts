@@ -1,4 +1,4 @@
-import { ChartScript } from "charts/core/ChartConfig"
+import { ChartScript } from "charts/core/ChartRuntime"
 import { ChartTypeName } from "charts/core/ChartConstants"
 import { EXPLORER } from "settings"
 

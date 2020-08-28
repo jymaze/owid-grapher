@@ -14,7 +14,7 @@ import {
     HighlightToggleConfig,
     RelatedQuestionsConfig,
     ScatterPointLabelStrategy
-} from "./ChartConfig"
+} from "./ChartRuntime"
 import { LogoOption } from "./Logos"
 import { ColorScaleConfigProps } from "charts/color/ColorScaleConfig"
 import { MapConfig } from "charts/mapCharts/MapConfig"

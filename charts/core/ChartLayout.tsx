@@ -1,4 +1,4 @@
-import { ChartConfig } from "./ChartConfig"
+import { ChartRuntime } from "./ChartRuntime"
 import React from "react"
 import { computed } from "mobx"
 import { Header, HeaderHTML } from "charts/core/Header"
@@ -8,7 +8,7 @@ import { ControlsOverlayView } from "charts/controls/Controls"
 import { ChartView } from "charts/core/ChartView"
 
 interface ChartLayoutProps {
-    chart: ChartConfig
+    chart: ChartRuntime
     chartView: ChartView
     bounds: Bounds
 }
