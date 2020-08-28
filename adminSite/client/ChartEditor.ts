@@ -130,7 +130,7 @@ export class ChartEditor {
     }
 
     @computed get availableTabs(): EditorTab[] {
-        if (!this.chart.activeTransform.isValidConfig) {
+        if (!this.chart.isValidConfig) {
             return ["basic"]
         } else {
             const tabs: EditorTab[] = ["basic", "data", "text", "customize"]

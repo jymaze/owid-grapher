@@ -395,9 +395,9 @@ export class EditorCustomizeTab extends React.Component<{
                 <Section name="Color scheme">
                     <ColorSchemeSelector chart={chart} />
                 </Section>
-                {chart.activeTransform.colorScale && (
+                {chart.colorScale && (
                     <EditorColorScaleSection
-                        scale={chart.activeTransform.colorScale}
+                        scale={chart.colorScale}
                         features={{
                             visualScaling: false,
                             legendDescription:
