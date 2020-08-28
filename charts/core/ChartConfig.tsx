@@ -1143,7 +1143,21 @@ export class ChartConfig {
         return new DataTableTransform(this)
     }
 
-    @computed get activeTransform(): IChartTransform {
+    @computed get isValidConfig() {
+        return this.activeTransform.isValidConfig
+    }
+
+    @computed get selectableEntityDimensionKeys() {
+        return this.activeTransform.selectableEntityDimensionKeys.map(key =>
+            this.lookupKey(key)
+        )
+    }
+
+    @computed get colorScale() {
+        return this.activeTransform.colorScale
+    }
+
+    @computed private get activeTransform(): IChartTransform {
         if (this.isLineChart) return this.lineChartTransform
         else if (this.isScatter || this.isTimeScatter)
             return this.scatterTransform
