@@ -337,8 +337,7 @@ class HighlightToggle extends React.Component<{
 @observer
 class AbsRelToggle extends React.Component<{ chart: ChartConfig }> {
     @action.bound onToggle() {
-        const { stackedAreaTransform } = this.props.chart
-        stackedAreaTransform.isRelativeMode = !stackedAreaTransform.isRelativeMode
+        this.props.chart.toggleRelativeMode()
     }
 
     render() {
@@ -353,7 +352,7 @@ class AbsRelToggle extends React.Component<{ chart: ChartConfig }> {
             <label className="clickable">
                 <input
                     type="checkbox"
-                    checked={chart.stackedAreaTransform.isRelativeMode}
+                    checked={chart.isRelativeMode}
                     onChange={this.onToggle}
                     data-track-note="chart-abs-rel-toggle"
                 />{" "}
@@ -608,8 +607,7 @@ export class Controls {
             ((chart.canAddData && !this.hasFloatingAddButton) ||
                 chart.isScatter ||
                 chart.canChangeEntity ||
-                (chart.isStackedArea &&
-                    chart.stackedAreaTransform.canToggleRelativeMode) ||
+                (chart.isStackedArea && chart.canToggleRelativeMode) ||
                 (chart.isLineChart &&
                     chart.lineChartTransform.canToggleRelativeMode))
         )
@@ -975,7 +973,7 @@ export class ControlsFooterView extends React.Component<{
                     )}
                 {chart.tab === "chart" &&
                     chart.isStackedArea &&
-                    chart.stackedAreaTransform.canToggleRelativeMode && (
+                    chart.canToggleRelativeMode && (
                         <AbsRelToggle chart={chart} />
                     )}
                 {chart.tab === "chart" &&

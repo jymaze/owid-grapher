@@ -244,7 +244,7 @@ export class StackedAreaTransform extends ChartTransform {
         return extend(
             chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
             {
-                tickFormat: this.chart.formatYearFunction,
+                tickFormat: chart.formatYearFunction,
                 hideFractionalTicks: true,
                 hideGridlines: true
             }
