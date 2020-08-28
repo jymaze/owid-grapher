@@ -275,8 +275,6 @@ interface LineChartOptions {
     baseFontSize: number
     showAddEntityControls: boolean
     comparisonLines: ComparisonLineConfig[]
-    xAxisProps: AxisConfig
-    yAxisProps: AxisConfig
     formatYearFunction?: Function // todo: remove
     isSelectingData: boolean
     canAddData: boolean
