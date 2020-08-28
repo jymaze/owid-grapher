@@ -1438,6 +1438,22 @@ export class ChartConfig {
         return keyData
     }
 
+    // NB: The timeline scatterplot in relative mode calculates changes relative
+    // to the lower bound year rather than creating an arrow chart
+    @computed get isRelativeMode(): boolean {
+        return this.props.stackMode === "relative"
+    }
+
+    @action.bound toggleRelativeMode() {
+        this.props.stackMode = !this.toggleRelativeMode
+            ? "relative"
+            : "absolute"
+    }
+
+    @computed get canToggleRelativeMode(): boolean {
+        return !this.props.hideRelativeToggle
+    }
+
     // todo: remove
     @computed.struct get availableKeys(): EntityDimensionKey[] {
         return sortBy(Array.from(this.entityDimensionMap.keys()))
