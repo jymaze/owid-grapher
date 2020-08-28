@@ -153,7 +153,7 @@ export class StackedBarChart extends React.Component<{
         return 0.75 * this.props.chart.baseFontSize
     }
 
-    @computed get axisBox(): AxisBox {
+    @computed private get axisBox(): AxisBox {
         const { bounds, transform, chart, sidebarWidth } = this
         const { xAxisSpec, yAxisSpec } = transform
         return new AxisBox({

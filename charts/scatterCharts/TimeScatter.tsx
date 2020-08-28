@@ -599,7 +599,7 @@ export class TimeScatter extends React.Component<{
         this.chart.timeDomain = [targetStartYear, targetEndYear]
     }
 
-    @computed get axisBox() {
+    @computed private get axisBox() {
         const that = this
         return new AxisBox({
             get bounds() {
@@ -642,8 +642,6 @@ export class TimeScatter extends React.Component<{
                 <AxisBoxView
                     isInteractive={chart.isInteractive}
                     axisBox={axisBox}
-                    xAxisConfig={chart.xAxis.props}
-                    yAxisConfig={chart.yAxis.props}
                     showTickMarks={false}
                 />
                 {comparisonLines &&

@@ -276,7 +276,7 @@ export class StackedAreaChart extends React.Component<{
         })
     }
 
-    @computed get axisBox(): AxisBox {
+    @computed private get axisBox(): AxisBox {
         const { bounds, transform, legend, chart } = this
         const { xAxis, yAxis } = transform
         return new AxisBox({
@@ -487,8 +487,6 @@ export class StackedAreaChart extends React.Component<{
                     isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={true}
-                    xAxisConfig={chart.xAxis.props}
-                    yAxisConfig={chart.yAxis.props}
                 />
                 <g clipPath={`url(#boundsClip-${renderUid})`}>
                     {legend && (
