@@ -443,6 +443,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
     }
 
     render() {
+        // Todo: cleanup this method
         const { chart } = this.props
         if (chart.props.tab === "table") {
             const { dataTableTransform } = chart
@@ -459,6 +460,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
 
             return (
                 <Timeline
+                    chart={chart}
                     years={years}
                     onTargetChange={this.onChartTargetChange}
                     startYear={startYear}
@@ -476,6 +478,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
             }
             return (
                 <Timeline
+                    chart={chart}
                     years={years}
                     onTargetChange={this.onMapTargetChange}
                     startYear={mapTransform.targetYearProp}
@@ -488,6 +491,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
             if (years.length === 0) return null
             return (
                 <Timeline
+                    chart={chart}
                     years={years}
                     onTargetChange={this.onChartTargetChange}
                     startYear={chart.timeDomain[0]}
@@ -501,6 +505,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
             if (years.length === 0) return null
             return (
                 <Timeline
+                    chart={chart}
                     years={years}
                     onTargetChange={this.onChartTargetChange}
                     startYear={chart.timeDomain[0]}
@@ -515,6 +520,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
             if (years.length === 0) return null
             return (
                 <Timeline
+                    chart={chart}
                     years={years}
                     onTargetChange={this.onChartTargetChange}
                     startYear={chart.timeDomain[0]}
@@ -529,6 +535,7 @@ class TimelineControl extends React.Component<{ chart: ChartConfig }> {
             if (years.length === 0) return null
             return (
                 <Timeline
+                    chart={chart}
                     years={years}
                     onTargetChange={this.onChartTargetChange}
                     startYear={chart.timeDomain[0]}

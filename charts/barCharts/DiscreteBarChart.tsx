@@ -15,11 +15,8 @@ import {
 import { HorizontalAxis, HorizontalAxisView } from "charts/axis/HorizontalAxis"
 import { AxisGridLines } from "charts/axis/AxisBox"
 import { NoDataOverlay } from "../core/NoDataOverlay"
-import {
-    ChartViewContextType,
-    ChartViewContext
-} from "charts/core/ChartViewContext"
 import { ControlsOverlay, AddEntityButton } from "../controls/Controls"
+import { ChartView } from "charts/core/ChartView"
 
 export interface DiscreteBarDatum {
     entityDimensionKey: EntityDimensionKey
@@ -37,11 +34,9 @@ const labelToBarPadding = 5
 export class DiscreteBarChart extends React.Component<{
     bounds: Bounds
     chart: ChartConfig
+    chartView: ChartView
 }> {
     base: React.RefObject<SVGGElement> = React.createRef()
-
-    static contextType = ChartViewContext
-    context!: ChartViewContextType
 
     @computed get chart() {
         return this.props.chart
@@ -81,11 +76,15 @@ export class DiscreteBarChart extends React.Component<{
         }
     }
 
+    @computed get chartView() {
+        return this.props.chartView
+    }
+
     // Account for the width of the legend
     @computed get legendWidth() {
         const labels = this.currentData.map(d => d.label)
         if (this.hasFloatingAddButton)
-            labels.push(` + ${this.context.chartView.controls.addButtonLabel}`)
+            labels.push(` + ${this.chartView.controls.addButtonLabel}`)
 
         const longestLabel = maxBy(labels, d => d.length)
         return Bounds.forText(longestLabel, this.legendLabelStyle).width
@@ -193,7 +192,7 @@ export class DiscreteBarChart extends React.Component<{
 
     @computed get hasFloatingAddButton() {
         return (
-            this.context.chartView.controls.hasFloatingAddButton &&
+            this.chartView.controls.hasFloatingAddButton &&
             this.chart.showAddEntityControls
         )
     }
