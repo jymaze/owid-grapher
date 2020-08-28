@@ -39,17 +39,23 @@ import {
     find
 } from "charts/utils/Util"
 import { ComparisonLineConfig } from "charts/scatterCharts/ComparisonLine"
-import { AxisConfig, AxisConfigProps } from "charts/axis/AxisSpec"
+import { AxisConfig } from "charts/axis/AxisSpec"
 import {
     ChartType,
     ChartTypeName,
     ChartTabOption,
     Color,
     TickFormattingOptions,
-    StackMode
-, EntityDimensionKey } from "charts/core/ChartConstants"
+    StackMode,
+    EntityDimensionKey
+} from "charts/core/ChartConstants"
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
-import { OwidTable , entityName, entityId, entityCode } from "owidTable/OwidTable"
+import {
+    OwidTable,
+    entityName,
+    entityId,
+    entityCode
+} from "owidTable/OwidTable"
 import {
     ChartDimension,
     dimensionProperty,
@@ -92,8 +98,6 @@ import { DataTableTransform } from "charts/dataTable/DataTableTransform"
 import { getWindowQueryParams } from "utils/client/url"
 import { populationMap } from "owidTable/PopulationMap"
 import { OwidSource } from "owidTable/OwidSource"
-
-
 
 export interface SourceWithDimension {
     source: OwidSource
@@ -235,8 +239,8 @@ export class ChartConfigProps {
     @observable.ref note?: string = undefined
     @observable.ref hideTitleAnnotation?: true = undefined
 
-    @observable.ref xAxis: AxisConfigProps = new AxisConfigProps()
-    @observable.ref yAxis: AxisConfigProps = new AxisConfigProps()
+    @observable.ref xAxis: AxisConfig = new AxisConfig()
+    @observable.ref yAxis: AxisConfig = new AxisConfig()
 
     // TODO: These 2 are currently in development. Do not save to DB.
     @observable.ref externalDataUrl?: string = undefined
@@ -767,19 +771,11 @@ export class ChartConfig {
     }
 
     @computed get xAxisConfig() {
-        return new AxisConfig(this.props.xAxis)
+        return this.props.xAxis
     }
 
     @computed get yAxisConfig() {
-        return new AxisConfig(this.props.yAxis)
-    }
-
-    @computed get xAxisProps() {
-        return this.xAxisConfig.props
-    }
-
-    @computed get yAxisProps() {
-        return this.yAxisConfig.props
+        return this.props.yAxis
     }
 
     // Get the dimension slots appropriate for this type of chart

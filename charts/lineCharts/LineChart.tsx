@@ -32,7 +32,7 @@ import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { extent } from "d3-array"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { LineChartTransform } from "./LineChartTransform"
-import { AxisConfigProps } from "charts/axis/AxisSpec"
+import { AxisConfig } from "charts/axis/AxisSpec"
 
 export interface LineChartValue {
     x: number
@@ -275,8 +275,8 @@ interface LineChartOptions {
     baseFontSize: number
     showAddEntityControls: boolean
     comparisonLines: ComparisonLineConfig[]
-    xAxisProps: AxisConfigProps
-    yAxisProps: AxisConfigProps
+    xAxisProps: AxisConfig
+    yAxisProps: AxisConfig
     formatYearFunction?: Function // todo: remove
     isSelectingData: boolean
     canAddData: boolean

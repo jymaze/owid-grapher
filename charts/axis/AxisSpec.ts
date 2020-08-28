@@ -20,55 +20,30 @@ export interface AxisSpec {
 }
 
 // Represents the actual entered configuration state in the editor
-export class AxisConfigProps {
+export class AxisConfig {
     @observable.ref min?: number = undefined
     @observable.ref max?: number = undefined
     @observable.ref scaleType: ScaleType = ScaleType.linear
     @observable.ref canChangeScaleType?: true = undefined
     @observable label?: string = undefined
     @observable.ref removePointsOutsideDomain?: true = undefined
-}
-
-// Interface used to access configuration by charts
-export class AxisConfig {
-    props: AxisConfigProps
-
-    constructor(props: AxisConfigProps) {
-        this.props = props
-    }
 
     // A log scale domain cannot have values <= 0, so we
     // double check here
-    @computed get min(): number | undefined {
-        if (this.scaleType === ScaleType.log && (this.props.min || 0) <= 0) {
+    @computed get constrainedMin(): number | undefined {
+        if (this.scaleType === ScaleType.log && (this.min || 0) <= 0)
             return undefined
-        } else {
-            return this.props.min
-        }
+        return this.min
     }
 
-    @computed get max(): number | undefined {
-        if (this.scaleType === ScaleType.log && (this.props.max || 0) <= 0)
+    @computed get constrainedMax(): number | undefined {
+        if (this.scaleType === ScaleType.log && (this.max || 0) <= 0)
             return undefined
-        else return this.props.max
-    }
-
-    @computed get scaleType(): ScaleType {
-        return this.props.scaleType
-    }
-    set scaleType(scaleType: ScaleType) {
-        this.props.scaleType = scaleType
-    }
-    @computed get canChangeScaleType(): boolean {
-        return defaultTo(this.props.canChangeScaleType, false)
-    }
-
-    @computed get removePointsOutsideDomain(): boolean {
-        return defaultTo(this.props.removePointsOutsideDomain, false)
+        return this.max
     }
 
     @computed get domain(): [number | undefined, number | undefined] {
-        return [this.min, this.max]
+        return [this.constrainedMin, this.constrainedMax]
     }
 
     @computed get scaleTypeOptions(): ScaleType[] {
@@ -77,10 +52,6 @@ export class AxisConfig {
         } else {
             return [this.scaleType]
         }
-    }
-
-    @computed get label() {
-        return this.props.label
     }
 
     // Convert axis configuration to a finalized axis spec by supplying
