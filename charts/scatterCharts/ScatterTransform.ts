@@ -330,6 +330,7 @@ export class ScatterTransform extends ChartTransform {
         const chart = this.chart
         dataByEntityAndYear.forEach(dataByYear => {
             dataByYear.forEach((point, year) => {
+                const yAxisConfig = chart.yAxisConfig
                 // Exclude any points with data for only one axis
                 if (!has(point, "x") || !has(point, "y")) {
                     dataByYear.delete(year)
@@ -337,22 +338,22 @@ export class ScatterTransform extends ChartTransform {
                 // Exclude points that go beyond min/max of X axis
                 else if (
                     (chart.xAxisConfig.removePointsOutsideDomain &&
-                        chart.xAxisConfig.min !== undefined &&
-                        point.x < chart.xAxisConfig.min) ||
+                        chart.xAxisConfig.constrainedMin !== undefined &&
+                        point.x < chart.xAxisConfig.constrainedMin) ||
                     (chart.xAxisConfig.removePointsOutsideDomain &&
-                        chart.xAxisConfig.max !== undefined &&
-                        point.x > chart.xAxisConfig.max)
+                        chart.xAxisConfig.constrainedMax !== undefined &&
+                        point.x > chart.xAxisConfig.constrainedMax)
                 ) {
                     dataByYear.delete(year)
                 }
                 // Exclude points that go beyond min/max of Y axis
                 else if (
-                    (chart.yAxisConfig.removePointsOutsideDomain &&
-                        chart.yAxisConfig.min !== undefined &&
-                        point.y < chart.yAxisConfig.min) ||
-                    (chart.yAxisConfig.removePointsOutsideDomain &&
-                        chart.yAxisConfig.max !== undefined &&
-                        point.y > chart.yAxisConfig.max)
+                    (yAxisConfig.removePointsOutsideDomain &&
+                        yAxisConfig.constrainedMin !== undefined &&
+                        point.y < yAxisConfig.constrainedMin) ||
+                    (yAxisConfig.removePointsOutsideDomain &&
+                        yAxisConfig.constrainedMax !== undefined &&
+                        point.y > yAxisConfig.constrainedMax)
                 ) {
                     dataByYear.delete(year)
                 }
