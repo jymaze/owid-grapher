@@ -2,7 +2,7 @@ import * as React from "react"
 import "site/client/owid.scss"
 import "charts/core/chart.scss"
 import { LineChart } from "charts/lineCharts/LineChart"
-import { ChartConfig, ChartConfigProps } from "charts/core/ChartConfig"
+import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
 import { parseDelimited } from "charts/utils/Util"
 
 export default {
@@ -20,7 +20,7 @@ export const Default = () => {
         useV2: true,
         yAxis: {},
         dimensions: [{ variableId: 99, property: "y" }]
-    } as Partial<ChartConfigProps>
+    } as Partial<ChartScript>
 
     const chartConfig = new ChartConfig(props as any)
     const rows = parseDelimited(`entityName,year,gdp,entityId

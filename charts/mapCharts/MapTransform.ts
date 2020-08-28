@@ -43,7 +43,7 @@ export class MapTransform extends ChartTransform {
     }
 
     get props() {
-        return this.chart.props.map
+        return this.chart.map
     }
 
     @computed get variableId() {

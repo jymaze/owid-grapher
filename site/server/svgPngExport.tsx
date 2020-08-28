@@ -7,7 +7,7 @@ declare var global: any
 global.window = { location: { search: "" } }
 global.App = { isEditor: false }
 
-import { ChartConfig, ChartConfigProps } from "charts/core/ChartConfig"
+import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
 
 const svgoConfig: svgo.Options = {
     floatPrecision: 2,
@@ -27,7 +27,7 @@ export async function optimizeSvg(svgString: string): Promise<string> {
 }
 
 export async function chartToSVG(
-    jsonConfig: ChartConfigProps,
+    jsonConfig: ChartScript,
     vardata: any
 ): Promise<string> {
     const chart = new ChartConfig(jsonConfig)
@@ -38,7 +38,7 @@ export async function chartToSVG(
 
 export async function bakeImageExports(
     outDir: string,
-    jsonConfig: ChartConfigProps,
+    jsonConfig: ChartScript,
     vardata: any,
     optimizeSvgs = false
 ) {

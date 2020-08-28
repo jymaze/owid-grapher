@@ -38,15 +38,12 @@ import {
     lastOfNonEmptyArray,
     find
 } from "charts/utils/Util"
-import { ComparisonLineConfig } from "charts/scatterCharts/ComparisonLine"
 import { AxisConfig } from "charts/axis/AxisSpec"
 import {
     ChartType,
-    ChartTypeName,
     ChartTabOption,
     Color,
     TickFormattingOptions,
-    StackMode,
     EntityDimensionKey
 } from "charts/core/ChartConstants"
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
@@ -75,7 +72,6 @@ import { ChartView } from "./ChartView"
 import { Bounds } from "charts/utils/Bounds"
 import { IChartTransform } from "./ChartTransform"
 import { TooltipProps } from "charts/core/Tooltip"
-import { LogoOption } from "charts/core/Logos"
 import { canBeExplorable } from "utils/charts"
 import { BAKED_GRAPHER_URL, ENV } from "settings"
 import {
@@ -83,8 +79,6 @@ import {
     maxTimeFromJSON,
     minTimeToJSON,
     maxTimeToJSON,
-    TimeBound,
-    Time,
     TimeBounds,
     TimeBoundValue
 } from "charts/utils/TimeBounds"
@@ -98,6 +92,9 @@ import { DataTableTransform } from "charts/dataTable/DataTableTransform"
 import { getWindowQueryParams } from "utils/client/url"
 import { populationMap } from "owidTable/PopulationMap"
 import { OwidSource } from "owidTable/OwidSource"
+import { ChartScript } from "./ChartScript"
+
+export { ChartScript }
 
 export interface SourceWithDimension {
     source: OwidSource
@@ -209,121 +206,21 @@ export class DimensionSlot {
     }
 }
 
-// This configuration represents the entire persistent state of a grapher chart
-// Ideally, this is also all of the interaction state: when a chart is saved and loaded again
-// under the same rendering conditions it ought to remain visually identical
-export class ChartConfigProps {
-    constructor(initial?: Partial<ChartConfigProps>) {
-        if (initial) {
-            for (const key in this) {
-                if (key in initial) {
-                    ;(this as any)[key] = (initial as any)[key]
-                }
-            }
-        }
-    }
-
-    @observable.ref type: ChartTypeName = "LineChart"
-    @observable.ref isExplorable: boolean = false
-
-    @observable.ref id?: number = undefined
-    @observable.ref createdAt?: Date = undefined
-    @observable.ref updatedAt?: Date = undefined
-    @observable.ref lastEditedByUserId?: number = undefined
-    @observable.ref version: number = 1
-
-    @observable.ref slug?: string = undefined
-    @observable.ref title?: string = undefined
-    @observable.ref subtitle?: string = undefined
-    @observable.ref sourceDesc?: string = undefined
-    @observable.ref note?: string = undefined
-    @observable.ref hideTitleAnnotation?: true = undefined
-
-    @observable.ref xAxis: AxisConfig = new AxisConfig()
-    @observable.ref yAxis: AxisConfig = new AxisConfig()
-
-    // TODO: These 2 are currently in development. Do not save to DB.
-    @observable.ref externalDataUrl?: string = undefined
-    @observable.ref owidDataset?: OwidVariablesAndEntityKey = undefined
-
-    // Todo: remove once we migrate to all tables
-    useV2?: boolean = false
-
-    @observable.ref selectedData: EntitySelection[] = []
-    @observable.ref minTime?: TimeBound = undefined
-    @observable.ref maxTime?: TimeBound = undefined
-
-    @observable.ref timelineMinTime?: Time = undefined
-    @observable.ref timelineMaxTime?: Time = undefined
-
-    @observable.ref dimensions: ChartDimensionSpec[] = []
-    @observable.ref addCountryMode?:
-        | "add-country"
-        | "change-country"
-        | "disabled" = undefined
-
-    @observable comparisonLines?: ComparisonLineConfig[] = undefined
-    @observable.ref highlightToggle?: HighlightToggleConfig = undefined
-    @observable.ref stackMode: StackMode = "absolute"
-    @observable.ref hideLegend?: true = undefined
-    @observable.ref logo?: LogoOption = undefined
-    @observable.ref hideLogo?: boolean = undefined
-    @observable.ref hideRelativeToggle?: boolean = true
-    @observable.ref entityType?: string = undefined
-    @observable.ref entityTypePlural?: string = undefined
-    @observable.ref hideTimeline?: true = undefined
-    @observable.ref zoomToSelection?: true = undefined
-    @observable.ref minPopulationFilter?: number = undefined
-
-    // Always show year in labels for bar charts
-    @observable.ref showYearLabels?: boolean = undefined
-
-    @observable.ref hasChartTab: boolean = true
-    @observable.ref hasMapTab: boolean = false
-    @observable.ref tab: ChartTabOption = "chart"
-    @observable.ref overlay?: ChartTabOption = undefined
-
-    @observable relatedQuestions?: RelatedQuestionsConfig[]
-    @observable.ref internalNotes?: string = undefined
-    @observable.ref variantName?: string = undefined
-    @observable.ref originUrl?: string = undefined
-    @observable.ref isPublished?: true = undefined
-
-    @observable.ref baseColorScheme?: string = undefined
-    @observable.ref invertColorScheme?: true = undefined
-
-    // SCATTERPLOT-SPECIFIC OPTIONS
-
-    @observable colorScale: ColorScaleConfigProps = new ColorScaleConfigProps()
-
-    @observable.ref hideLinesOutsideTolerance?: true = undefined
-
-    // Hides lines between points when timeline spans multiple years. Requested by core-econ for certain charts
-    @observable hideConnectedScatterLines?: boolean = undefined
-    @observable
-    scatterPointLabelStrategy?: ScatterPointLabelStrategy = undefined
-    @observable.ref compareEndPointsOnly?: true = undefined
-    @observable.ref matchingEntitiesOnly?: true = undefined
-    @observable excludedEntities?: number[] = undefined
-
-    @observable map: MapConfig = new MapConfig()
-
-    data?: { availableEntities: string[] } = undefined
-}
-
 // TODO: this really represents more than just the configuration state and should be split
 // into multiple components. It's sort of the top-level chart state.
 export class ChartConfig {
     /** Stores the current chart state. Can be modified to change the chart. */
-    props: ChartConfigProps = new ChartConfigProps()
+    props: ChartScript = new ChartScript()
 
-    private origPropsRaw: Readonly<ChartConfigProps>
+    @observable map: MapConfig = new MapConfig()
+
+    private origPropsRaw: Readonly<ChartScript>
 
     /**
      * The original chart props as they are stored in the database. Useful for deriving the URL
      * parameters that need to be applied to reach the current state.
      */
-    @computed get origProps(): Readonly<ChartConfigProps> {
+    @computed get origProps(): Readonly<ChartScript> {
         if (typeof App !== "undefined" && App.isEditor) {
             // In the editor, the current chart state is always the "original" state
             return toJS(this.props)
@@ -332,13 +229,13 @@ export class ChartConfig {
         }
     }
 
-    private initialPropsRaw: Readonly<ChartConfigProps>
+    private initialPropsRaw: Readonly<ChartScript>
 
     /**
      * The chart props after consuming the initial URL parameters but before any user-triggered
      * changes. Helpful for "resetting" embeds to their initial state.
      */
-    @computed get initialProps(): Readonly<ChartConfigProps> {
+    @computed get initialProps(): Readonly<ChartScript> {
         if (typeof App !== "undefined" && App.isEditor) {
             // In the editor, the current chart state is always the "initial" state
             return toJS(this.props)
@@ -565,7 +462,7 @@ export class ChartConfig {
     }
 
     constructor(
-        props?: ChartConfigProps,
+        props?: ChartScript,
         options: {
             isEmbed?: boolean
             isMediaCard?: boolean
@@ -639,11 +536,6 @@ export class ChartConfig {
             autorun(() => {
                 if (!this.availableTabs.includes(this.props.tab)) {
                     runInAction(() => (this.props.tab = this.availableTabs[0]))
-                }
-            }),
-            autorun(() => {
-                if (this.props.hasMapTab && !this.props.map) {
-                    runInAction(() => (this.props.map = new MapConfig()))
                 }
             }),
             autorun(() => {
@@ -770,13 +662,8 @@ export class ChartConfig {
         this.props.maxTime = value[1]
     }
 
-    @computed get xAxisConfig() {
-        return this.props.xAxis
-    }
-
-    @computed get yAxisConfig() {
-        return this.props.yAxis
-    }
+    @observable xAxisConfig = new AxisConfig()
+    @observable yAxisConfig = new AxisConfig()
 
     // Get the dimension slots appropriate for this type of chart
     @computed get dimensionSlots(): DimensionSlot[] {
@@ -874,14 +761,17 @@ export class ChartConfig {
         this.props.maxTime = maxTimeFromJSON(json.maxTime)
 
         if (json.map) {
-            this.props.map = new MapConfig({
+            this.map = new MapConfig({
                 ...json.map,
                 targetYear: maxTimeFromJSON(json.map.targetYear)
             })
         }
 
-        extend(this.props.xAxis, json["xAxis"])
-        extend(this.props.yAxis, json["yAxis"])
+        //
+        extend(this.xAxisConfig, json["xAxis"])
+        extend(this.yAxisConfig, json["yAxis"])
+
+        extend(this.colorScale, json["colorScale"])
 
         this.props.dimensions = (json.dimensions || []).map(
             (dimSpec: ChartDimensionInterface) =>
@@ -1089,8 +979,8 @@ export class ChartConfig {
         json.minTime = minTimeToJSON(this.props.minTime)
         json.maxTime = maxTimeToJSON(this.props.maxTime)
 
-        if (this.props.map) {
-            json.map.targetYear = maxTimeToJSON(this.props.map.targetYear)
+        if (this.map) {
+            json.map.targetYear = maxTimeToJSON(this.map.targetYear)
         }
 
         return json
@@ -1153,7 +1043,9 @@ export class ChartConfig {
         )
     }
 
-    @computed get colorScale() {
+    @observable colorScale: ColorScaleConfigProps = new ColorScaleConfigProps()
+
+    @computed get activeColorScale() {
         return this.activeTransform.colorScale
     }
 

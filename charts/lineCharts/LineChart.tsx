@@ -22,7 +22,7 @@ import { Bounds } from "charts/utils/Bounds"
 import { AxisBox, AxisBoxView } from "charts/axis/AxisBox"
 import { AxisScale } from "charts/axis/AxisScale"
 import { Vector2 } from "charts/utils/Vector2"
-import { LineLabelsHelper, LineLabel, LineLabelsComponent } from "./LineLabels"
+import { LineLabelsHelper, LineLabelsComponent } from "./LineLabels"
 import {
     ComparisonLine,
     ComparisonLineConfig
@@ -32,7 +32,6 @@ import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { extent } from "d3-array"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { LineChartTransform } from "./LineChartTransform"
-import { AxisConfig } from "charts/axis/AxisSpec"
 
 export interface LineChartValue {
     x: number

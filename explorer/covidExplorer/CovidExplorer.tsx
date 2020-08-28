@@ -3,7 +3,7 @@ import classnames from "classnames"
 import ReactDOM from "react-dom"
 import { ChartView } from "charts/core/ChartView"
 import { Bounds } from "charts/utils/Bounds"
-import { ChartConfig, ChartConfigProps } from "charts/core/ChartConfig"
+import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
 import { faChartLine } from "@fortawesome/free-solid-svg-icons/faChartLine"
 import {
     computed,
@@ -831,8 +831,7 @@ export class CovidExplorer extends React.Component<{
     }
 
     private _updateColorScale() {
-        const chartProps = this.chart.props
-        chartProps.colorScale = this.colorScales[
+        this.chart.colorScale = this.colorScales[
             this.constrainedParams.colorStrategy
         ]
     }
@@ -841,24 +840,21 @@ export class CovidExplorer extends React.Component<{
         return (sourceCharts as any)[this.constrainedParams.sourceChartKey]
     }
 
-    @computed get sourceChart(): ChartConfigProps | undefined {
+    @computed get sourceChart(): ChartScript | undefined {
         return this.props.covidChartAndVariableMeta.charts[this.sourceChartId]
     }
 
     private _updateMap() {
-        const chartProps = this.chart.props
-        const region = chartProps.map.projection
+        const map = this.chart.map
+        const region = map.projection
 
-        Object.assign(
-            chartProps.map,
-            this.sourceChart?.map || this.defaultMapConfig
-        )
+        Object.assign(map, this.sourceChart?.map || this.defaultMapConfig)
 
-        chartProps.map.targetYear = undefined
-        chartProps.map.variableId = this.yColumn.spec.owidVariableId
+        map.targetYear = undefined
+        map.variableId = this.yColumn.spec.owidVariableId
 
         // Preserve region
-        if (region) chartProps.map.projection = region
+        if (region) map.projection = region
     }
 
     componentDidMount() {
@@ -893,10 +889,11 @@ export class CovidExplorer extends React.Component<{
     }
 
     @action.bound playDefaultViewCommand() {
+        // todo: Should  just be "coronaDefaultView"
         const props = this.chart.props
         props.tab = "chart"
-        props.xAxis.scaleType = ScaleType.linear
-        props.yAxis.scaleType = ScaleType.log
+        this.chart.xAxisConfig.scaleType = ScaleType.linear
+        this.chart.yAxisConfig.scaleType = ScaleType.log
         this.chart.timeDomain = [
             TimeBoundValue.unboundedLeft,
             TimeBoundValue.unboundedRight

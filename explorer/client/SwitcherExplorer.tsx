@@ -1,7 +1,7 @@
 import React from "react"
 import { observer } from "mobx-react"
 import { action, observable, when, reaction, autorun } from "mobx"
-import { ChartConfig, ChartConfigProps } from "charts/core/ChartConfig"
+import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
 import { uniq } from "charts/utils/Util"
 import { ExplorerControlPanel } from "explorer/client/ExplorerControls"
 import { ExtendedChartUrl } from "charts/core/ChartUrl"
@@ -16,13 +16,13 @@ declare type chartId = number
 export interface SwitcherBootstrapProps {
     explorerProgramCode: string
     slug: string
-    chartConfigs: ChartConfigProps[]
+    chartConfigs: ChartScript[]
     bindToWindow: boolean
 }
 
 @observer
 export class SwitcherExplorer extends React.Component<{
-    chartConfigs: Map<chartId, ChartConfigProps>
+    chartConfigs: Map<chartId, ChartScript>
     program: ExplorerProgram
     bindToWindow: boolean
 }> {
@@ -35,7 +35,7 @@ export class SwitcherExplorer extends React.Component<{
             explorerProgramCode,
             window.location.search
         )
-        const chartConfigsMap: Map<number, ChartConfigProps> = new Map()
+        const chartConfigsMap: Map<number, ChartScript> = new Map()
         chartConfigs.forEach(config => chartConfigsMap.set(config.id!, config))
 
         return ReactDOM.render(
@@ -97,8 +97,7 @@ export class SwitcherExplorer extends React.Component<{
         const params = this._chart
             ? this._chart.url.params
             : strToQueryParams(this.props.program.queryString)
-        const props =
-            this.props.chartConfigs.get(newId) || new ChartConfigProps()
+        const props = this.props.chartConfigs.get(newId) || new ChartScript()
 
         this._chart = new ChartConfig(props)
         this._chart.url.populateFromQueryParams(params)

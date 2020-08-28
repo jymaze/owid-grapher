@@ -1,16 +1,14 @@
 import { observable, computed, autorun, IReactionDisposer, action } from "mobx"
 
 import { ChartType, ChartTypeName } from "charts/core/ChartConstants"
-import { ChartConfig, ChartConfigProps } from "charts/core/ChartConfig"
+import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
 import { ExploreUrl } from "./ExploreUrl"
 import { RootStore, StoreEntry } from "./Store"
 import { Indicator } from "./Indicator"
 
 export type ExplorerChartType = ChartTypeName | "WorldMap"
 
-function chartConfigFromIndicator(
-    indicator: Indicator
-): Partial<ChartConfigProps> {
+function chartConfigFromIndicator(indicator: Indicator): Partial<ChartScript> {
     return {
         ...indicator,
         // TODO need to derive selected data from ExploreModel, since selections
