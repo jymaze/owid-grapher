@@ -47,11 +47,9 @@ export class AxisConfig {
     }
 
     @computed get scaleTypeOptions(): ScaleType[] {
-        if (this.canChangeScaleType) {
-            return [ScaleType.linear, ScaleType.log]
-        } else {
-            return [this.scaleType]
-        }
+        return this.canChangeScaleType
+            ? [ScaleType.linear, ScaleType.log]
+            : [this.scaleType]
     }
 
     // Convert axis configuration to a finalized axis spec by supplying

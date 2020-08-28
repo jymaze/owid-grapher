@@ -42,7 +42,7 @@ export class ScatterTransform extends ChartTransform {
         const that = this
         return new ColorScale({
             get config() {
-                return that.chart.props.colorScale
+                return that.chart.colorScale
             },
             get defaultBaseColorScheme() {
                 return "continents"

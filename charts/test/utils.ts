@@ -1,10 +1,10 @@
-import { ChartConfig, ChartConfigProps } from "charts/core/ChartConfig"
+import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
 
 import * as fixtures from "./fixtures"
 import { first } from "lodash"
 
-export function createConfig(props?: Partial<ChartConfigProps>) {
-    const config = new ChartConfig(new ChartConfigProps(props))
+export function createConfig(props?: Partial<ChartScript>) {
+    const config = new ChartConfig(new ChartScript(props))
     // ensureValidConfig() is only run on non-node environments, so we have
     // to manually trigger it.
     config.ensureValidConfig()
@@ -14,14 +14,14 @@ export function createConfig(props?: Partial<ChartConfigProps>) {
 export function setupChart(
     id: number,
     varIds: number[],
-    configOverrides?: Partial<ChartConfigProps>
+    configOverrides?: Partial<ChartScript>
 ) {
     const variableSet =
         varIds.length > 1
             ? fixtures.readVariableSet(varIds)
             : fixtures.readVariable(first(varIds) as number)
 
-    const props = new ChartConfigProps({
+    const props = new ChartScript({
         ...fixtures.readChart(id),
         ...configOverrides,
         owidDataset: variableSet

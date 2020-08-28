@@ -140,11 +140,11 @@ export class ChartUrl implements ObservableUrl {
             chart.props.tab === origChartProps.tab ? undefined : chart.props.tab
         //params.overlay = chart.props.overlay === origChartProps.overlay ? undefined : chart.props.overlay
         params.xScale =
-            chart.props.xAxis.scaleType === origChartProps.xAxis.scaleType
+            chart.xAxisConfig.scaleType === origChartProps.xAxis.scaleType
                 ? undefined
                 : chart.xAxisConfig.scaleType
         params.yScale =
-            chart.props.yAxis.scaleType === origChartProps.yAxis.scaleType
+            chart.yAxisConfig.scaleType === origChartProps.yAxis.scaleType
                 ? undefined
                 : chart.yAxisConfig.scaleType
         params.stackMode =
@@ -174,11 +174,11 @@ export class ChartUrl implements ObservableUrl {
         params.country = this.countryParam
 
         if (
-            chart.props.map &&
+            chart.map &&
             origChartProps.map &&
-            chart.props.map.projection !== origChartProps.map.projection
+            chart.map.projection !== origChartProps.map.projection
         )
-            params.region = chart.props.map.projection
+            params.region = chart.map.projection
 
         return params
     }
@@ -359,18 +359,18 @@ export class ChartUrl implements ObservableUrl {
 
         // Map stuff below
 
-        if (chart.props.map) {
+        if (chart.map) {
             if (params.year) {
                 const year = parseTimeURIComponent(
                     params.year,
                     TimeBoundValue.unboundedRight
                 )
-                chart.props.map.targetYear = year
+                chart.map.targetYear = year
             }
 
             const region = params.region
             if (region !== undefined) {
-                chart.props.map.projection = region as MapProjection
+                chart.map.projection = region as MapProjection
             }
         }
 

@@ -6,7 +6,7 @@ import copy from "copy-to-clipboard"
 
 import {
     ChartConfig,
-    ChartConfigProps,
+    ChartScript,
     HighlightToggleConfig
 } from "charts/core/ChartConfig"
 import { getQueryParams, getWindowQueryParams } from "utils/client/url"
@@ -364,7 +364,7 @@ class AbsRelToggle extends React.Component<{ chart: ChartConfig }> {
 
 @observer
 class ZoomToggle extends React.Component<{
-    chart: ChartConfigProps
+    chart: ChartScript
 }> {
     @action.bound onToggle() {
         this.props.chart.zoomToSelection = this.props.chart.zoomToSelection
