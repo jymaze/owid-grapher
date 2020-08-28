@@ -674,9 +674,6 @@ export class AddEntityButton extends React.Component<{
     label: string
     onClick: () => void
 }> {
-    static contextType = ChartViewContext
-    context!: ChartViewContextType
-
     static defaultProps = {
         align: "left",
         verticalAlign: "bottom",

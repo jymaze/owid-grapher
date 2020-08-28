@@ -324,7 +324,9 @@ export class DiscreteBarChart extends React.Component<{
                     fill="rgba(255,255,255,0)"
                 />
                 <HorizontalAxisView
+                    maxX={this.chartView.tabBounds.width}
                     bounds={bounds}
+                    isInteractive={this.chart.isInteractive}
                     axis={xAxis}
                     onScaleTypeChange={
                         this.chart.yAxis.canChangeScaleType

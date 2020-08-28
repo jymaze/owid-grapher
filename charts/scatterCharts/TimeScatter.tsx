@@ -640,6 +640,7 @@ export class TimeScatter extends React.Component<{
         return (
             <g>
                 <AxisBoxView
+                    isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     xAxisConfig={chart.xAxis.props}
                     yAxisConfig={chart.yAxis.props}

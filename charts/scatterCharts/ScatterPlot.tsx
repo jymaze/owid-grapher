@@ -336,6 +336,7 @@ export class ScatterPlot extends React.Component<{
         return (
             <g className="ScatterPlot">
                 <AxisBoxView
+                    isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     xAxisConfig={chart.xAxis.props}
                     yAxisConfig={chart.yAxis.props}

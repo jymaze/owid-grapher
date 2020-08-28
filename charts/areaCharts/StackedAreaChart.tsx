@@ -484,6 +484,7 @@ export class StackedAreaChart extends React.Component<{
                     </clipPath>
                 </defs>
                 <AxisBoxView
+                    isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={true}
                     xAxisConfig={chart.xAxis.props}

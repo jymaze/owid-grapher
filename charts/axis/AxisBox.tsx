@@ -264,6 +264,7 @@ interface AxisBoxViewProps {
     yAxisConfig: AxisConfigProps
     highlightValue?: { x: number; y: number }
     showTickMarks: boolean
+    isInteractive: boolean
 }
 
 @observer
@@ -272,31 +273,26 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
         requestAnimationFrame(this.props.axisBox.setupAnimation)
     }
 
-    @action.bound onXScaleChange(scaleType: ScaleType) {
-        this.props.xAxisConfig.scaleType = scaleType
-    }
-
-    @action.bound onYScaleChange(scaleType: ScaleType) {
-        this.props.yAxisConfig.scaleType = scaleType
-    }
-
     render() {
         const { axisBox, showTickMarks } = this.props
         const { bounds, xScale, yScale, xAxis, yAxis, innerBounds } = axisBox
 
+        const maxX = undefined // {chartView.tabBounds.width} todo
+
         return (
             <g className="AxisBoxView">
                 <HorizontalAxisView
+                    maxX={maxX}
                     bounds={bounds}
                     axisPosition={innerBounds.bottom}
                     axis={xAxis}
-                    onScaleTypeChange={this.onXScaleChange}
                     showTickMarks={showTickMarks}
+                    isInteractive={this.props.isInteractive}
                 />
                 <VerticalAxisView
                     bounds={bounds}
                     axis={yAxis}
-                    onScaleTypeChange={this.onYScaleChange}
+                    isInteractive={this.props.isInteractive}
                 />
                 {!yScale.hideGridlines && (
                     <AxisGridLines

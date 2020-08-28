@@ -117,10 +117,27 @@ export class VerticalAxis {
 export class VerticalAxisView extends React.Component<{
     bounds: Bounds
     axis: VerticalAxis
-    onScaleTypeChange?: (scale: ScaleType) => void
+    isInteractive: boolean
 }> {
+    @computed get controls() {
+        const { bounds, axis } = this.props
+        const { scale } = axis
+        const showControls =
+            this.props.isInteractive && scale.scaleTypeOptions.length > 1
+        if (!showControls) return undefined
+        return (
+            <ControlsOverlay id="vertical-scale-selector" paddingTop={18}>
+                <ScaleSelector
+                    x={bounds.left}
+                    y={bounds.top - 34}
+                    scaleTypeConfig={scale}
+                />
+            </ControlsOverlay>
+        )
+    }
+
     render() {
-        const { bounds, axis, onScaleTypeChange } = this.props
+        const { bounds, axis } = this.props
         const { scale, ticks, label, tickFormattingOptions } = axis
         const textColor = "#666"
 
@@ -145,20 +162,7 @@ export class VerticalAxisView extends React.Component<{
                         {scale.tickFormat(tick, tickFormattingOptions)}
                     </text>
                 ))}
-                {scale.scaleTypeOptions.length > 1 && onScaleTypeChange && (
-                    <ControlsOverlay
-                        id="vertical-scale-selector"
-                        paddingTop={18}
-                    >
-                        <ScaleSelector
-                            x={bounds.left}
-                            y={bounds.top - 34}
-                            scaleType={scale.scaleType}
-                            scaleTypeOptions={scale.scaleTypeOptions}
-                            onChange={onScaleTypeChange}
-                        />
-                    </ControlsOverlay>
-                )}
+                {this.controls}
             </g>
         )
     }
