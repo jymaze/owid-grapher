@@ -45,7 +45,7 @@ export class AxisBox {
         this.props = props
     }
 
-    @computed.struct get currentYDomain(): [number, number] {
+    @computed.struct private get currentYDomain(): [number, number] {
         if (this.animProgress === undefined) return this.props.yAxis.domain
 
         const [prevMinY, prevMaxY] = this.prevYDomain
@@ -64,7 +64,7 @@ export class AxisBox {
         ]
     }
 
-    @computed.struct get currentXDomain(): [number, number] {
+    @computed.struct private get currentXDomain(): [number, number] {
         if (this.animProgress === undefined) return this.props.xAxis.domain
 
         const [prevMinX, prevMaxX] = this.prevXDomain
@@ -101,7 +101,7 @@ export class AxisBox {
         )
     }
 
-    @action.bound frame(timestamp: number) {
+    @action.bound private frame(timestamp: number) {
         if (this.animProgress === undefined) return
 
         if (!this.frameStart) this.frameStart = timestamp
@@ -123,7 +123,7 @@ export class AxisBox {
     }
 
     // We calculate an initial width/height for the axes in isolation
-    @computed get xAxisHeight() {
+    @computed private get xAxisHeight() {
         return new HorizontalAxis({
             scale: new AxisScale(this.xAxisSpec).extend({
                 range: [0, this.props.bounds.width]
@@ -133,7 +133,7 @@ export class AxisBox {
         }).height
     }
 
-    @computed get yAxisWidth() {
+    @computed private get yAxisWidth() {
         return new VerticalAxis({
             scale: new AxisScale(this.yAxisSpec).extend({
                 range: [0, this.props.bounds.height]
