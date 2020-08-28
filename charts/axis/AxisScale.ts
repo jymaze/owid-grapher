@@ -58,14 +58,12 @@ export class AxisScale {
         this.hideGridlines = hideGridlines
     }
 
-    @computed private get d3_scaleConstructor(): any {
-        return this.scaleType === ScaleType.log ? scaleLog : scaleLinear
-    }
-
     @computed private get d3_scale():
         | ScaleLinear<number, number>
         | ScaleLogarithmic<number, number> {
-        return this.d3_scaleConstructor().domain(this.domain).range(this.range)
+        const d3Scale =
+            this.scaleType === ScaleType.log ? scaleLog : scaleLinear
+        return d3Scale().domain(this.domain).range(this.range)
     }
 
     @computed get rangeSize() {
@@ -82,7 +80,7 @@ export class AxisScale {
 
     // When this is a log axis, only show so many grid lines because otherwise the chart would get
     // too overwhelming. Different for mobile because screens are usually smaller.
-    @computed get maxLogLines() {
+    @computed private get maxLogLines() {
         return isMobile() ? 8 : 10
     }
 
