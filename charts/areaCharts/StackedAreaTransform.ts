@@ -25,10 +25,6 @@ import { Time } from "charts/utils/TimeBounds"
 // Responsible for translating chart configuration into the form
 // of a stacked area chart
 export class StackedAreaTransform extends ChartTransform {
-    @computed get isValidConfig(): boolean {
-        return this.hasYDimension
-    }
-
     @computed get failMessage(): string | undefined {
         const { filledDimensions } = this.chart
         if (!some(filledDimensions, d => d.property === "y"))
