@@ -162,7 +162,7 @@ export class AxisBox {
         })
     }
 
-    @computed get xAxis() {
+    @computed get horizontalAxis() {
         const that = this
         return new HorizontalAxis({
             get scale() {
@@ -177,7 +177,7 @@ export class AxisBox {
         })
     }
 
-    @computed get yAxis() {
+    @computed get verticalAxis() {
         const that = this
         return new VerticalAxis({
             get scale() {
@@ -275,7 +275,14 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
 
     render() {
         const { axisBox, showTickMarks } = this.props
-        const { bounds, xScale, yScale, xAxis, yAxis, innerBounds } = axisBox
+        const {
+            bounds,
+            xScale,
+            yScale,
+            horizontalAxis,
+            verticalAxis,
+            innerBounds
+        } = axisBox
 
         const maxX = undefined // {chartView.tabBounds.width} todo
 
@@ -285,13 +292,13 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
                     maxX={maxX}
                     bounds={bounds}
                     axisPosition={innerBounds.bottom}
-                    axis={xAxis}
+                    axis={horizontalAxis}
                     showTickMarks={showTickMarks}
                     isInteractive={this.props.isInteractive}
                 />
                 <VerticalAxisView
                     bounds={bounds}
-                    axis={yAxis}
+                    axis={verticalAxis}
                     isInteractive={this.props.isInteractive}
                 />
                 {!yScale.hideGridlines && (
