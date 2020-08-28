@@ -146,17 +146,33 @@ export class HorizontalAxisView extends React.Component<{
     bounds: Bounds
     axis: HorizontalAxis
     axisPosition: number
+    maxX?: number
     showTickMarks?: boolean
-    onScaleTypeChange?: (scale: ScaleType) => void
+    isInteractive: boolean
+    onScaleTypeChange?: (scaleType: ScaleType) => void
 }> {
+    @computed get controls() {
+        const { bounds, axis, onScaleTypeChange, maxX } = this.props
+        const { scale } = axis
+        const showControls =
+            this.props.isInteractive && scale.scaleTypeOptions.length > 1
+        if (!showControls) return undefined
+
+        return (
+            <ControlsOverlay id="horizontal-scale-selector" paddingBottom={10}>
+                <ScaleSelector
+                    maxX={maxX}
+                    x={bounds.right}
+                    y={bounds.bottom}
+                    scaleTypeConfig={scale}
+                    onScaleTypeChange={onScaleTypeChange}
+                />
+            </ControlsOverlay>
+        )
+    }
+
     render() {
-        const {
-            bounds,
-            axis,
-            onScaleTypeChange,
-            axisPosition,
-            showTickMarks
-        } = this.props
+        const { bounds, axis, axisPosition, showTickMarks } = this.props
         const { scale, ticks, label, labelOffset, tickFormattingOptions } = axis
         const textColor = "#666"
 
@@ -206,20 +222,7 @@ export class HorizontalAxisView extends React.Component<{
 
                     return element
                 })}
-                {scale.scaleTypeOptions.length > 1 && onScaleTypeChange && (
-                    <ControlsOverlay
-                        id="horizontal-scale-selector"
-                        paddingBottom={10}
-                    >
-                        <ScaleSelector
-                            x={bounds.right}
-                            y={bounds.bottom}
-                            scaleType={scale.scaleType}
-                            scaleTypeOptions={scale.scaleTypeOptions}
-                            onChange={onScaleTypeChange}
-                        />
-                    </ControlsOverlay>
-                )}
+                {this.controls}
             </g>
         )
     }

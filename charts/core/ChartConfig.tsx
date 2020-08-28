@@ -355,6 +355,10 @@ export class ChartConfig {
     @observable isPlaying: boolean = false
     @observable.ref isSelectingData: boolean = false
 
+    @computed get isInteractive() {
+        return !this.isExporting
+    }
+
     @action.bound toggleMinPopulationFilter() {
         this.props.minPopulationFilter = this.props.minPopulationFilter
             ? undefined

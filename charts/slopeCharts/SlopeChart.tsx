@@ -217,13 +217,10 @@ export class SlopeChart extends React.Component<{
             <g>
                 <LabelledSlopes
                     bounds={innerBounds}
+                    isInteractive={chart.isInteractive}
                     yDomain={yAxis.domain}
                     yTickFormat={this.transform.yTickFormat}
-                    yScaleType={yAxis.scaleType}
-                    yScaleTypeOptions={yAxis.scaleTypeOptions}
-                    onScaleTypeChange={scaleType => {
-                        chart.yAxis.scaleType = scaleType
-                    }}
+                    yAxisConfig={yAxis}
                     data={data}
                     fontSize={chart.baseFontSize}
                     focusKeys={focusKeys}

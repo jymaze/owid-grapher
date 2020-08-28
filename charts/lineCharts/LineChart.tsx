@@ -577,6 +577,7 @@ export class LineChart extends React.Component<{
                     </clipPath>
                 </defs>
                 <AxisBoxView
+                    isInteractive={this.transform.chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={true}
                     xAxisConfig={options.xAxisProps}

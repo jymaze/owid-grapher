@@ -456,7 +456,11 @@ export class StackedBarChart extends React.Component<{
                     opacity={0}
                     fill="rgba(255,255,255,0)"
                 />
-                <VerticalAxisView bounds={bounds} axis={yAxis} />
+                <VerticalAxisView
+                    bounds={bounds}
+                    axis={yAxis}
+                    isInteractive={this.chart.isInteractive}
+                />
                 <AxisGridLines
                     orient="left"
                     scale={yScale}

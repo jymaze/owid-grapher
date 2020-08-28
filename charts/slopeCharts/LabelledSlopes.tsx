@@ -36,7 +36,7 @@ import { Bounds } from "charts/utils/Bounds"
 import { Text } from "charts/text/Text"
 import { TextWrap } from "charts/text/TextWrap"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
-import { ScaleSelector } from "charts/controls/ScaleSelector"
+import { ScaleSelector, ScaleTypeConfig } from "charts/controls/ScaleSelector"
 import { ControlsOverlay } from "charts/controls/Controls"
 
 export interface SlopeChartValue {
@@ -285,11 +285,10 @@ class Slope extends React.Component<SlopeProps> {
 interface LabelledSlopesProps {
     bounds: Bounds
     data: SlopeChartSeries[]
+    isInteractive: boolean
     yDomain: [number | undefined, number | undefined]
     yTickFormat: (value: number) => string
-    yScaleType: ScaleType
-    yScaleTypeOptions: ScaleType[]
-    onScaleTypeChange: (scaleType: ScaleType) => void
+    yAxisConfig: ScaleTypeConfig
     fontSize: number
     focusKeys: string[]
     hoverKeys: string[]
@@ -350,10 +349,14 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
         )
     }
 
+    @computed get yScaleType() {
+        return this.props.yAxisConfig.scaleType
+    }
+
     @computed get yDomainDefault(): [number, number] {
         return domainExtent(
             this.allValues.map(v => v.y),
-            this.props.yScaleType
+            this.yScaleType
         )
     }
 
@@ -381,7 +384,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed get yScaleConstructor(): any {
-        return this.props.yScaleType === ScaleType.log ? scaleLog : scaleLinear
+        return this.yScaleType === ScaleType.log ? scaleLog : scaleLinear
     }
 
     @computed get yScale():
@@ -683,14 +686,25 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
         ))
     }
 
+    @computed get controls() {
+        const { yAxisConfig } = this.props
+        const showScaleSelector =
+            this.props.isInteractive && yAxisConfig.scaleTypeOptions.length > 1
+        if (!showScaleSelector) return undefined
+        return (
+            <ControlsOverlay id="slope-scale-selector" paddingTop={20}>
+                <ScaleSelector
+                    x={this.bounds.x}
+                    y={this.bounds.y - 35}
+                    scaleTypeConfig={yAxisConfig}
+                />
+            </ControlsOverlay>
+        )
+    }
+
     render() {
-        const {
-            yTickFormat,
-            yScaleType,
-            yScaleTypeOptions,
-            onScaleTypeChange,
-            fontSize
-        } = this.props
+        const { yTickFormat, fontSize } = this.props
+        const yScaleType = this.yScaleType
         const {
             bounds,
             slopeData,
@@ -760,17 +774,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
                 )}
                 <line x1={x1} y1={y1} x2={x1} y2={y2} stroke="#333" />
                 <line x1={x2} y1={y1} x2={x2} y2={y2} stroke="#333" />
-                {yScaleTypeOptions.length > 1 && (
-                    <ControlsOverlay id="slope-scale-selector" paddingTop={20}>
-                        <ScaleSelector
-                            x={bounds.x}
-                            y={bounds.y - 35}
-                            scaleType={yScaleType}
-                            scaleTypeOptions={yScaleTypeOptions}
-                            onChange={onScaleTypeChange}
-                        />
-                    </ControlsOverlay>
-                )}
+                {this.controls}
                 <Text
                     x={x1}
                     y={y1 + 10}
