@@ -242,7 +242,7 @@ export class ScatterPlot extends React.Component<{
         )
     }
 
-    @computed get axisBox() {
+    @computed private get axisBox() {
         const that = this
         return new AxisBox({
             get bounds() {
@@ -338,8 +338,6 @@ export class ScatterPlot extends React.Component<{
                 <AxisBoxView
                     isInteractive={chart.isInteractive}
                     axisBox={axisBox}
-                    xAxisConfig={chart.xAxis.props}
-                    yAxisConfig={chart.yAxis.props}
                     showTickMarks={false}
                 />
                 {comparisonLines &&

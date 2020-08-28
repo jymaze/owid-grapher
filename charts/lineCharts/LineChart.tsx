@@ -468,7 +468,7 @@ export class LineChart extends React.Component<{
         )
     }
 
-    @computed get axisBox() {
+    @computed private get axisBox() {
         const that = this
         return new AxisBox({
             get bounds() {
@@ -580,8 +580,6 @@ export class LineChart extends React.Component<{
                     isInteractive={this.transform.chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={true}
-                    xAxisConfig={options.xAxisProps}
-                    yAxisConfig={options.yAxisProps}
                 />
                 <g clipPath={`url(#boundsClip-${renderUid})`}>
                     {comparisonLines.map((line, i) => (

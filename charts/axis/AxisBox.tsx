@@ -260,8 +260,6 @@ export class AxisGridLines extends React.Component<AxisGridLinesProps> {
 
 interface AxisBoxViewProps {
     axisBox: AxisBox
-    xAxisConfig: AxisConfigProps
-    yAxisConfig: AxisConfigProps
     highlightValue?: { x: number; y: number }
     showTickMarks: boolean
     isInteractive: boolean
