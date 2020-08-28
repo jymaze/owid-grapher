@@ -1,7 +1,7 @@
 import React from "react"
 import { observer } from "mobx-react"
 import { action, observable, when, reaction, autorun } from "mobx"
-import { ChartConfig, ChartScript } from "charts/core/ChartConfig"
+import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
 import { uniq } from "charts/utils/Util"
 import { ExplorerControlPanel } from "explorer/client/ExplorerControls"
 import { ExtendedChartUrl } from "charts/core/ChartUrl"
@@ -51,7 +51,7 @@ export class SwitcherExplorer extends React.Component<{
     urlBinding?: UrlBinder
     private lastId = 0
 
-    @observable private _chart?: ChartConfig = undefined
+    @observable private _chart?: ChartRuntime = undefined
     @observable availableEntities: string[] = []
 
     get explorerRuntime() {
@@ -99,7 +99,7 @@ export class SwitcherExplorer extends React.Component<{
             : strToQueryParams(this.props.program.queryString)
         const props = this.props.chartConfigs.get(newId) || new ChartScript()
 
-        this._chart = new ChartConfig(props)
+        this._chart = new ChartRuntime(props)
         this._chart.url.populateFromQueryParams(params)
         this._chart.hideEntityControls =
             !this.explorerRuntime.hideControls && !this.isEmbed

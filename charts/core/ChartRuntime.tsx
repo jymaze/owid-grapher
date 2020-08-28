@@ -147,9 +147,9 @@ interface EntitySelection {
 export declare type ScatterPointLabelStrategy = "year" | "x" | "y"
 
 export class DimensionSlot {
-    chart: ChartConfig
+    chart: ChartRuntime
     property: dimensionProperty
-    constructor(chart: ChartConfig, property: dimensionProperty) {
+    constructor(chart: ChartRuntime, property: dimensionProperty) {
         this.chart = chart
         this.property = property
     }
@@ -208,7 +208,7 @@ export class DimensionSlot {
 
 // TODO: this really represents more than just the configuration state and should be split
 // into multiple components. It's sort of the top-level chart state.
-export class ChartConfig {
+export class ChartRuntime {
     /** Stores the current chart state. Can be modified to change the chart. */
     props: ChartScript = new ChartScript()
 

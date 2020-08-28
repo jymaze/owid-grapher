@@ -6,7 +6,7 @@
  */
 
 import { observable, computed, runInAction, when } from "mobx"
-import { ChartConfig } from "charts/core/ChartConfig"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { EditorFeatures } from "./EditorFeatures"
 import { Admin } from "./Admin"
 import { BAKED_GRAPHER_URL } from "settings"
@@ -68,7 +68,7 @@ export class EditorDatabase {
 
 interface ChartEditorProps {
     admin: Admin
-    chart: ChartConfig
+    chart: ChartRuntime
     database: EditorDatabase
     logs: Log[]
     references: PostReference[]
@@ -109,7 +109,7 @@ export class ChartEditor {
         return JSON.stringify(this.currentChartJson) !== this.savedChartConfig
     }
 
-    @computed get chart(): ChartConfig {
+    @computed get chart(): ChartRuntime {
         return this.props.chart
     }
 

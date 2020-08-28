@@ -20,7 +20,7 @@ import {
     ScaleType,
     StackMode
 } from "charts/core/ChartConstants"
-import { ChartConfig } from "./ChartConfig"
+import { ChartRuntime } from "./ChartRuntime"
 import {
     queryParamsToStr,
     strToQueryParams,
@@ -113,12 +113,12 @@ function parseTimeURIComponent(
 }
 
 export class ChartUrl implements ObservableUrl {
-    private chart: ChartConfig
+    private chart: ChartRuntime
     chartQueryStr: string = "?"
     mapQueryStr: string = "?"
     debounceMode: boolean = false
 
-    constructor(chart: ChartConfig, queryStr?: string) {
+    constructor(chart: ChartRuntime, queryStr?: string) {
         this.chart = chart
 
         if (queryStr !== undefined) {

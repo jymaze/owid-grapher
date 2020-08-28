@@ -1,6 +1,6 @@
 #! /usr/bin/env yarn jest
 
-import { ChartScript } from "charts/core/ChartConfig"
+import { ChartScript } from "charts/core/ChartRuntime"
 import { TimeBoundValue, TimeBound, TimeBounds } from "charts/utils/TimeBounds"
 import { createConfig, setupChart } from "charts/test/utils"
 import { ChartUrl, ChartQueryParams } from "./ChartUrl"

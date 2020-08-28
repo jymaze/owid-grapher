@@ -2,7 +2,7 @@ import * as db from "db/db"
 import { renderToHtmlPage, JsonError } from "utils/server/serverUtil"
 import React from "react"
 import { CountriesIndexPage } from "./views/CountriesIndexPage"
-import { ChartScript } from "charts/core/ChartConfig"
+import { ChartScript } from "charts/core/ChartRuntime"
 import * as lodash from "lodash"
 import {
     CountryProfileIndicator,

@@ -3,17 +3,17 @@ import { extend, debounce } from "charts/utils/Util"
 import { observable, computed, action, toJS } from "mobx"
 import { observer } from "mobx-react"
 import {
-    ChartConfig,
+    ChartRuntime,
     HighlightToggleConfig,
     ScatterPointLabelStrategy
-} from "charts/core/ChartConfig"
+} from "charts/core/ChartRuntime"
 import { ComparisonLineConfig } from "charts/scatterCharts/ComparisonLine"
 import { Toggle, NumberField, SelectField, TextField, Section } from "./Forms"
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 @observer
-export class EditorScatterTab extends React.Component<{ chart: ChartConfig }> {
+export class EditorScatterTab extends React.Component<{ chart: ChartRuntime }> {
     @observable comparisonLine: ComparisonLineConfig = { yEquals: undefined }
     @observable highlightToggle: HighlightToggleConfig = {
         description: "",
@@ -24,7 +24,7 @@ export class EditorScatterTab extends React.Component<{ chart: ChartConfig }> {
         return !!this.props.chart.highlightToggle
     }
 
-    constructor(props: { chart: ChartConfig }) {
+    constructor(props: { chart: ChartRuntime }) {
         super(props)
         extend(this.highlightToggle, props.chart.highlightToggle)
     }

@@ -14,7 +14,7 @@ import {
 } from "./Forms"
 import { LogoOption } from "charts/core/Logos"
 import slugify from "slugify"
-import { RelatedQuestionsConfig } from "charts/core/ChartConfig"
+import { RelatedQuestionsConfig } from "charts/core/ChartRuntime"
 import { getErrorMessageRelatedQuestionUrl } from "charts/utils/Util"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus"
