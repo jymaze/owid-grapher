@@ -39,9 +39,12 @@ export abstract class ChartTransform implements IChartTransform {
         this.chart = chart
     }
 
-    abstract get isValidConfig(): boolean
+    // The most common check is just "does this have a yDimension"? So make it a default, and methods and override.
+    @computed get isValidConfig(): boolean {
+        return this.hasYDimension
+    }
 
-    @computed get hasYDimension() {
+    @computed protected get hasYDimension() {
         return some(this.chart.dimensions, d => d.property === "y")
     }
 

@@ -23,10 +23,6 @@ import { ColorScale } from "charts/color/ColorScale"
 // Responsible for translating chart configuration into the form
 // of a discrete bar chart
 export class StackedBarTransform extends ChartTransform {
-    @computed get isValidConfig(): boolean {
-        return this.hasYDimension
-    }
-
     @computed get failMessage(): string | undefined {
         const { filledDimensions } = this.chart
         if (!some(filledDimensions, d => d.property === "y"))
