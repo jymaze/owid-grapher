@@ -465,6 +465,7 @@ export class LineChart extends React.Component<{
         )
     }
 
+    // todo: Refactor
     @computed private get axisBox() {
         const that = this
         return new AxisBox({

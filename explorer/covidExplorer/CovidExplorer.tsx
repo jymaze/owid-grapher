@@ -893,8 +893,8 @@ export class CovidExplorer extends React.Component<{
         // todo: Should  just be "coronaDefaultView"
         const props = this.chart.script
         props.tab = "chart"
-        this.chart.xAxisConfig.scaleType = ScaleType.linear
-        this.chart.yAxisConfig.scaleType = ScaleType.log
+        this.chart.xAxisRuntime.scaleType = ScaleType.linear
+        this.chart.yAxisRuntime.scaleType = ScaleType.log
         this.chart.timeDomain = [
             TimeBoundValue.unboundedLeft,
             TimeBoundValue.unboundedRight

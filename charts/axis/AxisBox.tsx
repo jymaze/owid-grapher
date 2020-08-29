@@ -124,6 +124,7 @@ export class AxisBox {
         return extend({}, this.props.xAxisSpec, { domain: this.currentXDomain })
     }
 
+    // todo: Refactor
     // We calculate an initial width/height for the axes in isolation
     @computed private get xAxisHeight() {
         return new HorizontalAxis({
@@ -135,6 +136,7 @@ export class AxisBox {
         }).height
     }
 
+    // todo: Refactor
     @computed private get yAxisWidth() {
         return new VerticalAxis({
             scale: new AxisScale(this.yAxisSpec).clone({
@@ -152,18 +154,21 @@ export class AxisBox {
             .padLeft(this.yAxisWidth)
     }
 
+    // todo: Refactor
     @computed get xScale() {
         return new AxisScale(this.xAxisSpec).clone({
             range: this.innerBounds.xRange()
         })
     }
 
+    // todo: Refactor
     @computed get yScale() {
         return new AxisScale(this.yAxisSpec).clone({
             range: this.innerBounds.yRange()
         })
     }
 
+    // todo: Refactor
     @computed get horizontalAxis() {
         const that = this
         return new HorizontalAxis({
@@ -179,6 +184,7 @@ export class AxisBox {
         })
     }
 
+    // todo: Refactor
     @computed get verticalAxis() {
         const that = this
         return new VerticalAxis({

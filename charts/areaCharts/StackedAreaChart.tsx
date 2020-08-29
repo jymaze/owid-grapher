@@ -276,6 +276,7 @@ export class StackedAreaChart extends React.Component<{
         })
     }
 
+    // todo: Refactor
     @computed private get axisBox(): AxisBox {
         const { bounds, transform, legend, chart } = this
         const { xAxisSpec, yAxisSpec } = transform
