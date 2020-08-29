@@ -22,7 +22,7 @@ import { ChartTransform } from "charts/core/ChartTransform"
 import { ChartDimension } from "charts/core/ChartDimension"
 import { Time } from "charts/utils/TimeBounds"
 import { LineLabel } from "./LineLabels"
-import { entityName } from "owidTable/OwidTable"
+import { EntityName } from "owidTable/OwidTable"
 
 // Responsible for translating chart configuration into the form
 // of a line chart
@@ -153,7 +153,7 @@ export class LineChartTransform extends ChartTransform {
             ?.entityNameMap
     }
 
-    getAnnotationsForSeries(entityName: entityName) {
+    getAnnotationsForSeries(entityName: EntityName) {
         const annotationsMap = this.annotationsMap
         const annos = annotationsMap?.get(entityName)
         return annos ? Array.from(annos.values()).join(" & ") : undefined

@@ -10,7 +10,8 @@ declare var global: any
 global.window = { location: { search: "" } }
 global.App = { isEditor: false }
 
-import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 
 export async function getChartsAndRedirectsBySlug() {
     const { chartsBySlug, chartsById } = await getChartsBySlug()

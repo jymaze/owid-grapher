@@ -1,4 +1,5 @@
-import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 
 import * as fixtures from "./fixtures"
 import { first } from "lodash"

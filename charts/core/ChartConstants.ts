@@ -1,5 +1,4 @@
-// TODO make this a string enum in TypeScript 2.4
-import { keyBy } from "charts/utils/Util"
+import { keyBy } from "charts/utils/Util" // todo: remove
 
 export type ChartTypeName =
     | "LineChart"
@@ -96,4 +95,5 @@ export const ChartTypeDefs = [
     }
 ]
 
+// TODO make this a string enum in TypeScript 2.4
 export const ChartTypeDefsByKey = keyBy(ChartTypeDefs, e => e.key)

@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner } from "typeorm"
-import { ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
 import * as lodash from "lodash"
 
 function omitSaveToVariable(config: ChartScript): ChartScript {

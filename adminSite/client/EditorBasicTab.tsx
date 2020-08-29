@@ -3,7 +3,6 @@ import { observable, action, reaction, IReactionDisposer } from "mobx"
 import { observer } from "mobx-react"
 
 import { includes, sample, sampleSize } from "charts/utils/Util"
-import { DimensionSlot } from "charts/core/ChartRuntime"
 import { ChartTypeDefs, ChartTypeName } from "charts/core/ChartConstants"
 import { ChartDimension, ChartDimensionSpec } from "charts/core/ChartDimension"
 
@@ -12,6 +11,7 @@ import { ChartEditor } from "./ChartEditor"
 import { VariableSelector } from "./VariableSelector"
 import { DimensionCard } from "./DimensionCard"
 import { canBeExplorable } from "utils/charts"
+import { DimensionSlot } from "charts/core/DimensionSlot"
 
 @observer
 class DimensionSlotView extends React.Component<{

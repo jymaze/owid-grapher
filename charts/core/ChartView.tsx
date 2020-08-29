@@ -6,7 +6,7 @@ import "d3-transition"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons/faExclamationTriangle"
 
-import { ChartRuntime, ChartScript } from "./ChartRuntime"
+import { ChartRuntime } from "./ChartRuntime"
 import {
     Controls,
     ControlsFooterView,
@@ -17,13 +17,7 @@ import { TableTab } from "charts/dataTable/TableTab"
 import { MapTab } from "charts/mapCharts/MapTab"
 import { SourcesTab } from "charts/sourcesTab/SourcesTab"
 import { DownloadTab } from "charts/downloadTab/DownloadTab"
-import {
-    VNode,
-    throttle,
-    isMobile,
-    isTouchDevice,
-    getCountryCodeFromNetlifyRedirect
-} from "charts/utils/Util"
+import { VNode, throttle, isMobile, isTouchDevice } from "charts/utils/Util"
 import { Bounds } from "charts/utils/Bounds"
 import { EntitySelectorModal } from "charts/controls/EntitySelectorModal"
 import { ChartViewContext } from "charts/core/ChartViewContext"
@@ -32,6 +26,7 @@ import { FullStory } from "site/client/FullStory"
 import { Analytics } from "site/client/Analytics"
 import { UrlBinder } from "charts/utils/UrlBinder"
 import { GlobalEntitySelection } from "site/client/global-entity/GlobalEntitySelection"
+import { ChartScript } from "./ChartScript"
 
 declare const window: any
 

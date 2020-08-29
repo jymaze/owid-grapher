@@ -34,7 +34,7 @@ import {
     EntriesForYearPage
 } from "./views/EntriesByYearPage"
 import { VariableCountryPage } from "./views/VariableCountryPage"
-import { ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
 import { FeedbackPage } from "./views/FeedbackPage"
 import { isExplorable, FORCE_EXPLORABLE_CHART_IDS } from "utils/charts"
 import { Indicator } from "explorer/indicatorExplorer/Indicator"
