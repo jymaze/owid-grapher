@@ -330,7 +330,7 @@ export class StackedBarChart extends React.Component<{
     }
 
     // Place ticks centered beneath the bars, before doing overlap detection
-    @computed get tickPlacements() {
+    @computed private get tickPlacements() {
         const { mapXValueToOffset, barWidth, axisBox } = this
         const { xValues } = this.transform
         const { xScale } = axisBox

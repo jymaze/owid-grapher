@@ -36,12 +36,13 @@ declare type TickFormatFunction = (
 ) => string
 
 // Represents the actual entered configuration state in the editor
-export interface AxisConfigInterface {
+export interface AxisUserOptions {
+    scaleType: ScaleType
+    label?: string
+
     min?: number
     max?: number
-    scaleType: ScaleType
     canChangeScaleType?: true
-    label?: string
     removePointsOutsideDomain?: true
 }
 
@@ -247,12 +248,12 @@ export class AxisScale implements AxisSpec {
     }
 }
 
-export class AxisRuntime implements AxisConfigInterface {
-    constructor(props?: AxisConfigInterface) {
+export class AxisRuntime implements AxisUserOptions {
+    constructor(props?: AxisUserOptions) {
         this.update(props)
     }
 
-    update(props?: AxisConfigInterface) {
+    update(props?: AxisUserOptions) {
         if (props) extend(this, props)
     }
 
