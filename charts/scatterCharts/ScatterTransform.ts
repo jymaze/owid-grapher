@@ -467,38 +467,27 @@ export class ScatterTransform extends ChartTransform {
         return this.yDimension && this.yDimension.displayName
     }
 
-    @computed get yAxisSpec() {
-        const {
-            chart,
-            yDomainDefault,
-            yDimension,
-            isRelativeMode,
-            yScaleType
-        } = this
+    @computed get yAxisView() {
+        const { chart, yDomainDefault, yDimension, isRelativeMode } = this
 
-        const props: Partial<AxisSpec> = {}
-        props.scaleType = yScaleType
-        const label = this.yAxisLabel
+        const view = chart.yAxisRuntime.toView().updateDomain(yDomainDefault)
+        view.tickFormat =
+            (yDimension && yDimension.formatValueShort) || view.tickFormat
+
         if (isRelativeMode) {
-            props.domain = yDomainDefault
-            props.scaleTypeOptions = [ScaleType.linear]
+            view.scaleTypeOptions = [ScaleType.linear]
+            const label = view.label
             if (label && label.length > 1) {
-                props.label =
+                view.label =
                     "Average annual change in " +
                     (label.charAt(1).match(/[A-Z]/)
                         ? label
                         : label.charAt(0).toLowerCase() + label.slice(1))
             }
-            props.tickFormat = (v: number) => formatValue(v, { unit: "%" })
-        } else {
-            props.label = label
-            props.tickFormat = yDimension && yDimension.formatValueShort
+            view.tickFormat = (v: number) => formatValue(v, { unit: "%" })
         }
 
-        return extend(
-            chart.yAxisRuntime.toSpec(yDomainDefault),
-            props
-        ) as AxisSpec
+        return view
     }
 
     @computed private get xScaleType(): ScaleType {
@@ -514,50 +503,46 @@ export class ScatterTransform extends ChartTransform {
         else return xDimName
     }
 
-    @computed get xAxisSpec() {
+    @computed get xAxisView() {
         const {
             chart,
             xDomainDefault,
             xDimension,
             isRelativeMode,
-            xScaleType,
             xAxisLabelBase
         } = this
 
-        const props: Partial<AxisSpec> = {}
-        props.scaleType = xScaleType
+        const view = chart.xAxisRuntime.toView().updateDomain(xDomainDefault)
         if (isRelativeMode) {
-            props.domain = xDomainDefault
-            props.scaleTypeOptions = [ScaleType.linear]
+            view.scaleTypeOptions = [ScaleType.linear]
             const label = chart.xAxisRuntime.label || xAxisLabelBase
             if (label && label.length > 1) {
-                props.label =
+                view.label =
                     "Average annual change in " +
                     (label.charAt(1).match(/[A-Z]/)
                         ? label
                         : label.charAt(0).toLowerCase() + label.slice(1))
             }
-            props.tickFormat = (v: number) => formatValue(v, { unit: "%" })
+            view.tickFormat = (v: number) => formatValue(v, { unit: "%" })
         } else {
-            props.label = chart.xAxisRuntime.label || xAxisLabelBase
-            props.tickFormat = xDimension && xDimension.formatValueShort
+            view.label =
+                chart.xAxisRuntime.label || xAxisLabelBase || view.label
+            view.tickFormat =
+                (xDimension && xDimension.formatValueShort) || view.tickFormat
         }
 
-        return extend(
-            chart.xAxisRuntime.toSpec(xDomainDefault),
-            props
-        ) as AxisSpec
+        return view
     }
 
     @computed get yFormatTooltip(): (d: number) => string {
         return this.isRelativeMode || !this.yDimension
-            ? this.yAxisSpec.tickFormat
+            ? this.yAxisView.tickFormat
             : this.yDimension.formatValueLong
     }
 
     @computed get xFormatTooltip(): (d: number) => string {
         return this.isRelativeMode || !this.xDimension
-            ? this.xAxisSpec.tickFormat
+            ? this.xAxisView.tickFormat
             : this.xDimension.formatValueLong
     }
 

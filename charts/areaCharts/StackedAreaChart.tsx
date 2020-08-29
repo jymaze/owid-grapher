@@ -283,7 +283,7 @@ export class StackedAreaChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox(): AxisBox {
-        const { bounds, legend, chart, xAxisSpec, yAxisSpec } = this
+        const { bounds, legend, chart, xAxisView: xAxisSpec, yAxisSpec } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
             fontSize: chart.baseFontSize,
@@ -292,14 +292,14 @@ export class StackedAreaChart extends React.Component<{
         })
     }
 
-    @computed private get xAxisSpec() {
+    @computed private get xAxisView() {
         const { xDomainDefault } = this.transform
         const chart = this.chart
-        return extend(chart.xAxisRuntime.toSpec(xDomainDefault), {
-            tickFormat: chart.formatYearFunction,
-            hideFractionalTicks: true,
-            hideGridlines: true
-        }) as AxisSpec
+        const view = chart.xAxisRuntime.toView().updateDomain(xDomainDefault)
+        view.tickFormat = chart.formatYearFunction as any
+        view.hideFractionalTicks = true
+        view.hideGridlines = true
+        return view
     }
 
     @computed private get yDomainDefault(): [number, number] {
@@ -310,18 +310,16 @@ export class StackedAreaChart extends React.Component<{
     @computed private get yAxisSpec() {
         const { isRelativeMode, yDimensionFirst } = this.transform
         const { chart, yDomainDefault } = this
-        const tickFormat = yDimensionFirst
+
+        const view = chart.yAxisRuntime.toView().updateDomain(
+            isRelativeMode ? [0, 100] : [yDomainDefault[0], yDomainDefault[1]] // Stacked area chart must have its own y domain)
+        )
+        view.tickFormat = isRelativeMode
+            ? (v: number) => formatValue(v, { unit: "%" })
+            : yDimensionFirst
             ? yDimensionFirst.formatValueShort
             : identity
-
-        return extend(chart.yAxisRuntime.toSpec(yDomainDefault), {
-            domain: isRelativeMode
-                ? [0, 100]
-                : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
-            tickFormat: isRelativeMode
-                ? (v: number) => formatValue(v, { unit: "%" })
-                : tickFormat
-        }) as AxisSpec
+        return view
     }
 
     @observable hoverIndex?: number

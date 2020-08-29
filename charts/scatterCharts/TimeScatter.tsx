@@ -163,12 +163,12 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
                     }}
                 >
                     <span>
-                        {transform.yAxisSpec.label}{" "}
+                        {transform.yAxisView.label}{" "}
                         <strong>{transform.yFormatTooltip(value.y)}</strong>
                     </span>
                     <br />
                     <span>
-                        {transform.xAxisSpec.label}{" "}
+                        {transform.xAxisView.label}{" "}
                         <strong>
                             {transform.xFormatTooltip(value.x)}
                             {!value.time.span && value.time.y !== value.time.x
@@ -610,10 +610,10 @@ export class TimeScatter extends React.Component<{
                 return that.chart.baseFontSize
             },
             get xAxisSpec() {
-                return that.transform.xAxisSpec
+                return that.transform.xAxisView
             },
             get yAxisSpec() {
-                return that.transform.yAxisSpec
+                return that.transform.yAxisView
             }
         })
     }
