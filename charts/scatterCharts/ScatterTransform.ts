@@ -28,7 +28,7 @@ import {
 import { computed } from "mobx"
 import { ChartDimension } from "charts/core/ChartDimension"
 import { ScatterSeries, ScatterValue } from "./PointsWithLabels"
-import { AxisSpec } from "charts/axis/AxisSpec"
+import { AxisSpec } from "charts/axis/AxisScale"
 import { ChartTransform } from "charts/core/ChartTransform"
 import { Time } from "charts/utils/TimeBounds"
 import { EntityDimensionKey, ScaleType } from "charts/core/ChartConstants"

@@ -16,7 +16,7 @@ import {
 } from "charts/utils/Util"
 import { EntityDimensionKey, ScaleType } from "charts/core/ChartConstants"
 import { LineChartSeries, LineChartValue } from "./LineChart"
-import { AxisSpec } from "charts/axis/AxisSpec"
+import { AxisSpec } from "charts/axis/AxisScale"
 import { ColorSchemes, ColorScheme } from "charts/color/ColorSchemes"
 import { ChartTransform } from "charts/core/ChartTransform"
 import { ChartDimension } from "charts/core/ChartDimension"

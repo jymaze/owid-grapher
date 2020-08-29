@@ -13,7 +13,7 @@ import {
     flatten
 } from "charts/utils/Util"
 import { StackedBarValue, StackedBarSeries } from "./StackedBarChart"
-import { AxisSpec } from "charts/axis/AxisSpec"
+import { AxisSpec } from "charts/axis/AxisScale"
 import { ChartTransform } from "charts/core/ChartTransform"
 import { ChartDimension } from "charts/core/ChartDimension"
 import { EntityDimensionKey } from "charts/core/ChartConstants"

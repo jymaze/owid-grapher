@@ -1,6 +1,6 @@
 import { computed } from "mobx"
 
-import { AxisSpec } from "charts/axis/AxisSpec"
+import { AxisSpec } from "charts/axis/AxisScale"
 import {
     Time,
     isUnboundedLeft,
