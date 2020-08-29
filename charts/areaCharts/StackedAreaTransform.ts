@@ -251,6 +251,13 @@ export class StackedAreaTransform extends ChartTransform {
         return find(this.chart.filledDimensions, d => d.property === "y")
     }
 
+    formatYTick(v: number) {
+        const tickFormat = this.yDimensionFirst
+            ? this.yDimensionFirst.formatValueShort
+            : identity
+        return tickFormat(v, { noTrailingZeroes: false })
+    }
+
     @computed get yAxisSpec() {
         const { chart, yDomainDefault, isRelativeMode, yDimensionFirst } = this
         const tickFormat = yDimensionFirst

@@ -392,9 +392,8 @@ export class StackedAreaChart extends React.Component<{
                                     <td style={{ textAlign: "right" }}>
                                         {value.isFake
                                             ? "No data"
-                                            : transform.yAxisSpec.tickFormat(
-                                                  value.origY as number,
-                                                  { noTrailingZeroes: false }
+                                            : transform.formatYTick(
+                                                  value.origY!
                                               )}
                                     </td>
                                 </tr>
@@ -415,12 +414,11 @@ export class StackedAreaChart extends React.Component<{
                                 <td style={{ textAlign: "right" }}>
                                     <span>
                                         <strong>
-                                            {transform.yAxisSpec.tickFormat(
+                                            {transform.formatYTick(
                                                 transform.stackedData[
                                                     transform.stackedData
                                                         .length - 1
-                                                ].values[hoverIndex].y,
-                                                { noTrailingZeroes: false }
+                                                ].values[hoverIndex].y
                                             )}
                                         </strong>
                                     </span>

@@ -306,10 +306,6 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
         return this.props.data
     }
 
-    @computed get yTickFormat(): (value: number) => string {
-        return this.props.yTickFormat
-    }
-
     @computed get bounds(): Bounds {
         return this.props.bounds
     }
@@ -418,9 +414,10 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
             xScale,
             yScale,
             sizeScale,
-            yTickFormat,
             maxLabelWidth
         } = this
+
+        const yTickFormat = this.props.yTickFormat
 
         const slopeData: SlopeProps[] = []
         const yDomain = yScale.domain()
