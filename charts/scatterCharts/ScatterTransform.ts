@@ -471,7 +471,9 @@ export class ScatterTransform extends ChartTransform {
             : this.chart.yAxisRuntime.scaleType
     }
 
-    @computed private get yAxisLabelBase(): string | undefined {
+    @computed private get yAxisLabel(): string | undefined {
+        if (this.chart.script.yAxis.label && this.chart.yAxisRuntime.label)
+            return this.chart.yAxisRuntime.label
         return this.yDimension && this.yDimension.displayName
     }
 
@@ -481,13 +483,12 @@ export class ScatterTransform extends ChartTransform {
             yDomainDefault,
             yDimension,
             isRelativeMode,
-            yScaleType,
-            yAxisLabelBase
+            yScaleType
         } = this
 
         const props: Partial<AxisSpec> = {}
         props.scaleType = yScaleType
-        const label = chart.yAxisRuntime.label ?? yAxisLabelBase
+        const label = this.yAxisLabel
         if (isRelativeMode) {
             props.domain = yDomainDefault
             props.scaleTypeOptions = [ScaleType.linear]

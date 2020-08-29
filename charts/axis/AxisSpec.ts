@@ -20,11 +20,13 @@ export interface AxisConfigInterface {
 }
 
 export interface AxisSpec {
-    label: string
-    tickFormat: (d: number, options?: TickFormattingOptions) => string
-    domain: [number, number]
     scaleType: ScaleType
     scaleTypeOptions: ScaleType[]
+
+    domain: [number, number]
+    label: string
+
+    tickFormat: (d: number, options?: TickFormattingOptions) => string
     hideFractionalTicks?: boolean
     hideGridlines?: boolean
 }
@@ -42,7 +44,7 @@ export class AxisRuntime implements AxisConfigInterface {
     @observable.ref max?: number = undefined
     @observable.ref scaleType: ScaleType = ScaleType.linear
     @observable.ref canChangeScaleType?: true = undefined
-    @observable label?: string = undefined
+    @observable label: string = ""
     @observable.ref removePointsOutsideDomain?: true = undefined
 
     // A log scale domain cannot have values <= 0, so we
@@ -72,15 +74,16 @@ export class AxisRuntime implements AxisConfigInterface {
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
     toSpec({ defaultDomain }: { defaultDomain: [number, number] }): AxisSpec {
+        const { label, scaleType, scaleTypeOptions } = this
         return {
-            label: this.label || "",
+            label,
             tickFormat: d => `${d}`,
             domain: [
                 Math.min(defaultTo(this.domain[0], Infinity), defaultDomain[0]),
                 Math.max(defaultTo(this.domain[1], -Infinity), defaultDomain[1])
             ],
-            scaleType: this.scaleType,
-            scaleTypeOptions: this.scaleTypeOptions
+            scaleType,
+            scaleTypeOptions
         }
     }
 }
