@@ -330,33 +330,23 @@ export class ScatterTransform extends ChartTransform {
         const chart = this.chart
         dataByEntityAndYear.forEach(dataByYear => {
             dataByYear.forEach((point, year) => {
-                const yAxisConfig = chart.yAxisRuntime
+                const yAxisRuntime = chart.yAxisRuntime
+                const xAxisRuntime = chart.xAxisRuntime
                 // Exclude any points with data for only one axis
-                if (!has(point, "x") || !has(point, "y")) {
+                if (!has(point, "x") || !has(point, "y"))
                     dataByYear.delete(year)
-                }
                 // Exclude points that go beyond min/max of X axis
                 else if (
-                    (chart.xAxisRuntime.removePointsOutsideDomain &&
-                        chart.xAxisRuntime.constrainedMin !== undefined &&
-                        point.x < chart.xAxisRuntime.constrainedMin) ||
-                    (chart.xAxisRuntime.removePointsOutsideDomain &&
-                        chart.xAxisRuntime.constrainedMax !== undefined &&
-                        point.x > chart.xAxisRuntime.constrainedMax)
-                ) {
+                    xAxisRuntime.removePointsOutsideDomain &&
+                    xAxisRuntime.isOutsideDomain(point.x)
+                )
                     dataByYear.delete(year)
-                }
                 // Exclude points that go beyond min/max of Y axis
                 else if (
-                    (yAxisConfig.removePointsOutsideDomain &&
-                        yAxisConfig.constrainedMin !== undefined &&
-                        point.y < yAxisConfig.constrainedMin) ||
-                    (yAxisConfig.removePointsOutsideDomain &&
-                        yAxisConfig.constrainedMax !== undefined &&
-                        point.y > yAxisConfig.constrainedMax)
-                ) {
+                    yAxisRuntime.removePointsOutsideDomain &&
+                    yAxisRuntime.isOutsideDomain(point.y)
+                )
                     dataByYear.delete(year)
-                }
             })
         })
     }
