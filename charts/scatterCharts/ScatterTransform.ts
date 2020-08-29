@@ -496,7 +496,7 @@ export class ScatterTransform extends ChartTransform {
         }
 
         return extend(
-            chart.yAxisRuntime.toSpec({ defaultDomain: yDomainDefault }),
+            chart.yAxisRuntime.toSpec(yDomainDefault),
             props
         ) as AxisSpec
     }
@@ -544,7 +544,7 @@ export class ScatterTransform extends ChartTransform {
         }
 
         return extend(
-            chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
+            chart.xAxisRuntime.toSpec(xDomainDefault),
             props
         ) as AxisSpec
     }

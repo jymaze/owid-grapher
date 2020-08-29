@@ -237,14 +237,11 @@ export class StackedAreaTransform extends ChartTransform {
 
     @computed get xAxisSpec() {
         const { chart, xDomainDefault } = this
-        return extend(
-            chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
-            {
-                tickFormat: chart.formatYearFunction,
-                hideFractionalTicks: true,
-                hideGridlines: true
-            }
-        ) as AxisSpec
+        return extend(chart.xAxisRuntime.toSpec(xDomainDefault), {
+            tickFormat: chart.formatYearFunction,
+            hideFractionalTicks: true,
+            hideGridlines: true
+        }) as AxisSpec
     }
 
     @computed private get yDimensionFirst() {
@@ -264,16 +261,13 @@ export class StackedAreaTransform extends ChartTransform {
             ? yDimensionFirst.formatValueShort
             : identity
 
-        return extend(
-            chart.yAxisRuntime.toSpec({ defaultDomain: yDomainDefault }),
-            {
-                domain: isRelativeMode
-                    ? [0, 100]
-                    : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
-                tickFormat: isRelativeMode
-                    ? (v: number) => formatValue(v, { unit: "%" })
-                    : tickFormat
-            }
-        ) as AxisSpec
+        return extend(chart.yAxisRuntime.toSpec(yDomainDefault), {
+            domain: isRelativeMode
+                ? [0, 100]
+                : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
+            tickFormat: isRelativeMode
+                ? (v: number) => formatValue(v, { unit: "%" })
+                : tickFormat
+        }) as AxisSpec
     }
 }

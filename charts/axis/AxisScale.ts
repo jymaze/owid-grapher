@@ -294,7 +294,7 @@ export class AxisRuntime implements AxisUserOptions {
 
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
-    toSpec({ defaultDomain }: { defaultDomain: [number, number] }) {
+    toSpec(defaultDomain: [number, number]) {
         const { label, scaleType, scaleTypeOptions } = this
         return {
             label,
