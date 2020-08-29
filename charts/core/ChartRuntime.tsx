@@ -125,26 +125,11 @@ const isNode: boolean =
 const isJsdom: boolean =
     typeof navigator === "object" && navigator.userAgent.includes("jsdom")
 
-export interface HighlightToggleConfig {
-    description: string
-    paramStr: string
-}
-
-export interface RelatedQuestionsConfig {
-    text: string
-    url: string
-}
-
 interface EntitySelection {
     entityId: number
     index: number // Which dimension the entity is from
     color?: Color
 }
-
-// When a user hovers over a connected series line in a ScatterPlot we show
-// a label for each point. By default that value will be from the "year" column
-// but by changing this option the column used for the x or y axis could be used instead.
-export declare type ScatterPointLabelStrategy = "year" | "x" | "y"
 
 export class DimensionSlot {
     chart: ChartRuntime

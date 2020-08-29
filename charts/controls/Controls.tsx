@@ -4,11 +4,7 @@ import { observer } from "mobx-react"
 import * as Cookies from "js-cookie"
 import copy from "copy-to-clipboard"
 
-import {
-    ChartRuntime,
-    ChartScript,
-    HighlightToggleConfig
-} from "charts/core/ChartRuntime"
+import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
 import { getQueryParams, getWindowQueryParams } from "utils/client/url"
 import { ChartView } from "charts/core/ChartView"
 import { Timeline } from "./Timeline"
@@ -34,6 +30,7 @@ import {
     ChartViewContextType
 } from "charts/core/ChartViewContext"
 import { TimeBound } from "../utils/TimeBounds"
+import { HighlightToggleConfig } from "charts/core/ChartConstants"
 
 @observer
 class EmbedMenu extends React.Component<{

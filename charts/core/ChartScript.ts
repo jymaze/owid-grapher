@@ -3,18 +3,16 @@ import {
     ChartTypeName,
     StackMode,
     ChartTabOption,
-    Color
+    ScatterPointLabelStrategy,
+    HighlightToggleConfig,
+    Color,
+    RelatedQuestionsConfig
 } from "./ChartConstants"
 import { AxisConfig } from "charts/axis/AxisSpec"
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
 import { TimeBound, Time } from "charts/utils/TimeBounds"
 import { ChartDimensionSpec } from "./ChartDimension"
 import { ComparisonLineConfig } from "charts/scatterCharts/ComparisonLine"
-import {
-    HighlightToggleConfig,
-    RelatedQuestionsConfig,
-    ScatterPointLabelStrategy
-} from "./ChartRuntime"
 import { LogoOption } from "./Logos"
 import { ColorScaleConfigProps } from "charts/color/ColorScaleConfig"
 import { MapConfig } from "charts/mapCharts/MapConfig"
