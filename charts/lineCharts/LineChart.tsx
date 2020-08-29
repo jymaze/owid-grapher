@@ -451,7 +451,7 @@ export class LineChart extends React.Component<{
                                     >
                                         {!value
                                             ? "No data"
-                                            : transform.yAxisSpec.tickFormat(
+                                            : transform.yAxisView.tickFormat(
                                                   value.y,
                                                   { noTrailingZeroes: false }
                                               )}
@@ -478,10 +478,10 @@ export class LineChart extends React.Component<{
                 return that.options.baseFontSize
             },
             get yAxisSpec() {
-                return that.transform.yAxisSpec
+                return that.transform.yAxisView
             },
-            get xAxisSpec() {
-                return that.transform.xAxisSpec
+            get xAxisView() {
+                return that.transform.xAxisView
             }
         })
     }

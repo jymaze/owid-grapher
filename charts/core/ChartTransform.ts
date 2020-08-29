@@ -1,6 +1,4 @@
 import { computed } from "mobx"
-
-import { AxisSpec } from "charts/axis/AxisScale"
 import {
     Time,
     isUnboundedLeft,
@@ -21,8 +19,6 @@ import { ColorScale } from "charts/color/ColorScale"
 
 export interface IChartTransform {
     isValidConfig: boolean
-    yAxis?: AxisSpec
-    xAxis?: AxisSpec
     selectableEntityDimensionKeys: EntityDimensionKey[]
     minTimelineYear: Time
     maxTimelineYear: Time
