@@ -274,7 +274,7 @@ interface LineChartOptions {
     baseFontSize: number
     showAddEntityControls: boolean
     comparisonLines: ComparisonLineConfig[]
-    formatYearFunction?: Function // todo: remove
+    formatYearFunction?: (year: number) => string // todo: remove
     isSelectingData: boolean
     canAddData: boolean
     entityType: string
