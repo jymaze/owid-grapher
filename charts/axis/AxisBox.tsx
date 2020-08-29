@@ -12,7 +12,7 @@ import * as React from "react"
 import { observable, computed, reaction, action } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisScale, AxisSpec } from "./AxisScale"
+import { AxisScale, AxisView } from "./AxisScale"
 import { ScaleType } from "charts/core/ChartConstants"
 import { extend, sortBy, maxBy, uniq } from "charts/utils/Util"
 import classNames from "classnames"
@@ -24,8 +24,8 @@ import { AxisTickMarks } from "./AxisTickMarks"
 interface AxisBoxProps {
     bounds: Bounds
     fontSize: number
-    xAxisSpec: AxisSpec
-    yAxisSpec: AxisSpec
+    xAxisView: AxisView
+    yAxisSpec: AxisView
 }
 
 // AxisBox has the important task of coordinating two axes so that they work together!
@@ -66,7 +66,7 @@ export class AxisBox {
     }
 
     @computed.struct private get currentXDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.xAxisSpec.domain
+        if (this.animProgress === undefined) return this.props.xAxisView.domain
 
         const [prevMinX, prevMaxX] = this.prevXDomain
         const [targetMinX, targetMaxX] = this.targetXDomain
@@ -74,7 +74,7 @@ export class AxisBox {
         // If we have a log axis and are animating from linear to log do not set domain min to 0
         const progress = this.animProgress
             ? this.animProgress
-            : this.props.xAxisSpec.scaleType === ScaleType.log
+            : this.props.xAxisView.scaleType === ScaleType.log
             ? 0.01
             : 0
 
@@ -86,16 +86,16 @@ export class AxisBox {
 
     @action.bound setupAnimation() {
         this.targetYDomain = this.props.yAxisSpec.domain
-        this.targetXDomain = this.props.xAxisSpec.domain
+        this.targetXDomain = this.props.xAxisView.domain
         this.animProgress = 1
 
         reaction(
-            () => [this.props.yAxisSpec.domain, this.props.xAxisSpec.domain],
+            () => [this.props.yAxisSpec.domain, this.props.xAxisView.domain],
             () => {
                 this.prevXDomain = this.currentXDomain
                 this.prevYDomain = this.currentYDomain
                 this.targetYDomain = this.props.yAxisSpec.domain
-                this.targetXDomain = this.props.xAxisSpec.domain
+                this.targetXDomain = this.props.xAxisView.domain
                 this.animProgress = 0
                 requestAnimationFrame(this.frame)
             }
@@ -122,7 +122,7 @@ export class AxisBox {
 
     // todo: Refactor
     @computed get xAxisSpec() {
-        return extend({}, this.props.xAxisSpec, { domain: this.currentXDomain })
+        return extend({}, this.props.xAxisView, { domain: this.currentXDomain })
     }
 
     // todo: Refactor

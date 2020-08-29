@@ -8,7 +8,6 @@ import {
     getRelativeMouse,
     makeSafeForCSS,
     minBy,
-    extend,
     max,
     identity,
     formatValue
@@ -29,7 +28,6 @@ import { select } from "d3-selection"
 import { easeLinear } from "d3-ease"
 import { rgb } from "d3-color"
 import { EntityDimensionKey } from "charts/core/ChartConstants" // todo: remove
-import { AxisSpec } from "charts/axis/AxisScale"
 
 export interface StackedAreaValue {
     x: number
@@ -287,7 +285,7 @@ export class StackedAreaChart extends React.Component<{
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
             fontSize: chart.baseFontSize,
-            xAxisSpec,
+            xAxisView: xAxisSpec,
             yAxisSpec
         })
     }

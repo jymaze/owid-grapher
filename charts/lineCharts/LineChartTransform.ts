@@ -8,7 +8,6 @@ import {
     identity,
     cloneDeep,
     clone,
-    defaultTo,
     formatValue,
     flatten,
     findIndex,
@@ -16,7 +15,6 @@ import {
 } from "charts/utils/Util"
 import { EntityDimensionKey, ScaleType } from "charts/core/ChartConstants"
 import { LineChartSeries, LineChartValue } from "./LineChart"
-import { AxisSpec } from "charts/axis/AxisScale"
 import { ColorSchemes, ColorScheme } from "charts/color/ColorSchemes"
 import { ChartTransform } from "charts/core/ChartTransform"
 import { ChartDimension } from "charts/core/ChartDimension"
@@ -187,17 +185,15 @@ export class LineChartTransform extends ChartTransform {
         })
     }
 
-    @computed get xAxisSpec(): AxisSpec {
+    @computed get xAxisView() {
         const { xDomain } = this
-        return {
-            label: this.chart.xAxisRuntime.label,
-            tickFormat: this.chart.formatYearTickFunction,
-            domain: xDomain,
-            scaleType: ScaleType.linear,
-            scaleTypeOptions: [ScaleType.linear],
-            hideFractionalTicks: true,
-            hideGridlines: true
-        }
+        const view = this.chart.xAxisRuntime.toView().updateDomain(xDomain)
+        view.scaleType = ScaleType.linear
+        view.scaleTypeOptions = [ScaleType.linear]
+        view.tickFormat = this.chart.formatYearTickFunction
+        view.hideFractionalTicks = true
+        view.hideGridlines = true
+        return view
     }
 
     @computed private get yDimensionFirst(): ChartDimension | undefined {
@@ -243,18 +239,14 @@ export class LineChartTransform extends ChartTransform {
         return this.allValues.every(val => val.y % 1 === 0)
     }
 
-    @computed get yAxisSpec(): AxisSpec {
-        const { chart, yDomain, yScaleType, yTickFormat, isRelativeMode } = this
-        return {
-            label: "",
-            tickFormat: yTickFormat,
-            domain: yDomain,
-            scaleType: yScaleType,
-            scaleTypeOptions: isRelativeMode
-                ? [ScaleType.linear]
-                : chart.yAxisRuntime.scaleTypeOptions,
-            hideFractionalTicks: this.yAxisHideFractionalTicks
-        }
+    @computed get yAxisView() {
+        const { chart, yDomain, yTickFormat, isRelativeMode } = this
+        const view = chart.yAxisRuntime.toView().updateDomain(yDomain)
+        if (isRelativeMode) view.scaleTypeOptions = [ScaleType.linear]
+        view.hideFractionalTicks = this.allValues.every(val => val.y % 1 === 0) // all y axis points are integral, don't show fractional ticks in that case
+        view.label = ""
+        view.tickFormat = yTickFormat
+        return view
     }
 
     @computed get canToggleRelativeMode(): boolean {
@@ -263,7 +255,7 @@ export class LineChartTransform extends ChartTransform {
 
     // Filter the data so it fits within the domains
     @computed get groupedData(): LineChartSeries[] {
-        const { xAxisSpec } = this
+        const { xAxisView: xAxisSpec } = this
         const groupedData = cloneDeep(this.predomainData)
 
         for (const g of groupedData) {

@@ -46,18 +46,7 @@ export interface AxisUserOptions {
     removePointsOutsideDomain?: true
 }
 
-export interface AxisSpec {
-    scaleType: ScaleType
-    scaleTypeOptions: ScaleType[]
-    label: string
-    domain: [number, number]
-
-    tickFormat: TickFormatFunction
-    hideFractionalTicks?: boolean
-    hideGridlines?: boolean
-}
-
-export class AxisScale implements AxisSpec {
+export class AxisScale {
     @observable scaleType: ScaleType
     @observable.struct scaleTypeOptions: ScaleType[]
     @observable tickFormat: TickFormatFunction
@@ -299,7 +288,7 @@ export class AxisRuntime implements AxisUserOptions {
     }
 }
 
-class AxisView {
+export class AxisView {
     runTime: AxisRuntime
     @observable.ref domain: [number, number]
     @observable tickFormat: TickFormatFunction = d => `${d}`
