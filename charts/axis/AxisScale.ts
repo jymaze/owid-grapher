@@ -23,9 +23,35 @@ interface Tickmark {
 interface AxisScaleOptions {
     scaleType?: ScaleType
     scaleTypeOptions?: ScaleType[]
-    tickFormat?: (v: number) => string
+    tickFormat?: TickFormatFunction
     domain: [number, number]
     range?: [number, number]
+    hideFractionalTicks?: boolean
+    hideGridlines?: boolean
+}
+
+declare type TickFormatFunction = (
+    v: number,
+    options?: TickFormattingOptions
+) => string
+
+// Represents the actual entered configuration state in the editor
+export interface AxisConfigInterface {
+    min?: number
+    max?: number
+    scaleType: ScaleType
+    canChangeScaleType?: true
+    label?: string
+    removePointsOutsideDomain?: true
+}
+
+export interface AxisSpec {
+    scaleType: ScaleType
+    scaleTypeOptions: ScaleType[]
+    label: string
+    domain: [number, number]
+
+    tickFormat: TickFormatFunction
     hideFractionalTicks?: boolean
     hideGridlines?: boolean
 }
@@ -33,10 +59,7 @@ interface AxisScaleOptions {
 export class AxisScale {
     @observable scaleType: ScaleType
     @observable.struct scaleTypeOptions: ScaleType[]
-    @observable tickFormat: (
-        v: number,
-        options?: TickFormattingOptions
-    ) => string
+    @observable tickFormat: TickFormatFunction
     @observable.struct domain: [number, number]
     @observable.struct range: [number, number]
     @observable hideFractionalTicks: boolean
@@ -221,27 +244,6 @@ export class AxisScale {
     clone(props: any) {
         return new AxisScale(extend(toJS(this), props))
     }
-}
-
-// Represents the actual entered configuration state in the editor
-export interface AxisConfigInterface {
-    min?: number
-    max?: number
-    scaleType: ScaleType
-    canChangeScaleType?: true
-    label?: string
-    removePointsOutsideDomain?: true
-}
-
-export interface AxisSpec {
-    scaleType: ScaleType
-    scaleTypeOptions: ScaleType[]
-    label: string
-    domain: [number, number]
-
-    tickFormat: (d: number, options?: TickFormattingOptions) => string
-    hideFractionalTicks?: boolean
-    hideGridlines?: boolean
 }
 
 export class AxisRuntime implements AxisConfigInterface {
