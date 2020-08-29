@@ -200,24 +200,24 @@ export class LineChartTransform extends ChartTransform {
         }
     }
 
-    @computed get yDimensionFirst(): ChartDimension | undefined {
+    @computed private get yDimensionFirst(): ChartDimension | undefined {
         return this.chart.filledDimensions.find(d => d.property === "y")
     }
 
-    @computed get yDomainDefault(): [number, number] {
+    @computed private get yDomainDefault(): [number, number] {
         const yValues = (this.chart.useTimelineDomains
             ? this.allValues
             : this.filteredValues
         ).map(v => v.y)
-        return [defaultTo(min(yValues), 0), defaultTo(max(yValues), 100)]
+        return [min(yValues) ?? 0, max(yValues) ?? 100]
     }
 
     @computed get yDomain(): [number, number] {
         const { chart, yDomainDefault } = this
         const domain = chart.yAxisRuntime.domain
         return [
-            Math.min(domain[0] ?? Infinity, yDomainDefault[0]),
-            Math.max(domain[1] ?? -Infinity, yDomainDefault[1])
+            Math.min(domain[0], yDomainDefault[0]),
+            Math.max(domain[1], yDomainDefault[1])
         ]
     }
 
