@@ -101,8 +101,8 @@ export class SlopeChart extends React.Component<{
 
     // Colors on the legend for which every matching group is focused
     @computed get focusColors(): string[] {
-        const { colorsInUse: legendColors, transform, chart } = this
-        return legendColors.filter(color => {
+        const { colorsInUse, transform, chart } = this
+        return colorsInUse.filter(color => {
             const matchingKeys = transform.data
                 .filter(g => g.color === color)
                 .map(g => g.entityDimensionKey)
