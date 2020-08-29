@@ -12,7 +12,7 @@ import * as React from "react"
 import { observable, computed, reaction, action } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisScale, AxisSpec, Tickmark } from "./AxisScale"
+import { AxisScale, AxisSpec } from "./AxisScale"
 import { ScaleType } from "charts/core/ChartConstants"
 import { extend, sortBy, maxBy, uniq } from "charts/utils/Util"
 import classNames from "classnames"
@@ -394,7 +394,7 @@ abstract class AbstractAxis {
         return 0.7 * this.props.fontSize
     }
 
-    @computed protected get baseTicks(): Tickmark[] {
+    @computed protected get baseTicks() {
         return this.scale.getTickValues().filter(tick => !tick.gridLineOnly)
     }
 
@@ -538,7 +538,7 @@ export class HorizontalAxis extends AbstractAxis {
         )
     }
 
-    @computed protected get baseTicks(): Tickmark[] {
+    @computed protected get baseTicks() {
         let ticks = this.scale
             .getTickValues()
             .filter(tick => !tick.gridLineOnly)

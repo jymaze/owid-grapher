@@ -12,7 +12,7 @@ import { observable, computed, toJS } from "mobx"
 import { extend, rollingMap, min, isMobile, uniq } from "charts/utils/Util"
 import { TickFormattingOptions, ScaleType } from "charts/core/ChartConstants"
 
-export interface Tickmark {
+interface Tickmark {
     value: number
     priority: number
     faint?: boolean
