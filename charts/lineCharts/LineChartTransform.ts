@@ -214,15 +214,10 @@ export class LineChartTransform extends ChartTransform {
 
     @computed get yDomain(): [number, number] {
         const { chart, yDomainDefault } = this
+        const domain = chart.yAxisRuntime.domain
         return [
-            Math.min(
-                defaultTo(chart.yAxisRuntime.domain[0], Infinity),
-                yDomainDefault[0]
-            ),
-            Math.max(
-                defaultTo(chart.yAxisRuntime.domain[1], -Infinity),
-                yDomainDefault[1]
-            )
+            Math.min(domain[0] ?? Infinity, yDomainDefault[0]),
+            Math.max(domain[1] ?? -Infinity, yDomainDefault[1])
         ]
     }
 

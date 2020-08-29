@@ -38,6 +38,7 @@ import { TextWrap } from "charts/text/TextWrap"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { ScaleSelector, ScaleTypeConfig } from "charts/controls/ScaleSelector"
 import { ControlsOverlay } from "charts/controls/Controls"
+import { AxisRuntime } from "charts/axis/AxisSpec"
 
 export interface SlopeChartValue {
     x: number
@@ -286,9 +287,8 @@ interface LabelledSlopesProps {
     bounds: Bounds
     data: SlopeChartSeries[]
     isInteractive: boolean
-    yDomain: [number | undefined, number | undefined]
     yTickFormat: (value: number) => string
-    yAxisConfig: ScaleTypeConfig
+    yAxisRuntime: AxisRuntime
     fontSize: number
     focusKeys: string[]
     hoverKeys: string[]
@@ -350,7 +350,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed get yScaleType() {
-        return this.props.yAxisConfig.scaleType
+        return this.props.yAxisRuntime.scaleType
     }
 
     @computed get yDomainDefault(): [number, number] {
@@ -365,14 +365,11 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed get yDomain(): [number, number] {
+        const domain = this.props.yAxisRuntime.domain
         return [
-            this.props.yDomain[0] === undefined
-                ? this.yDomainDefault[0]
-                : this.props.yDomain[0],
-            this.props.yDomain[1] === undefined
-                ? this.yDomainDefault[1]
-                : this.props.yDomain[1]
-        ] as [number, number]
+            domain[0] ?? this.yDomainDefault[0],
+            domain[1] ?? this.yDomainDefault[1]
+        ]
     }
 
     @computed get sizeScale(): ScaleLinear<number, number> {
@@ -687,16 +684,16 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed get controls() {
-        const { yAxisConfig } = this.props
+        const { yAxisRuntime } = this.props
         const showScaleSelector =
-            this.props.isInteractive && yAxisConfig.scaleTypeOptions.length > 1
+            this.props.isInteractive && yAxisRuntime.scaleTypeOptions.length > 1
         if (!showScaleSelector) return undefined
         return (
             <ControlsOverlay id="slope-scale-selector" paddingTop={20}>
                 <ScaleSelector
                     x={this.bounds.x}
                     y={this.bounds.y - 35}
-                    scaleTypeConfig={yAxisConfig}
+                    scaleTypeConfig={yAxisRuntime}
                 />
             </ControlsOverlay>
         )

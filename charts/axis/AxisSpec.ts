@@ -7,7 +7,7 @@
 
 import { ScaleType, TickFormattingOptions } from "charts/core/ChartConstants"
 import { observable, computed } from "mobx"
-import { defaultTo, extend } from "charts/utils/Util"
+import { extend } from "charts/utils/Util"
 
 // Represents the actual entered configuration state in the editor
 export interface AxisConfigInterface {
@@ -87,8 +87,8 @@ export class AxisRuntime implements AxisConfigInterface {
             label,
             tickFormat: d => `${d}`,
             domain: [
-                Math.min(defaultTo(this.domain[0], Infinity), defaultDomain[0]),
-                Math.max(defaultTo(this.domain[1], -Infinity), defaultDomain[1])
+                Math.min(this.domain[0] ?? Infinity, defaultDomain[0]),
+                Math.max(this.domain[1] ?? -Infinity, defaultDomain[1])
             ],
             scaleType,
             scaleTypeOptions
