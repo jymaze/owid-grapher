@@ -534,7 +534,9 @@ export class HorizontalAxis extends AbstractAxis {
     }
 
     @computed protected get baseTicks(): Tickmark[] {
-        let ticks = super.baseTicks
+        let ticks = this.scale
+            .getTickValues()
+            .filter(tick => !tick.gridLineOnly)
         const { domain } = this.scale
 
         // Make sure the start and end values are present, if they're whole numbers
