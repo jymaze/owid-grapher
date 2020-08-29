@@ -281,12 +281,12 @@ export class StackedAreaChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox(): AxisBox {
-        const { bounds, legend, chart, xAxisView: xAxisSpec, yAxisSpec } = this
+        const { bounds, legend, chart, xAxisView, yAxisView } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
             fontSize: chart.baseFontSize,
-            xAxisView: xAxisSpec,
-            yAxisSpec
+            xAxisView,
+            yAxisView
         })
     }
 
@@ -305,7 +305,7 @@ export class StackedAreaChart extends React.Component<{
         return [0, max(yValues) ?? 100]
     }
 
-    @computed private get yAxisSpec() {
+    @computed private get yAxisView() {
         const { isRelativeMode, yDimensionFirst } = this.transform
         const { chart, yDomainDefault } = this
 
