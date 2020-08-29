@@ -12,8 +12,11 @@ import {
     EntityDimensionKey,
     ScaleType
 } from "charts/core/ChartConstants"
-import { HorizontalAxis, HorizontalAxisView } from "charts/axis/HorizontalAxis"
-import { AxisGridLines } from "charts/axis/AxisBox"
+import {
+    AxisGridLines,
+    HorizontalAxis,
+    HorizontalAxisBox
+} from "charts/axis/AxisBox"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { ControlsOverlay, AddEntityButton } from "../controls/Controls"
 import { ChartView } from "charts/core/ChartView"
@@ -177,6 +180,9 @@ export class DiscreteBarChart extends React.Component<{
             get scale() {
                 return that.xScale
             },
+            get labelText() {
+                return ""
+            },
             get fontSize() {
                 return that.chart.baseFontSize
             }
@@ -323,7 +329,7 @@ export class DiscreteBarChart extends React.Component<{
                     opacity={0}
                     fill="rgba(255,255,255,0)"
                 />
-                <HorizontalAxisView
+                <HorizontalAxisBox
                     maxX={this.chartView.tabBounds.width}
                     bounds={bounds}
                     isInteractive={this.chart.isInteractive}
