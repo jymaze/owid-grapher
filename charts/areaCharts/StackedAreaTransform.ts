@@ -2,22 +2,17 @@ import { computed } from "mobx"
 import { scaleOrdinal } from "d3-scale"
 import {
     some,
-    max,
     sortBy,
     cloneDeep,
     sum,
-    extend,
     find,
     identity,
-    formatValue,
-    defaultTo,
     flatten,
     sortNumeric,
     uniq
 } from "charts/utils/Util"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { StackedAreaSeries, StackedAreaValue } from "./StackedAreaChart"
-import { AxisSpec } from "charts/axis/AxisScale"
 import { ColorSchemes, ColorScheme } from "charts/color/ColorSchemes"
 import { ChartTransform } from "charts/core/ChartTransform"
 import { Time } from "charts/utils/TimeBounds"
@@ -186,7 +181,7 @@ export class StackedAreaTransform extends ChartTransform {
             : (ColorSchemes["stackedAreaDefault"] as ColorScheme)
     }
 
-    @computed private get xDomainDefault(): [number, number] {
+    @computed get xDomainDefault(): [number, number] {
         return [this.startYear, this.endYear]
     }
 
@@ -226,25 +221,11 @@ export class StackedAreaTransform extends ChartTransform {
         return stackedData
     }
 
-    @computed private get allStackedValues(): StackedAreaValue[] {
+    @computed get allStackedValues(): StackedAreaValue[] {
         return flatten(this.stackedData.map(series => series.values))
     }
 
-    @computed private get yDomainDefault(): [number, number] {
-        const yValues = this.allStackedValues.map(d => d.y)
-        return [0, defaultTo(max(yValues), 100)]
-    }
-
-    @computed get xAxisSpec() {
-        const { chart, xDomainDefault } = this
-        return extend(chart.xAxisRuntime.toSpec(xDomainDefault), {
-            tickFormat: chart.formatYearFunction,
-            hideFractionalTicks: true,
-            hideGridlines: true
-        }) as AxisSpec
-    }
-
-    @computed private get yDimensionFirst() {
+    @computed get yDimensionFirst() {
         return find(this.chart.filledDimensions, d => d.property === "y")
     }
 
@@ -253,21 +234,5 @@ export class StackedAreaTransform extends ChartTransform {
             ? this.yDimensionFirst.formatValueShort
             : identity
         return tickFormat(v, { noTrailingZeroes: false })
-    }
-
-    @computed get yAxisSpec() {
-        const { chart, yDomainDefault, isRelativeMode, yDimensionFirst } = this
-        const tickFormat = yDimensionFirst
-            ? yDimensionFirst.formatValueShort
-            : identity
-
-        return extend(chart.yAxisRuntime.toSpec(yDomainDefault), {
-            domain: isRelativeMode
-                ? [0, 100]
-                : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
-            tickFormat: isRelativeMode
-                ? (v: number) => formatValue(v, { unit: "%" })
-                : tickFormat
-        }) as AxisSpec
     }
 }
