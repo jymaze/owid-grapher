@@ -261,11 +261,11 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
         return this.props.bounds
     }
 
-    @computed private get xScale(): AxisScale {
+    @computed private get xScale() {
         return this.props.xScale.clone({ range: this.bounds.xRange() })
     }
 
-    @computed private get yScale(): AxisScale {
+    @computed private get yScale() {
         return this.props.yScale.clone({ range: this.bounds.yRange() })
     }
 

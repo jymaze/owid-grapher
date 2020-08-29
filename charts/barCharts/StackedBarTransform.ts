@@ -75,7 +75,7 @@ export class StackedBarTransform extends ChartTransform {
     }
 
     // TODO: Make XAxis generic
-    @computed get xAxisSpec(): AxisSpec {
+    @computed get xAxisSpec() {
         const { chart, xDomainDefault } = this
         return extend(
             chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
@@ -104,7 +104,7 @@ export class StackedBarTransform extends ChartTransform {
         return yDimensionFirst ? yDimensionFirst.formatValueShort : identity
     }
 
-    @computed get yAxisSpec(): AxisSpec {
+    @computed get yAxisSpec() {
         const { chart, yDomainDefault, yTickFormat } = this
 
         return extend(
