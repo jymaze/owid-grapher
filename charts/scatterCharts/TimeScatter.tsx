@@ -9,7 +9,7 @@ import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { AxisBox, AxisBoxView } from "charts/axis/AxisBox"
 import { ComparisonLine } from "./ComparisonLine"
 import { AxisScale } from "charts/axis/AxisScale"
-import { ScaleType, EntityDimensionKey } from "charts/core/ChartConstants"
+import { EntityDimensionKey } from "charts/core/ChartConstants"
 
 import {
     sortBy,

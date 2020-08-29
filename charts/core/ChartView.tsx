@@ -118,11 +118,6 @@ export class ChartView extends React.Component<ChartViewProps> {
         return chartView
     }
 
-    static async detectCountry() {
-        const countryIs = await getCountryCodeFromNetlifyRedirect()
-        console.log(countryIs)
-    }
-
     @computed get chart() {
         return this.props.chart
     }

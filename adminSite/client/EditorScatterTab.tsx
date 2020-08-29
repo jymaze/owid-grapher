@@ -2,15 +2,15 @@ import * as React from "react"
 import { extend, debounce } from "charts/utils/Util"
 import { observable, computed, action, toJS } from "mobx"
 import { observer } from "mobx-react"
-import {
-    ChartRuntime,
-    HighlightToggleConfig,
-    ScatterPointLabelStrategy
-} from "charts/core/ChartRuntime"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { ComparisonLineConfig } from "charts/scatterCharts/ComparisonLine"
 import { Toggle, NumberField, SelectField, TextField, Section } from "./Forms"
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+    ScatterPointLabelStrategy,
+    HighlightToggleConfig
+} from "charts/core/ChartConstants"
 
 @observer
 export class EditorScatterTab extends React.Component<{ chart: ChartRuntime }> {

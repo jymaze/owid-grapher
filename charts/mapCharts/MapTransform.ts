@@ -64,12 +64,12 @@ export class MapTransform extends ChartTransform {
         return getClosestTime(this.timelineYears, this.targetYearProp, 2000)
     }
 
-    @computed get targetYearProp(): TimeBound {
-        return this.props.targetYear ?? TimeBoundValue.unboundedRight
-    }
-
     set targetYear(value: TimeBound) {
         this.props.targetYear = value
+    }
+
+    @computed get targetYearProp(): TimeBound {
+        return this.props.targetYear ?? TimeBoundValue.unboundedRight
     }
 
     @computed get tooltipUseCustomLabels() {
