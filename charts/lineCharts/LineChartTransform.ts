@@ -190,7 +190,7 @@ export class LineChartTransform extends ChartTransform {
     @computed get xAxisSpec(): AxisSpec {
         const { xDomain } = this
         return {
-            label: this.chart.xAxisRuntime.label || "",
+            label: this.chart.xAxisRuntime.label,
             tickFormat: this.chart.formatYearTickFunction,
             domain: xDomain,
             scaleType: ScaleType.linear,
