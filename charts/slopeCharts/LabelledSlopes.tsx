@@ -345,7 +345,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
         )
     }
 
-    @computed get yScaleType() {
+    @computed private get yScaleType() {
         return this.props.yAxisRuntime.scaleType
     }
 
