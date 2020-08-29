@@ -235,7 +235,7 @@ export class StackedAreaTransform extends ChartTransform {
         return [0, defaultTo(max(yValues), 100)]
     }
 
-    @computed get xAxisSpec(): AxisSpec {
+    @computed get xAxisSpec() {
         const { chart, xDomainDefault } = this
         return extend(
             chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
@@ -251,7 +251,7 @@ export class StackedAreaTransform extends ChartTransform {
         return find(this.chart.filledDimensions, d => d.property === "y")
     }
 
-    @computed get yAxisSpec(): AxisSpec {
+    @computed get yAxisSpec() {
         const { chart, yDomainDefault, isRelativeMode, yDimensionFirst } = this
         const tickFormat = yDimensionFirst
             ? yDimensionFirst.formatValueShort

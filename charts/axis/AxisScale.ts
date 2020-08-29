@@ -56,7 +56,7 @@ export interface AxisSpec {
     hideGridlines?: boolean
 }
 
-export class AxisScale {
+export class AxisScale implements AxisSpec {
     @observable scaleType: ScaleType
     @observable.struct scaleTypeOptions: ScaleType[]
     @observable tickFormat: TickFormatFunction
@@ -64,6 +64,7 @@ export class AxisScale {
     @observable.struct range: [number, number]
     @observable hideFractionalTicks: boolean
     @observable hideGridlines: boolean
+    @observable label: string = ""
 
     constructor({
         scaleType = ScaleType.linear,
@@ -292,7 +293,7 @@ export class AxisRuntime implements AxisConfigInterface {
 
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
-    toSpec({ defaultDomain }: { defaultDomain: [number, number] }): AxisSpec {
+    toSpec({ defaultDomain }: { defaultDomain: [number, number] }) {
         const { label, scaleType, scaleTypeOptions } = this
         return {
             label,
@@ -303,6 +304,6 @@ export class AxisRuntime implements AxisConfigInterface {
             ],
             scaleType,
             scaleTypeOptions
-        }
+        } as AxisSpec
     }
 }

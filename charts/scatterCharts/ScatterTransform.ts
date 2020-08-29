@@ -467,7 +467,7 @@ export class ScatterTransform extends ChartTransform {
         return this.yDimension && this.yDimension.displayName
     }
 
-    @computed get yAxisSpec(): AxisSpec {
+    @computed get yAxisSpec() {
         const {
             chart,
             yDomainDefault,
@@ -514,7 +514,7 @@ export class ScatterTransform extends ChartTransform {
         else return xDimName
     }
 
-    @computed get xAxisSpec(): AxisSpec {
+    @computed get xAxisSpec() {
         const {
             chart,
             xDomainDefault,
