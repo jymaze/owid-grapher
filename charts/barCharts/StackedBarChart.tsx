@@ -160,12 +160,12 @@ export class StackedBarChart extends React.Component<{
     // todo: Refactor
     @computed private get axisBox(): AxisBox {
         const { bounds, transform, chart, sidebarWidth } = this
-        const { xAxisView: xAxisSpec, yAxisView: yAxisSpec } = transform
+        const { xAxisView, yAxisView } = transform
         return new AxisBox({
             bounds: bounds.padRight(sidebarWidth + 20),
             fontSize: chart.baseFontSize,
-            xAxisView: xAxisSpec,
-            yAxisSpec
+            xAxisView,
+            yAxisView
         })
     }
 

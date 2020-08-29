@@ -255,7 +255,7 @@ export class ScatterPlot extends React.Component<{
             get xAxisView() {
                 return that.transform.xAxisView
             },
-            get yAxisSpec() {
+            get yAxisView() {
                 return that.transform.yAxisView
             }
         })

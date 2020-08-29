@@ -25,7 +25,7 @@ interface AxisBoxProps {
     bounds: Bounds
     fontSize: number
     xAxisView: AxisView
-    yAxisSpec: AxisView
+    yAxisView: AxisView
 }
 
 // AxisBox has the important task of coordinating two axes so that they work together!
@@ -47,7 +47,7 @@ export class AxisBox {
     }
 
     @computed.struct private get currentYDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.yAxisSpec.domain
+        if (this.animProgress === undefined) return this.props.yAxisView.domain
 
         const [prevMinY, prevMaxY] = this.prevYDomain
         const [targetMinY, targetMaxY] = this.targetYDomain
@@ -55,7 +55,7 @@ export class AxisBox {
         // If we have a log axis and are animating from linear to log do not set domain min to 0
         const progress = this.animProgress
             ? this.animProgress
-            : this.props.yAxisSpec.scaleType === ScaleType.log
+            : this.props.yAxisView.scaleType === ScaleType.log
             ? 0.01
             : 0
 
@@ -85,16 +85,16 @@ export class AxisBox {
     }
 
     @action.bound setupAnimation() {
-        this.targetYDomain = this.props.yAxisSpec.domain
+        this.targetYDomain = this.props.yAxisView.domain
         this.targetXDomain = this.props.xAxisView.domain
         this.animProgress = 1
 
         reaction(
-            () => [this.props.yAxisSpec.domain, this.props.xAxisView.domain],
+            () => [this.props.yAxisView.domain, this.props.xAxisView.domain],
             () => {
                 this.prevXDomain = this.currentXDomain
                 this.prevYDomain = this.currentYDomain
-                this.targetYDomain = this.props.yAxisSpec.domain
+                this.targetYDomain = this.props.yAxisView.domain
                 this.targetXDomain = this.props.xAxisView.domain
                 this.animProgress = 0
                 requestAnimationFrame(this.frame)
@@ -117,7 +117,7 @@ export class AxisBox {
 
     // todo: Refactor
     @computed get yAxisSpec() {
-        return extend({}, this.props.yAxisSpec, { domain: this.currentYDomain })
+        return extend({}, this.props.yAxisView, { domain: this.currentYDomain })
     }
 
     // todo: Refactor

@@ -255,15 +255,15 @@ export class LineChartTransform extends ChartTransform {
 
     // Filter the data so it fits within the domains
     @computed get groupedData(): LineChartSeries[] {
-        const { xAxisView: xAxisSpec } = this
+        const { xAxisView } = this
         const groupedData = cloneDeep(this.predomainData)
 
         for (const g of groupedData) {
             // The values can include non-numerical values, so we need to filter with isNaN()
             g.values = g.values.filter(
                 d =>
-                    d.x >= xAxisSpec.domain[0] &&
-                    d.x <= xAxisSpec.domain[1] &&
+                    d.x >= xAxisView.domain[0] &&
+                    d.x <= xAxisView.domain[1] &&
                     !isNaN(d.y)
             )
         }

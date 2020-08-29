@@ -477,7 +477,7 @@ export class LineChart extends React.Component<{
             get fontSize() {
                 return that.options.baseFontSize
             },
-            get yAxisSpec() {
+            get yAxisView() {
                 return that.transform.yAxisView
             },
             get xAxisView() {
