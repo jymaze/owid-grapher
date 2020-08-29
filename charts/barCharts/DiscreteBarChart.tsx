@@ -164,9 +164,7 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed get xScale() {
-        const xAxisSpec = this.chart.yAxisRuntime.toSpec({
-            defaultDomain: this.xDomainDefault
-        }) // XXX
+        const xAxisSpec = this.chart.yAxisRuntime.toSpec(this.xDomainDefault) // XXX
         return new AxisScale(xAxisSpec).clone({
             domain: this.xDomainDefault,
             range: this.xRange,
