@@ -7,7 +7,11 @@ import {
     pointsToPath,
     getRelativeMouse,
     makeSafeForCSS,
-    minBy
+    minBy,
+    extend,
+    max,
+    identity,
+    formatValue
 } from "../utils/Util"
 import { computed, action, observable } from "mobx"
 import { observer } from "mobx-react"
@@ -25,6 +29,7 @@ import { select } from "d3-selection"
 import { easeLinear } from "d3-ease"
 import { rgb } from "d3-color"
 import { EntityDimensionKey } from "charts/core/ChartConstants" // todo: remove
+import { AxisSpec } from "charts/axis/AxisScale"
 
 export interface StackedAreaValue {
     x: number
@@ -278,14 +283,45 @@ export class StackedAreaChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox(): AxisBox {
-        const { bounds, transform, legend, chart } = this
-        const { xAxisSpec, yAxisSpec } = transform
+        const { bounds, legend, chart, xAxisSpec, yAxisSpec } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
             fontSize: chart.baseFontSize,
             xAxisSpec,
             yAxisSpec
         })
+    }
+
+    @computed private get xAxisSpec() {
+        const { xDomainDefault } = this.transform
+        const chart = this.chart
+        return extend(chart.xAxisRuntime.toSpec(xDomainDefault), {
+            tickFormat: chart.formatYearFunction,
+            hideFractionalTicks: true,
+            hideGridlines: true
+        }) as AxisSpec
+    }
+
+    @computed private get yDomainDefault(): [number, number] {
+        const yValues = this.transform.allStackedValues.map(d => d.y)
+        return [0, max(yValues) ?? 100]
+    }
+
+    @computed private get yAxisSpec() {
+        const { isRelativeMode, yDimensionFirst } = this.transform
+        const { chart, yDomainDefault } = this
+        const tickFormat = yDimensionFirst
+            ? yDimensionFirst.formatValueShort
+            : identity
+
+        return extend(chart.yAxisRuntime.toSpec(yDomainDefault), {
+            domain: isRelativeMode
+                ? [0, 100]
+                : [yDomainDefault[0], yDomainDefault[1]], // Stacked area chart must have its own y domain
+            tickFormat: isRelativeMode
+                ? (v: number) => formatValue(v, { unit: "%" })
+                : tickFormat
+        }) as AxisSpec
     }
 
     @observable hoverIndex?: number
