@@ -115,10 +115,12 @@ export class AxisBox {
         else this.frameStart = undefined
     }
 
+    // todo: Refactor
     @computed get yAxisSpec() {
         return extend({}, this.props.yAxisSpec, { domain: this.currentYDomain })
     }
 
+    // todo: Refactor
     @computed get xAxisSpec() {
         return extend({}, this.props.xAxisSpec, { domain: this.currentXDomain })
     }
