@@ -294,17 +294,58 @@ export class AxisRuntime implements AxisUserOptions {
 
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
-    toSpec(defaultDomain: [number, number]) {
-        const { label, scaleType, scaleTypeOptions } = this
-        return {
-            label,
-            tickFormat: d => `${d}`,
-            domain: [
-                Math.min(this.domain[0], defaultDomain[0]),
-                Math.max(this.domain[1], defaultDomain[1])
-            ],
-            scaleType,
-            scaleTypeOptions
-        } as AxisSpec
+    toView() {
+        return new AxisView(this)
+    }
+}
+
+class AxisView {
+    runTime: AxisRuntime
+    @observable.ref domain: [number, number]
+    @observable tickFormat: TickFormatFunction = d => `${d}`
+
+    @observable hideFractionalTicks = false
+    @observable hideGridlines = false
+
+    updateDomain(defaultDomain: [number, number]) {
+        this.domain = [
+            Math.min(this.domain[0], defaultDomain[0]),
+            Math.max(this.domain[1], defaultDomain[1])
+        ]
+        return this
+    }
+
+    constructor(runTime: AxisRuntime) {
+        this.runTime = runTime
+        this.domain = [runTime.domain[0], runTime.domain[1]]
+    }
+
+    @observable private _scaleType?: ScaleType
+    @computed get scaleType() {
+        return this._scaleType ?? this.runTime.scaleType
+    }
+
+    set scaleType(value: ScaleType) {
+        this._scaleType = value
+    }
+
+    @observable private _label?: string
+    @computed get label() {
+        return this._label ?? this.runTime.label
+    }
+
+    set label(value: string) {
+        this._label = value
+    }
+
+    @observable private _scaleTypeOptions?: ScaleType[]
+    @computed get scaleTypeOptions(): ScaleType[] {
+        return this._scaleTypeOptions
+            ? this._scaleTypeOptions
+            : this.runTime.scaleTypeOptions
+    }
+
+    set scaleTypeOptions(value: ScaleType[]) {
+        this._scaleTypeOptions = value
     }
 }
