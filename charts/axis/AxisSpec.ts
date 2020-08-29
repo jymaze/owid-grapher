@@ -22,9 +22,9 @@ export interface AxisConfigInterface {
 export interface AxisSpec {
     scaleType: ScaleType
     scaleTypeOptions: ScaleType[]
+    label: string
 
     domain: [number, number]
-    label: string
 
     tickFormat: (d: number, options?: TickFormattingOptions) => string
     hideFractionalTicks?: boolean
@@ -53,6 +53,14 @@ export class AxisRuntime implements AxisConfigInterface {
         if (this.scaleType === ScaleType.log && (this.min || 0) <= 0)
             return undefined
         return this.min
+    }
+
+    isOutsideDomain(value: number) {
+        return (
+            (this.constrainedMin !== undefined &&
+                value < this.constrainedMin) ||
+            (this.constrainedMax !== undefined && value > this.constrainedMax)
+        )
     }
 
     @computed get constrainedMax(): number | undefined {
