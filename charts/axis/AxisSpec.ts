@@ -7,7 +7,17 @@
 
 import { ScaleType, TickFormattingOptions } from "charts/core/ChartConstants"
 import { observable, computed } from "mobx"
-import { defaultTo } from "charts/utils/Util"
+import { defaultTo, extend } from "charts/utils/Util"
+
+// Represents the actual entered configuration state in the editor
+export interface AxisConfigInterface {
+    min?: number
+    max?: number
+    scaleType: ScaleType
+    canChangeScaleType?: true
+    label?: string
+    removePointsOutsideDomain?: true
+}
 
 export interface AxisSpec {
     label: string
@@ -19,8 +29,15 @@ export interface AxisSpec {
     hideGridlines?: boolean
 }
 
-// Represents the actual entered configuration state in the editor
-export class AxisConfig {
+export class AxisRuntime implements AxisConfigInterface {
+    constructor(props?: AxisConfigInterface) {
+        this.update(props)
+    }
+
+    update(props?: AxisConfigInterface) {
+        if (props) extend(this, props)
+    }
+
     @observable.ref min?: number = undefined
     @observable.ref max?: number = undefined
     @observable.ref scaleType: ScaleType = ScaleType.linear

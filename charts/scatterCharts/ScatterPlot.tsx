@@ -242,6 +242,7 @@ export class ScatterPlot extends React.Component<{
         )
     }
 
+    // todo: Refactor
     @computed private get axisBox() {
         const that = this
         return new AxisBox({

@@ -45,7 +45,7 @@ export class LineChartTransform extends ChartTransform {
 
     @computed get initialData(): LineChartSeries[] {
         const { chart } = this
-        const { yAxisConfig: yAxis } = chart
+        const { yAxisRuntime: yAxis } = chart
         const { selectedKeys, selectedKeysByKey } = chart
         const filledDimensions = chart.filledDimensions
 
@@ -190,7 +190,7 @@ export class LineChartTransform extends ChartTransform {
     @computed get xAxisSpec(): AxisSpec {
         const { xDomain } = this
         return {
-            label: this.chart.xAxisConfig.label || "",
+            label: this.chart.xAxisRuntime.label || "",
             tickFormat: this.chart.formatYearTickFunction,
             domain: xDomain,
             scaleType: ScaleType.linear,
@@ -216,11 +216,11 @@ export class LineChartTransform extends ChartTransform {
         const { chart, yDomainDefault } = this
         return [
             Math.min(
-                defaultTo(chart.yAxisConfig.domain[0], Infinity),
+                defaultTo(chart.yAxisRuntime.domain[0], Infinity),
                 yDomainDefault[0]
             ),
             Math.max(
-                defaultTo(chart.yAxisConfig.domain[1], -Infinity),
+                defaultTo(chart.yAxisRuntime.domain[1], -Infinity),
                 yDomainDefault[1]
             )
         ]
@@ -229,7 +229,7 @@ export class LineChartTransform extends ChartTransform {
     @computed get yScaleType() {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.yAxisConfig.scaleType
+            : this.chart.yAxisRuntime.scaleType
     }
 
     @computed get yTickFormat() {
@@ -257,7 +257,7 @@ export class LineChartTransform extends ChartTransform {
             scaleType: yScaleType,
             scaleTypeOptions: isRelativeMode
                 ? [ScaleType.linear]
-                : chart.yAxisConfig.scaleTypeOptions,
+                : chart.yAxisRuntime.scaleTypeOptions,
             hideFractionalTicks: this.yAxisHideFractionalTicks
         }
     }

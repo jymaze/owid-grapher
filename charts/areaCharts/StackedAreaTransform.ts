@@ -238,7 +238,7 @@ export class StackedAreaTransform extends ChartTransform {
     @computed get xAxisSpec(): AxisSpec {
         const { chart, xDomainDefault } = this
         return extend(
-            chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
+            chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
             {
                 tickFormat: chart.formatYearFunction,
                 hideFractionalTicks: true,
@@ -258,7 +258,7 @@ export class StackedAreaTransform extends ChartTransform {
             : identity
 
         return extend(
-            chart.yAxisConfig.toSpec({ defaultDomain: yDomainDefault }),
+            chart.yAxisRuntime.toSpec({ defaultDomain: yDomainDefault }),
             {
                 domain: isRelativeMode
                     ? [0, 100]

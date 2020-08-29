@@ -599,6 +599,7 @@ export class TimeScatter extends React.Component<{
         this.chart.timeDomain = [targetStartYear, targetEndYear]
     }
 
+    // todo: Refactor
     @computed private get axisBox() {
         const that = this
         return new AxisBox({

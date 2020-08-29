@@ -330,19 +330,19 @@ export class ScatterTransform extends ChartTransform {
         const chart = this.chart
         dataByEntityAndYear.forEach(dataByYear => {
             dataByYear.forEach((point, year) => {
-                const yAxisConfig = chart.yAxisConfig
+                const yAxisConfig = chart.yAxisRuntime
                 // Exclude any points with data for only one axis
                 if (!has(point, "x") || !has(point, "y")) {
                     dataByYear.delete(year)
                 }
                 // Exclude points that go beyond min/max of X axis
                 else if (
-                    (chart.xAxisConfig.removePointsOutsideDomain &&
-                        chart.xAxisConfig.constrainedMin !== undefined &&
-                        point.x < chart.xAxisConfig.constrainedMin) ||
-                    (chart.xAxisConfig.removePointsOutsideDomain &&
-                        chart.xAxisConfig.constrainedMax !== undefined &&
-                        point.x > chart.xAxisConfig.constrainedMax)
+                    (chart.xAxisRuntime.removePointsOutsideDomain &&
+                        chart.xAxisRuntime.constrainedMin !== undefined &&
+                        point.x < chart.xAxisRuntime.constrainedMin) ||
+                    (chart.xAxisRuntime.removePointsOutsideDomain &&
+                        chart.xAxisRuntime.constrainedMax !== undefined &&
+                        point.x > chart.xAxisRuntime.constrainedMax)
                 ) {
                     dataByYear.delete(year)
                 }
@@ -468,7 +468,7 @@ export class ScatterTransform extends ChartTransform {
     @computed private get yScaleType() {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.yAxisConfig.scaleType
+            : this.chart.yAxisRuntime.scaleType
     }
 
     @computed private get yAxisLabelBase(): string | undefined {
@@ -487,7 +487,7 @@ export class ScatterTransform extends ChartTransform {
 
         const props: Partial<AxisSpec> = {}
         props.scaleType = yScaleType
-        const label = chart.yAxisConfig.label ?? yAxisLabelBase
+        const label = chart.yAxisRuntime.label ?? yAxisLabelBase
         if (isRelativeMode) {
             props.domain = yDomainDefault
             props.scaleTypeOptions = [ScaleType.linear]
@@ -505,7 +505,7 @@ export class ScatterTransform extends ChartTransform {
         }
 
         return extend(
-            chart.yAxisConfig.toSpec({ defaultDomain: yDomainDefault }),
+            chart.yAxisRuntime.toSpec({ defaultDomain: yDomainDefault }),
             props
         ) as AxisSpec
     }
@@ -513,7 +513,7 @@ export class ScatterTransform extends ChartTransform {
     @computed private get xScaleType(): ScaleType {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.xAxisConfig.scaleType
+            : this.chart.xAxisRuntime.scaleType
     }
 
     @computed private get xAxisLabelBase(): string | undefined {
@@ -538,7 +538,7 @@ export class ScatterTransform extends ChartTransform {
         if (isRelativeMode) {
             props.domain = xDomainDefault
             props.scaleTypeOptions = [ScaleType.linear]
-            const label = chart.xAxisConfig.label || xAxisLabelBase
+            const label = chart.xAxisRuntime.label || xAxisLabelBase
             if (label && label.length > 1) {
                 props.label =
                     "Average annual change in " +
@@ -548,12 +548,12 @@ export class ScatterTransform extends ChartTransform {
             }
             props.tickFormat = (v: number) => formatValue(v, { unit: "%" })
         } else {
-            props.label = chart.xAxisConfig.label || xAxisLabelBase
+            props.label = chart.xAxisRuntime.label || xAxisLabelBase
             props.tickFormat = xDimension && xDimension.formatValueShort
         }
 
         return extend(
-            chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
+            chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
             props
         ) as AxisSpec
     }

@@ -78,7 +78,7 @@ export class StackedBarTransform extends ChartTransform {
     @computed get xAxisSpec(): AxisSpec {
         const { chart, xDomainDefault } = this
         return extend(
-            chart.xAxisConfig.toSpec({ defaultDomain: xDomainDefault }),
+            chart.xAxisRuntime.toSpec({ defaultDomain: xDomainDefault }),
             {
                 tickFormat: this.chart.formatYearFunction,
                 hideFractionalTicks: true,
@@ -108,7 +108,7 @@ export class StackedBarTransform extends ChartTransform {
         const { chart, yDomainDefault, yTickFormat } = this
 
         return extend(
-            chart.yAxisConfig.toSpec({ defaultDomain: yDomainDefault }),
+            chart.yAxisRuntime.toSpec({ defaultDomain: yDomainDefault }),
             {
                 domain: [yDomainDefault[0], yDomainDefault[1]], // Stacked chart must have its own y domain
                 tickFormat: yTickFormat

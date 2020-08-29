@@ -38,7 +38,7 @@ import {
     lastOfNonEmptyArray,
     find
 } from "charts/utils/Util"
-import { AxisConfig } from "charts/axis/AxisSpec"
+import { AxisRuntime } from "charts/axis/AxisSpec"
 import {
     ChartType,
     ChartTabOption,
@@ -564,8 +564,8 @@ export class ChartRuntime {
         this.script.maxTime = value[1]
     }
 
-    @observable xAxisConfig = new AxisConfig()
-    @observable yAxisConfig = new AxisConfig()
+    @observable xAxisRuntime = new AxisRuntime()
+    @observable yAxisRuntime = new AxisRuntime()
 
     // Get the dimension slots appropriate for this type of chart
     @computed get dimensionSlots(): DimensionSlot[] {
@@ -669,9 +669,8 @@ export class ChartRuntime {
             })
         }
 
-        //
-        extend(this.xAxisConfig, json["xAxis"])
-        extend(this.yAxisConfig, json["yAxis"])
+        this.xAxisRuntime.update(json["xAxis"])
+        this.yAxisRuntime.update(json["yAxis"])
 
         extend(this.colorScale, json["colorScale"])
 
