@@ -363,15 +363,20 @@ abstract class AbstractAxis {
         return sortBy(tickPlacements.filter(t => !t.isHidden).map(t => t.tick))
     }
 
+    formatTick(tick: number, isFirstOrLastTick?: boolean) {
+        const { scale, tickFormattingOptions } = this
+        return scale.tickFormat(tick, {
+            ...tickFormattingOptions,
+            isFirstOrLastTick
+        })
+    }
+
     // calculates coordinates for ticks, sorted by priority
     @computed private get tickPlacements() {
         const { scale } = this
         return sortBy(this.baseTicks, tick => tick.priority).map(tick => {
             const bounds = Bounds.forText(
-                scale.tickFormat(tick.value, {
-                    ...this.tickFormattingOptions,
-                    isFirstOrLastTick: !!tick.isFirstOrLastTick
-                }),
+                this.formatTick(tick.value, !!tick.isFirstOrLastTick),
                 {
                     fontSize: this.tickFontSize
                 }
@@ -482,7 +487,7 @@ export class VerticalAxisBox extends React.Component<{
 
     render() {
         const { bounds, axis } = this.props
-        const { scale, ticks, label, tickFormattingOptions } = axis
+        const { scale, ticks, label } = axis
         const textColor = "#666"
 
         return (
@@ -503,7 +508,7 @@ export class VerticalAxisBox extends React.Component<{
                         textAnchor="end"
                         fontSize={axis.tickFontSize}
                     >
-                        {scale.tickFormat(tick, tickFormattingOptions)}
+                        {axis.formatTick(tick)}
                     </text>
                 ))}
                 {this.controls}
@@ -614,7 +619,7 @@ export class HorizontalAxisBox extends React.Component<{
 
     render() {
         const { bounds, axis, axisPosition, showTickMarks } = this.props
-        const { scale, ticks, label, labelOffset, tickFormattingOptions } = axis
+        const { scale, ticks, label, labelOffset } = axis
         const textColor = "#666"
 
         const tickMarks = showTickMarks ? (
@@ -634,10 +639,10 @@ export class HorizontalAxisBox extends React.Component<{
                     )}
                 {tickMarks}
                 {ticks.map((tick, i) => {
-                    const label = scale.tickFormat(tick, {
-                        ...tickFormattingOptions,
-                        isFirstOrLastTick: i === 0 || i === ticks.length - 1
-                    })
+                    const label = axis.formatTick(
+                        tick,
+                        i === 0 || i === ticks.length - 1
+                    )
                     const rawXPosition = scale.place(tick)
                     // Ensure the first label does not exceed the chart viewing area
                     const xPosition =
