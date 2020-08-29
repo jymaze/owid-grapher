@@ -7,10 +7,14 @@ import { easeLinear } from "d3-ease"
 import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisBox, AxisGridLines } from "charts/axis/AxisBox"
+import {
+    AxisBox,
+    AxisGridLines,
+    VerticalAxis,
+    VerticalAxisBox
+} from "charts/axis/AxisBox"
 import { AxisTickMarks } from "charts/axis/AxisTickMarks"
 import { AxisScale } from "charts/axis/AxisScale"
-import { VerticalAxis, VerticalAxisView } from "charts/axis/VerticalAxis"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { Text } from "../text/Text"
 import {
@@ -168,7 +172,7 @@ export class StackedBarChart extends React.Component<{
         return this.axisBox.yScale
     }
 
-    @computed private get verticaAxis() {
+    @computed private get verticalAxis() {
         const that = this
         return new VerticalAxis({
             get scale() {
@@ -425,7 +429,7 @@ export class StackedBarChart extends React.Component<{
             sidebarWidth,
             activeColors,
             tooltip,
-            verticaAxis,
+            verticalAxis,
             barWidth,
             mapXValueToOffset,
             ticks
@@ -456,9 +460,9 @@ export class StackedBarChart extends React.Component<{
                     opacity={0}
                     fill="rgba(255,255,255,0)"
                 />
-                <VerticalAxisView
+                <VerticalAxisBox
                     bounds={bounds}
-                    axis={verticaAxis}
+                    axis={verticalAxis}
                     isInteractive={this.chart.isInteractive}
                 />
                 <AxisGridLines
