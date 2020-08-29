@@ -3,7 +3,8 @@ import classnames from "classnames"
 import ReactDOM from "react-dom"
 import { ChartView } from "charts/core/ChartView"
 import { Bounds } from "charts/utils/Bounds"
-import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { faChartLine } from "@fortawesome/free-solid-svg-icons/faChartLine"
 import {
     computed,

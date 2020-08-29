@@ -49,15 +49,16 @@ import {
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
 import {
     OwidTable,
-    entityName,
-    entityId,
-    entityCode
+    EntityName,
+    EntityId,
+    EntityCode
 } from "owidTable/OwidTable"
 import {
+    EntityDimensionInfo,
     ChartDimension,
-    dimensionProperty,
     ChartDimensionSpec,
-    ChartDimensionInterface
+    ChartDimensionInterface,
+    SourceWithDimension
 } from "./ChartDimension"
 import { MapConfig } from "charts/mapCharts/MapConfig"
 import { MapTransform } from "charts/mapCharts/MapTransform"
@@ -91,26 +92,8 @@ import { countries } from "utils/countries"
 import { DataTableTransform } from "charts/dataTable/DataTableTransform"
 import { getWindowQueryParams } from "utils/client/url"
 import { populationMap } from "owidTable/PopulationMap"
-import { OwidSource } from "owidTable/OwidSource"
 import { ChartScript } from "./ChartScript"
-
-export { ChartScript }
-
-export interface SourceWithDimension {
-    source: OwidSource
-    dimension: ChartDimension
-}
-
-export interface EntityDimensionInfo {
-    entityName: entityName
-    entityId: entityId
-    dimension: ChartDimension
-    index: number
-    entityDimensionKey: EntityDimensionKey
-    fullLabel: string
-    label: string
-    shortCode: string
-}
+import { DimensionSlot } from "./DimensionSlot"
 
 declare const App: any
 declare const window: any
@@ -124,72 +107,6 @@ const isNode: boolean =
     Object.prototype.toString.call(global.process) === "[object process]"
 const isJsdom: boolean =
     typeof navigator === "object" && navigator.userAgent.includes("jsdom")
-
-interface EntitySelection {
-    entityId: number
-    index: number // Which dimension the entity is from
-    color?: Color
-}
-
-export class DimensionSlot {
-    chart: ChartRuntime
-    property: dimensionProperty
-    constructor(chart: ChartRuntime, property: dimensionProperty) {
-        this.chart = chart
-        this.property = property
-    }
-
-    @computed get name(): string {
-        const names = {
-            y: this.chart.isDiscreteBar ? "X axis" : "Y axis",
-            x: "X axis",
-            size: "Size",
-            color: "Color",
-            filter: "Filter"
-        }
-
-        return (names as any)[this.property] || ""
-    }
-
-    @computed get allowMultiple(): boolean {
-        return (
-            this.property === "y" &&
-            !(
-                this.chart.isScatter ||
-                this.chart.isTimeScatter ||
-                this.chart.isSlopeChart
-            )
-        )
-    }
-
-    @computed get isOptional(): boolean {
-        return this.allowMultiple
-    }
-
-    @computed get dimensions(): ChartDimensionSpec[] {
-        return this.chart.dimensions.filter(d => d.property === this.property)
-    }
-
-    set dimensions(dims: ChartDimensionSpec[]) {
-        let newDimensions: ChartDimensionSpec[] = []
-        this.chart.dimensionSlots.forEach(slot => {
-            if (slot.property === this.property)
-                newDimensions = newDimensions.concat(dims)
-            else newDimensions = newDimensions.concat(slot.dimensions)
-        })
-        this.chart.script.dimensions = newDimensions
-    }
-
-    @computed get dimensionsWithData(): ChartDimension[] {
-        return this.chart.filledDimensions.filter(
-            d => d.property === this.property
-        )
-    }
-
-    createDimension(variableId: number) {
-        return new ChartDimensionSpec({ property: this.property, variableId })
-    }
-}
 
 // TODO: this really represents more than just the configuration state and should be split
 // into multiple components. It's sort of the top-level chart state.
@@ -1070,7 +987,7 @@ export class ChartRuntime {
     // todo: remove
     // Make a unique string key for an entity on a variable
     makeEntityDimensionKey(
-        entityName: entityName,
+        entityName: EntityName,
         dimensionIndex: number
     ): EntityDimensionKey {
         return `${entityName}_${dimensionIndex}`
@@ -1157,14 +1074,14 @@ export class ChartRuntime {
     }
 
     // todo: remove
-    @computed get selectedEntityNames(): entityName[] {
+    @computed get selectedEntityNames(): EntityName[] {
         return uniq(
             this.selectedKeys.map(key => this.lookupKey(key).entityName)
         )
     }
 
     // todo: remove
-    @computed get availableEntityNames(): entityName[] {
+    @computed get availableEntityNames(): EntityName[] {
         const entitiesForDimensions = this.axisDimensions.map(dim => {
             return this.availableKeys
                 .map(key => this.lookupKey(key))
@@ -1176,14 +1093,14 @@ export class ChartRuntime {
     }
 
     // todo: remove
-    @action.bound setSingleSelectedEntity(entityId: entityId) {
+    @action.bound setSingleSelectedEntity(entityId: EntityId) {
         const selectedData = cloneDeep(this.script.selectedData)
         selectedData.forEach(d => (d.entityId = entityId))
         this.script.selectedData = selectedData
     }
 
     // todo: remove
-    @action.bound setSelectedEntitiesByCode(entityCodes: entityCode[]) {
+    @action.bound setSelectedEntitiesByCode(entityCodes: EntityCode[]) {
         const matchedEntities = new Map<string, boolean>()
         entityCodes.forEach(code => matchedEntities.set(code, false))
         if (this.canChangeEntity) {
@@ -1225,7 +1142,7 @@ export class ChartRuntime {
     }
 
     // todo: remove
-    @computed get selectedEntityCodes(): entityCode[] {
+    @computed get selectedEntityCodes(): EntityCode[] {
         return uniq(this.selectedKeys.map(k => this.lookupKey(k).shortCode))
     }
 
@@ -1358,7 +1275,7 @@ export class ChartRuntime {
 
     // todo: remove
     @computed get availableKeysByEntity(): Map<
-        entityName,
+        EntityName,
         EntityDimensionKey[]
     > {
         const keysByEntity = new Map()

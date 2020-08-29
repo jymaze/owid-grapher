@@ -4,7 +4,8 @@ import { observer } from "mobx-react"
 
 import { Bounds } from "charts/utils/Bounds"
 import { ChartView } from "charts/core/ChartView"
-import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 
 const chartViewData = {
     variables: {

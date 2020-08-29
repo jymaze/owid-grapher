@@ -33,7 +33,7 @@ import { ChartTransform } from "charts/core/ChartTransform"
 import { Time } from "charts/utils/TimeBounds"
 import { EntityDimensionKey, ScaleType } from "charts/core/ChartConstants"
 import { ColorScale } from "charts/color/ColorScale"
-import { entityName, year } from "owidTable/OwidTable"
+import { EntityName, Year } from "owidTable/OwidTable"
 
 // Responsible for translating chart configuration into the form
 // of a scatter plot
@@ -127,7 +127,7 @@ export class ScatterTransform extends ChartTransform {
     @computed private get hideBackgroundEntities(): boolean {
         return this.chart.addCountryMode === "disabled"
     }
-    @computed private get possibleEntityNames(): entityName[] {
+    @computed private get possibleEntityNames(): EntityName[] {
         const yEntities = this.yDimension ? this.yDimension.entityNamesUniq : []
         const xEntities = this.xDimension ? this.xDimension.entityNamesUniq : []
         return intersection(yEntities, xEntities)
@@ -139,7 +139,7 @@ export class ScatterTransform extends ChartTransform {
     }
 
     // todo: move to table
-    @computed get excludedEntityNames(): entityName[] {
+    @computed get excludedEntityNames(): EntityName[] {
         const entityIds = this.chart.script.excludedEntities || []
         const entityNameMap = this.chart.table.entityIdToNameMap
         return entityIds
@@ -150,7 +150,7 @@ export class ScatterTransform extends ChartTransform {
     // todo: remove. do this at table filter level
     getEntityNamesToShow(
         filterBackgroundEntities = this.hideBackgroundEntities
-    ): entityName[] {
+    ): EntityName[] {
         let entityNames = filterBackgroundEntities
             ? this.chart.selectedEntityNames
             : this.possibleEntityNames
@@ -211,21 +211,21 @@ export class ScatterTransform extends ChartTransform {
     // If there's no timeline, this uses the same structure but only computes for a single year
     private getDataByEntityAndYear(
         entitiesToShow = this.getEntityNamesToShow()
-    ): Map<entityName, Map<year, ScatterValue>> {
+    ): Map<EntityName, Map<Year, ScatterValue>> {
         const { chart } = this
         const { filledDimensions } = chart
         const validEntityLookup = keyBy(entitiesToShow)
 
         const dataByEntityAndYear = new Map<
-            entityName,
-            Map<year, ScatterValue>
+            EntityName,
+            Map<Year, ScatterValue>
         >()
 
         for (const dimension of filledDimensions) {
             // First, we organize the data by entity
             const initialDataByEntity = new Map<
-                entityName,
-                { years: year[]; values: (string | number)[] }
+                EntityName,
+                { years: Year[]; values: (string | number)[] }
             >()
             const rows = dimension.column.rows
             dimension.values.forEach((value, index) => {
@@ -265,10 +265,10 @@ export class ScatterTransform extends ChartTransform {
 
     private _useTolerance(
         dimension: ChartDimension,
-        dataByEntityAndYear: Map<entityName, Map<year, ScatterValue>>,
+        dataByEntityAndYear: Map<EntityName, Map<Year, ScatterValue>>,
         initialDataByEntity: Map<
-            entityName,
-            { years: year[]; values: (string | number)[] }
+            EntityName,
+            { years: Year[]; values: (string | number)[] }
         >
     ) {
         const { yearsToCalculate, xOverrideYear } = this
@@ -281,7 +281,7 @@ export class ScatterTransform extends ChartTransform {
         initialDataByEntity.forEach((byEntity, entityName) => {
             let dataByYear = dataByEntityAndYear.get(entityName)
             if (dataByYear === undefined) {
-                dataByYear = new Map<year, ScatterValue>()
+                dataByYear = new Map<Year, ScatterValue>()
                 dataByEntityAndYear.set(entityName, dataByYear)
             }
 
@@ -320,7 +320,7 @@ export class ScatterTransform extends ChartTransform {
     }
 
     private _removeUnwantedPoints(
-        dataByEntityAndYear: Map<entityName, Map<year, ScatterValue>>
+        dataByEntityAndYear: Map<EntityName, Map<Year, ScatterValue>>
     ) {
         // The exclusion of points happens as a last step in order to avoid artefacts due to
         // the tolerance calculation. E.g. if we pre-filter the data based on the X and Y
@@ -581,12 +581,12 @@ export class ScatterTransform extends ChartTransform {
     // todo: add unit tests
     private _filterValues(
         values: ScatterValue[],
-        startYear: year,
-        endYear: year,
+        startYear: Year,
+        endYear: Year,
         yScaleType: ScaleType,
         xScaleType: ScaleType,
         isRelativeMode: boolean,
-        xOverrideYear?: year
+        xOverrideYear?: Year
     ) {
         // Only allow tolerance data to occur once in any given chart (no duplicate data points)
         // Prioritize the start and end years first, then the "true" year

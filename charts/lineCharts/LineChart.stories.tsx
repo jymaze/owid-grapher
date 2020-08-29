@@ -2,7 +2,8 @@ import * as React from "react"
 import "site/client/owid.scss"
 import "charts/core/chart.scss"
 import { LineChart } from "charts/lineCharts/LineChart"
-import { ChartRuntime, ChartScript } from "charts/core/ChartRuntime"
+import { ChartScript } from "charts/core/ChartScript"
+import { ChartRuntime } from "charts/core/ChartRuntime"
 import { parseDelimited } from "charts/utils/Util"
 
 export default {

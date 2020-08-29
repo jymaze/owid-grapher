@@ -38,7 +38,7 @@ import { getElementWithHalo } from "./Halos"
 import { EntityDimensionKey, SortOrder } from "charts/core/ChartConstants"
 import { ColorScale } from "charts/color/ColorScale"
 import { MultiColorPolyline } from "./MultiColorPolyline"
-import { entityName } from "owidTable/OwidTable"
+import { EntityName } from "owidTable/OwidTable"
 
 export interface ScatterSeries {
     color: string
@@ -53,7 +53,7 @@ export interface ScatterValue {
     x: number
     y: number
     size: number
-    entityName?: entityName
+    entityName?: EntityName
     color?: number | string
     year: number
     time: {
