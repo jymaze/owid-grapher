@@ -17,7 +17,7 @@ import {
 } from "charts/utils/Util"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { StackedAreaSeries, StackedAreaValue } from "./StackedAreaChart"
-import { AxisSpec } from "charts/axis/AxisSpec"
+import { AxisSpec } from "charts/axis/AxisScale"
 import { ColorSchemes, ColorScheme } from "charts/color/ColorSchemes"
 import { ChartTransform } from "charts/core/ChartTransform"
 import { Time } from "charts/utils/TimeBounds"

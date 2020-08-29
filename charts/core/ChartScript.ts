@@ -8,7 +8,7 @@ import {
     Color,
     RelatedQuestionsConfig
 } from "./ChartConstants"
-import { AxisConfigInterface } from "charts/axis/AxisSpec"
+import { AxisConfigInterface } from "charts/axis/AxisScale"
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
 import { TimeBound, Time } from "charts/utils/TimeBounds"
 import { ChartDimensionSpec } from "./ChartDimension"

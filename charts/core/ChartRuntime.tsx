@@ -38,7 +38,7 @@ import {
     lastOfNonEmptyArray,
     find
 } from "charts/utils/Util"
-import { AxisRuntime } from "charts/axis/AxisSpec"
+import { AxisRuntime } from "charts/axis/AxisScale"
 import {
     ChartType,
     ChartTabOption,

@@ -38,7 +38,7 @@ import { TextWrap } from "charts/text/TextWrap"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { ScaleSelector, ScaleTypeConfig } from "charts/controls/ScaleSelector"
 import { ControlsOverlay } from "charts/controls/Controls"
-import { AxisRuntime } from "charts/axis/AxisSpec"
+import { AxisRuntime } from "charts/axis/AxisScale"
 
 export interface SlopeChartValue {
     x: number
