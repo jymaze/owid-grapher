@@ -23,7 +23,6 @@ export interface AxisSpec {
     scaleType: ScaleType
     scaleTypeOptions: ScaleType[]
     label: string
-
     domain: [number, number]
 
     tickFormat: (d: number, options?: TickFormattingOptions) => string
@@ -49,27 +48,23 @@ export class AxisRuntime implements AxisConfigInterface {
 
     // A log scale domain cannot have values <= 0, so we
     // double check here
-    @computed get constrainedMin(): number | undefined {
+    @computed private get constrainedMin() {
         if (this.scaleType === ScaleType.log && (this.min || 0) <= 0)
-            return undefined
-        return this.min
+            return Infinity
+        return this.min ?? Infinity
     }
 
     isOutsideDomain(value: number) {
-        return (
-            (this.constrainedMin !== undefined &&
-                value < this.constrainedMin) ||
-            (this.constrainedMax !== undefined && value > this.constrainedMax)
-        )
+        return value < this.constrainedMin || value > this.constrainedMax
     }
 
-    @computed get constrainedMax(): number | undefined {
+    @computed private get constrainedMax() {
         if (this.scaleType === ScaleType.log && (this.max || 0) <= 0)
-            return undefined
-        return this.max
+            return -Infinity
+        return this.max ?? -Infinity
     }
 
-    @computed get domain(): [number | undefined, number | undefined] {
+    @computed get domain(): [number, number] {
         return [this.constrainedMin, this.constrainedMax]
     }
 
@@ -87,8 +82,8 @@ export class AxisRuntime implements AxisConfigInterface {
             label,
             tickFormat: d => `${d}`,
             domain: [
-                Math.min(this.domain[0] ?? Infinity, defaultDomain[0]),
-                Math.max(this.domain[1] ?? -Infinity, defaultDomain[1])
+                Math.min(this.domain[0], defaultDomain[0]),
+                Math.max(this.domain[1], defaultDomain[1])
             ],
             scaleType,
             scaleTypeOptions

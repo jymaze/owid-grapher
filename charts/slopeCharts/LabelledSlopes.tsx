@@ -353,7 +353,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
         return this.props.yAxisRuntime.scaleType
     }
 
-    @computed get yDomainDefault(): [number, number] {
+    @computed private get yDomainDefault(): [number, number] {
         return domainExtent(
             this.allValues.map(v => v.y),
             this.yScaleType
@@ -366,9 +366,10 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
 
     @computed get yDomain(): [number, number] {
         const domain = this.props.yAxisRuntime.domain
+        const domainDefault = this.yDomainDefault
         return [
-            domain[0] ?? this.yDomainDefault[0],
-            domain[1] ?? this.yDomainDefault[1]
+            Math.min(domain[0], domainDefault[0]),
+            Math.max(domain[1], domainDefault[1])
         ]
     }
 
