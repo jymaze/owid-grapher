@@ -30,7 +30,7 @@ import { computed, action } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
 import { NoDataOverlay } from "../core/NoDataOverlay"
-import { AxisView } from "charts/axis/AxisScale"
+import { HorizontalAxisView, VerticalAxisView } from "charts/axis/AxisScale"
 import { Vector2 } from "charts/utils/Vector2"
 import { Triangle } from "./Triangle"
 import { select } from "d3-selection"
@@ -68,8 +68,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xAxisView: AxisView
-    yAxisView: AxisView
+    xAxisView: HorizontalAxisView
+    yAxisView: VerticalAxisView
     colorScale?: ColorScale
     sizeDomain: [number, number]
     onMouseOver: (series: ScatterSeries) => void

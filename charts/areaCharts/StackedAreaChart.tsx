@@ -289,7 +289,7 @@ export class StackedAreaChart extends React.Component<{
     }
 
     // todo: Refactor
-    @computed private get axisBox(): AxisBox {
+    @computed private get axisBox() {
         const { bounds, legend, xAxisView, yAxisView } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
@@ -387,7 +387,7 @@ export class StackedAreaChart extends React.Component<{
 
         return (
             <Tooltip
-                tooltipOwner={this.props.chart}
+                tooltipContainer={this.props.chart}
                 x={axisBox.xAxisViewWithRange.place(refValue.x)}
                 y={
                     axisBox.yAxisViewWithRange.rangeMin +

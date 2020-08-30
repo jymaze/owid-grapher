@@ -8,7 +8,7 @@ import { ChartRuntime } from "charts/core/ChartRuntime"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { AxisBox, AxisBoxView } from "charts/axis/AxisBox"
 import { ComparisonLine } from "./ComparisonLine"
-import { AxisView } from "charts/axis/AxisScale"
+import { HorizontalAxisView, VerticalAxisView } from "charts/axis/AxisScale"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 
 import {
@@ -52,8 +52,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xAxisView: AxisView
-    yAxisView: AxisView
+    xAxisView: HorizontalAxisView
+    yAxisView: VerticalAxisView
     sizeDomain: [number, number]
     hideLines: boolean
     chart: ChartRuntime
@@ -130,7 +130,7 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
 
         return (
             <Tooltip
-                tooltipOwner={this.props.chart}
+                tooltipContainer={this.props.chart}
                 x={hoverPoint.position.x + 5}
                 y={hoverPoint.position.y + 5}
                 style={{ textAlign: "center" }}
