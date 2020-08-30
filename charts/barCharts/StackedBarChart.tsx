@@ -174,8 +174,7 @@ export class StackedBarChart extends React.Component<{
 
     // todo: Refactor
     @computed private get verticalAxis() {
-        const that = this
-        return new VerticalAxis(that.yScale)
+        return new VerticalAxis(this.yScale)
     }
 
     @computed get renderUid() {
