@@ -469,7 +469,9 @@ export class ScatterTransform extends ChartTransform {
     @computed get yAxisView() {
         const { chart, yDomainDefault, yDimension, isRelativeMode } = this
 
-        const view = chart.yAxisRuntime.toView().updateDomain(yDomainDefault)
+        const view = chart.yAxisRuntime
+            .toVerticalView()
+            .updateDomain(yDomainDefault)
         view.tickFormat =
             (yDimension && yDimension.formatValueShort) || view.tickFormat
 
@@ -513,7 +515,9 @@ export class ScatterTransform extends ChartTransform {
             xAxisLabelBase
         } = this
 
-        const view = chart.xAxisRuntime.toView().updateDomain(xDomainDefault)
+        const view = chart.xAxisRuntime
+            .toHorizontalView()
+            .updateDomain(xDomainDefault)
         if (isRelativeMode) {
             view.scaleTypeOptions = [ScaleType.linear]
             const label = chart.xAxisRuntime.label || xAxisLabelBase

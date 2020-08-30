@@ -9,8 +9,18 @@
 import { scaleLog, scaleLinear, ScaleLinear, ScaleLogarithmic } from "d3-scale"
 import { observable, computed, toJS, action } from "mobx"
 
-import { extend, rollingMap, min, isMobile, uniq } from "charts/utils/Util"
+import {
+    extend,
+    rollingMap,
+    min,
+    isMobile,
+    uniq,
+    sortBy,
+    maxBy
+} from "charts/utils/Util"
 import { TickFormattingOptions, ScaleType } from "charts/core/ChartConstants"
+import { Bounds } from "charts/utils/Bounds"
+import { TextWrap } from "charts/text/TextWrap"
 
 interface Tickmark {
     value: number
@@ -98,12 +108,16 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
 
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
-    toView() {
-        return new AxisView(this)
+    toHorizontalView() {
+        return new HorizontalAxisView(this)
+    }
+
+    toVerticalView() {
+        return new VerticalAxisView(this)
     }
 }
 
-export class AxisView {
+export abstract class AbstractAxisView {
     runTime: AxisScaleOptions
     @observable.ref domain: [number, number]
     @observable tickFormat: TickFormatFunction = d => `${d}`
@@ -320,9 +334,193 @@ export class AxisView {
         return parseFloat(this.d3_scale(value).toFixed(1))
     }
 
+    @computed get tickFontSize() {
+        return 0.9 * this.fontSize
+    }
+
+    protected doIntersect(bounds: Bounds, bounds2: Bounds) {
+        return bounds.intersects(bounds2)
+    }
+
+    @computed get ticks(): number[] {
+        const { tickPlacements } = this
+        for (let i = 0; i < tickPlacements.length; i++) {
+            for (let j = i + 1; j < tickPlacements.length; j++) {
+                const t1 = tickPlacements[i],
+                    t2 = tickPlacements[j]
+                if (t1 === t2 || t1.isHidden || t2.isHidden) continue
+                if (this.doIntersect(t1.bounds, t2.bounds)) {
+                    t2.isHidden = true
+                }
+            }
+        }
+
+        return sortBy(tickPlacements.filter(t => !t.isHidden).map(t => t.tick))
+    }
+
+    formatTick(tick: number, isFirstOrLastTick?: boolean) {
+        const tickFormattingOptions = this.getTickFormattingOptions()
+        return this.tickFormat(tick, {
+            ...tickFormattingOptions,
+            isFirstOrLastTick
+        })
+    }
+
+    // calculates coordinates for ticks, sorted by priority
+    @computed private get tickPlacements() {
+        return sortBy(this.baseTicks, tick => tick.priority).map(tick => {
+            const bounds = Bounds.forText(
+                this.formatTick(tick.value, !!tick.isFirstOrLastTick),
+                {
+                    fontSize: this.tickFontSize
+                }
+            )
+            return {
+                tick: tick.value,
+                bounds: bounds.extend(this.placeTick(tick.value, bounds)),
+                isHidden: false
+            }
+        })
+    }
+
+    @computed get labelFontSize() {
+        return 0.7 * this.fontSize
+    }
+
+    @computed protected get baseTicks() {
+        return this.getTickValues().filter(tick => !tick.gridLineOnly)
+    }
+
+    abstract get labelWidth(): number
+
+    abstract clone(): AbstractAxisView
+
+    protected abstract placeTick(
+        tickValue: number,
+        bounds: Bounds
+    ): { x: number; y: number }
+
+    @computed get labelTextWrap(): TextWrap | undefined {
+        const text = this.label
+        return text
+            ? new TextWrap({
+                  maxWidth: this.labelWidth,
+                  fontSize: this.labelFontSize,
+                  text
+              })
+            : undefined
+    }
+}
+
+export class HorizontalAxisView extends AbstractAxisView {
     clone() {
-        const view = extend(new AxisView(this.runTime), toJS(this))
+        const view = extend(new HorizontalAxisView(this.runTime), toJS(this))
         view.runTime = this.runTime
         return view
+    }
+
+    private static labelPadding = 5
+
+    @computed get labelOffset(): number {
+        return this.labelTextWrap
+            ? this.labelTextWrap.height + HorizontalAxisView.labelPadding * 2
+            : 0
+    }
+
+    @computed get labelWidth() {
+        return this.rangeSize
+    }
+
+    @computed get height() {
+        const { labelOffset } = this
+        const firstFormattedTick = this.getFormattedTicks()[0]
+        const fontSize = this.tickFontSize
+
+        return (
+            Bounds.forText(firstFormattedTick, {
+                fontSize
+            }).height +
+            labelOffset +
+            5
+        )
+    }
+
+    @computed protected get baseTicks() {
+        let ticks = this.getTickValues().filter(tick => !tick.gridLineOnly)
+        const { domain } = this
+
+        // Make sure the start and end values are present, if they're whole numbers
+        const startEndPrio = this.scaleType === ScaleType.log ? 2 : 1
+        if (domain[0] % 1 === 0)
+            ticks = [
+                {
+                    value: domain[0],
+                    priority: startEndPrio,
+                    isFirstOrLastTick: true
+                },
+                ...ticks
+            ]
+        if (domain[1] % 1 === 0 && this.hideFractionalTicks)
+            ticks = [
+                ...ticks,
+                {
+                    value: domain[1],
+                    priority: startEndPrio,
+                    isFirstOrLastTick: true
+                }
+            ]
+        return uniq(ticks)
+    }
+
+    protected placeTick(tickValue: number, bounds: Bounds) {
+        const { labelOffset } = this
+        return {
+            x: this.place(tickValue) - bounds.width / 2,
+            y: bounds.bottom - labelOffset
+        }
+    }
+
+    // Add some padding before checking for intersection
+    protected doIntersect(bounds: Bounds, bounds2: Bounds) {
+        return bounds.intersects(bounds2.padWidth(-5))
+    }
+}
+
+export class VerticalAxisView extends AbstractAxisView {
+    clone() {
+        const view = extend(new VerticalAxisView(this.runTime), toJS(this))
+        view.runTime = this.runTime
+        return view
+    }
+
+    @computed get labelWidth() {
+        return this.height
+    }
+
+    @computed get labelOffset(): number {
+        return this.labelTextWrap ? this.labelTextWrap.height + 10 : 0
+    }
+
+    @computed get width() {
+        const { labelOffset } = this
+        const longestTick = maxBy(this.getFormattedTicks(), tick => tick.length)
+        return (
+            Bounds.forText(longestTick, { fontSize: this.tickFontSize }).width +
+            labelOffset +
+            5
+        )
+    }
+
+    @computed get height() {
+        return this.rangeSize
+    }
+
+    protected placeTick(tickValue: number, bounds: Bounds) {
+        return {
+            y: this.place(tickValue),
+            // x placement doesn't really matter here, so we're using
+            // 1 for simplicity
+            x: 1
+        }
     }
 }

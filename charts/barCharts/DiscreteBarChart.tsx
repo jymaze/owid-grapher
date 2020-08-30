@@ -11,14 +11,11 @@ import {
     EntityDimensionKey,
     ScaleType
 } from "charts/core/ChartConstants"
-import {
-    AxisGridLines,
-    HorizontalAxis,
-    HorizontalAxisBox
-} from "charts/axis/AxisBox"
+import { AxisGridLines, HorizontalAxisBox } from "charts/axis/AxisBox"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { ControlsOverlay, AddEntityButton } from "../controls/Controls"
 import { ChartView } from "charts/core/ChartView"
+import { HorizontalAxisView } from "charts/axis/AxisScale"
 
 export interface DiscreteBarDatum {
     entityDimensionKey: EntityDimensionKey
@@ -164,7 +161,7 @@ export class DiscreteBarChart extends React.Component<{
 
     @computed get xAxisView() {
         const view = this.chart.yAxisRuntime
-            .toView()
+            .toVerticalView()
             .updateDomain(this.xDomainDefault)
 
         view.tickFormat = this.chart.discreteBarTransform.tickFormat
@@ -173,15 +170,10 @@ export class DiscreteBarChart extends React.Component<{
         return view
     }
 
-    @computed private get horizontalAxis() {
-        const that = this
-        return new HorizontalAxis(that.xAxisView)
-    }
-
     @computed private get innerBounds() {
         return this.bounds
             .padLeft(this.legendWidth + this.leftEndLabelWidth)
-            .padBottom(this.horizontalAxis.height)
+            .padBottom(this.xAxisView.height)
             .padRight(this.rightEndLabelWidth)
     }
 
@@ -294,7 +286,6 @@ export class DiscreteBarChart extends React.Component<{
         const {
             currentData,
             bounds,
-            horizontalAxis,
             xAxisView,
             innerBounds,
             barHeight,
@@ -322,7 +313,7 @@ export class DiscreteBarChart extends React.Component<{
                     maxX={this.chartView.tabBounds.width}
                     bounds={bounds}
                     isInteractive={this.chart.isInteractive}
-                    axis={horizontalAxis}
+                    axis={(xAxisView as any) as HorizontalAxisView}
                     onScaleTypeChange={
                         this.chart.yAxisRuntime.canChangeScaleType
                             ? onScaleTypeChange
