@@ -7,14 +7,9 @@ import { easeLinear } from "d3-ease"
 import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import {
-    AxisBox,
-    AxisGridLines,
-    VerticalAxis,
-    VerticalAxisBox
-} from "charts/axis/AxisBox"
+import { AxisBox, AxisGridLines, VerticalAxisBox } from "charts/axis/AxisBox"
 import { AxisTickMarks } from "charts/axis/AxisTickMarks"
-import { AxisView } from "charts/axis/AxisScale"
+import { VerticalAxisView } from "charts/axis/AxisScale"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { Text } from "../text/Text"
 import {
@@ -43,7 +38,7 @@ interface StackedBarSegmentProps extends React.SVGAttributes<SVGGElement> {
     bar: StackedBarValue
     color: string
     opacity: number
-    yAxisView: AxisView
+    yAxisView: VerticalAxisView
     xOffset: number
     barWidth: number
     onBarMouseOver: (bar: StackedBarValue) => void
@@ -159,7 +154,7 @@ export class StackedBarChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox(): AxisBox {
-        const { bounds, transform, chart, sidebarWidth } = this
+        const { bounds, transform, sidebarWidth } = this
         const { xAxisView, yAxisView } = transform
         return new AxisBox({
             bounds: bounds.padRight(sidebarWidth + 20),
@@ -170,11 +165,6 @@ export class StackedBarChart extends React.Component<{
 
     @computed get yScale() {
         return this.axisBox.yAxisViewWithRange
-    }
-
-    // todo: Refactor
-    @computed private get verticalAxis() {
-        return new VerticalAxis(this.yScale)
     }
 
     @computed get renderUid() {
@@ -419,7 +409,6 @@ export class StackedBarChart extends React.Component<{
             sidebarWidth,
             activeColors,
             tooltip,
-            verticalAxis,
             barWidth,
             mapXValueToOffset,
             ticks
@@ -452,7 +441,7 @@ export class StackedBarChart extends React.Component<{
                 />
                 <VerticalAxisBox
                     bounds={bounds}
-                    axis={verticalAxis}
+                    axis={yScale}
                     isInteractive={this.chart.isInteractive}
                 />
                 <AxisGridLines

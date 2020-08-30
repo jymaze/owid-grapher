@@ -12,19 +12,21 @@ import * as React from "react"
 import { observable, computed, reaction, action } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisView } from "./AxisScale"
+import {
+    VerticalAxisView,
+    HorizontalAxisView,
+    AbstractAxisView
+} from "./AxisScale"
 import { ScaleType } from "charts/core/ChartConstants"
-import { sortBy, maxBy, uniq } from "charts/utils/Util"
 import classNames from "classnames"
-import { TextWrap } from "charts/text/TextWrap"
 import { ControlsOverlay } from "charts/controls/Controls"
 import { ScaleSelector } from "charts/controls/ScaleSelector"
 import { AxisTickMarks } from "./AxisTickMarks"
 
 interface AxisBoxProps {
     bounds: Bounds
-    xAxisView: AxisView
-    yAxisView: AxisView
+    xAxisView: HorizontalAxisView
+    yAxisView: VerticalAxisView
 }
 
 // AxisBox has the important task of coordinating two axes so that they work together!
@@ -115,14 +117,14 @@ export class AxisBox {
     }
 
     // todo: Refactor
-    @computed get yAxisView() {
+    @computed private get yAxisView() {
         const view = this.props.yAxisView.clone()
         view.domain = this.currentYDomain
         return view
     }
 
     // todo: Refactor
-    @computed get xAxisView() {
+    @computed private get xAxisView() {
         const view = this.props.xAxisView.clone()
         view.domain = this.currentXDomain
         return view
@@ -147,14 +149,14 @@ export class AxisBox {
     @computed private get xAxisHeight() {
         const view = this.xAxisView.clone()
         view.range = [0, this.props.bounds.width]
-        return new HorizontalAxis(view).height
+        return view.height
     }
 
     // todo: Refactor
     @computed private get yAxisWidth() {
         const view = this.yAxisView.clone()
         view.range = [0, this.props.bounds.height]
-        return new VerticalAxis(view).width
+        return view.width
     }
 
     // Now we can determine the "true" inner bounds of the axis box
@@ -164,16 +166,6 @@ export class AxisBox {
             .padLeft(this.yAxisWidth)
     }
 
-    // todo: Refactor
-    @computed get horizontalAxis() {
-        return new HorizontalAxis(this.xAxisViewWithRange)
-    }
-
-    // todo: Refactor
-    @computed get verticalAxis() {
-        return new VerticalAxis(this.yAxisViewWithRange)
-    }
-
     @computed get bounds() {
         return this.props.bounds
     }
@@ -181,7 +173,7 @@ export class AxisBox {
 
 interface AxisGridLinesProps {
     orient: "left" | "bottom"
-    axisView: AxisView
+    axisView: AbstractAxisView
     bounds: Bounds
 }
 
@@ -258,8 +250,6 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
             bounds,
             xAxisViewWithRange,
             yAxisViewWithRange,
-            horizontalAxis,
-            verticalAxis,
             innerBounds
         } = axisBox
 
@@ -271,13 +261,13 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
                     maxX={maxX}
                     bounds={bounds}
                     axisPosition={innerBounds.bottom}
-                    axis={horizontalAxis}
+                    axis={xAxisViewWithRange}
                     showTickMarks={showTickMarks}
                     isInteractive={this.props.isInteractive}
                 />
                 <VerticalAxisBox
                     bounds={bounds}
-                    axis={verticalAxis}
+                    axis={yAxisViewWithRange}
                     isInteractive={this.props.isInteractive}
                 />
                 {!yAxisViewWithRange.hideGridlines && (
@@ -299,145 +289,23 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
     }
 }
 
-abstract class AbstractAxis {
-    scale: AxisView
-    constructor(view: AxisView) {
-        this.scale = view
-    }
-
-    @computed get tickFontSize() {
-        return 0.9 * this.scale.fontSize
-    }
-
-    protected doIntersect(bounds: Bounds, bounds2: Bounds) {
-        return bounds.intersects(bounds2)
-    }
-
-    @computed get ticks(): number[] {
-        const { tickPlacements } = this
-        for (let i = 0; i < tickPlacements.length; i++) {
-            for (let j = i + 1; j < tickPlacements.length; j++) {
-                const t1 = tickPlacements[i],
-                    t2 = tickPlacements[j]
-                if (t1 === t2 || t1.isHidden || t2.isHidden) continue
-                if (this.doIntersect(t1.bounds, t2.bounds)) {
-                    t2.isHidden = true
-                }
-            }
-        }
-
-        return sortBy(tickPlacements.filter(t => !t.isHidden).map(t => t.tick))
-    }
-
-    formatTick(tick: number, isFirstOrLastTick?: boolean) {
-        const { scale } = this
-        const tickFormattingOptions = scale.getTickFormattingOptions()
-        return scale.tickFormat(tick, {
-            ...tickFormattingOptions,
-            isFirstOrLastTick
-        })
-    }
-
-    // calculates coordinates for ticks, sorted by priority
-    @computed private get tickPlacements() {
-        return sortBy(this.baseTicks, tick => tick.priority).map(tick => {
-            const bounds = Bounds.forText(
-                this.formatTick(tick.value, !!tick.isFirstOrLastTick),
-                {
-                    fontSize: this.tickFontSize
-                }
-            )
-            return {
-                tick: tick.value,
-                bounds: bounds.extend(this.placeTick(tick.value, bounds)),
-                isHidden: false
-            }
-        })
-    }
-
-    @computed get labelFontSize() {
-        return 0.7 * this.scale.fontSize
-    }
-
-    @computed protected get baseTicks() {
-        return this.scale.getTickValues().filter(tick => !tick.gridLineOnly)
-    }
-
-    abstract get labelWidth(): number
-
-    protected abstract placeTick(
-        tickValue: number,
-        bounds: Bounds
-    ): { x: number; y: number }
-
-    @computed get label(): TextWrap | undefined {
-        const text = this.scale.label
-        return text
-            ? new TextWrap({
-                  maxWidth: this.labelWidth,
-                  fontSize: this.labelFontSize,
-                  text
-              })
-            : undefined
-    }
-}
-
-// Axis layout model. Computes the space needed for displaying an axis.
-export class VerticalAxis extends AbstractAxis {
-    @computed get labelWidth() {
-        return this.height
-    }
-
-    @computed get labelOffset(): number {
-        return this.label ? this.label.height + 10 : 0
-    }
-
-    @computed get width() {
-        const { labelOffset } = this
-        const longestTick = maxBy(
-            this.scale.getFormattedTicks(),
-            tick => tick.length
-        )
-        return (
-            Bounds.forText(longestTick, { fontSize: this.tickFontSize }).width +
-            labelOffset +
-            5
-        )
-    }
-
-    @computed get height() {
-        return this.scale.rangeSize
-    }
-
-    protected placeTick(tickValue: number, bounds: Bounds) {
-        const { scale } = this
-        return {
-            y: scale.place(tickValue),
-            // x placement doesn't really matter here, so we're using
-            // 1 for simplicity
-            x: 1
-        }
-    }
-}
-
 @observer
 export class VerticalAxisBox extends React.Component<{
     bounds: Bounds
-    axis: VerticalAxis
+    axis: VerticalAxisView
     isInteractive: boolean
 }> {
     @computed get controls() {
         const { bounds, axis } = this.props
-        const { scale } = axis
         const showControls =
-            this.props.isInteractive && scale.scaleTypeOptions.length > 1
+            this.props.isInteractive && axis.scaleTypeOptions.length > 1
         if (!showControls) return undefined
         return (
             <ControlsOverlay id="vertical-scale-selector" paddingTop={18}>
                 <ScaleSelector
                     x={bounds.left}
                     y={bounds.top - 34}
-                    scaleTypeConfig={scale}
+                    scaleTypeConfig={axis}
                 />
             </ControlsOverlay>
         )
@@ -445,7 +313,7 @@ export class VerticalAxisBox extends React.Component<{
 
     render() {
         const { bounds, axis } = this.props
-        const { scale, ticks, label } = axis
+        const { ticks, labelTextWrap: label } = axis
         const textColor = "#666"
 
         return (
@@ -460,7 +328,7 @@ export class VerticalAxisBox extends React.Component<{
                     <text
                         key={i}
                         x={(bounds.left + axis.width - 5).toFixed(2)}
-                        y={scale.place(tick)}
+                        y={axis.place(tick)}
                         fill={textColor}
                         dominantBaseline="middle"
                         textAnchor="end"
@@ -475,80 +343,9 @@ export class VerticalAxisBox extends React.Component<{
     }
 }
 
-// Axis layout model. Computes the space needed for displaying an axis.
-export class HorizontalAxis extends AbstractAxis {
-    private static labelPadding = 5
-
-    @computed get labelOffset(): number {
-        return this.label
-            ? this.label.height + HorizontalAxis.labelPadding * 2
-            : 0
-    }
-
-    @computed get labelWidth() {
-        return this.scale.rangeSize
-    }
-
-    @computed get height() {
-        const { labelOffset } = this
-        const firstFormattedTick = this.scale.getFormattedTicks()[0]
-        const fontSize = this.tickFontSize
-
-        return (
-            Bounds.forText(firstFormattedTick, {
-                fontSize
-            }).height +
-            labelOffset +
-            5
-        )
-    }
-
-    @computed protected get baseTicks() {
-        let ticks = this.scale
-            .getTickValues()
-            .filter(tick => !tick.gridLineOnly)
-        const { domain } = this.scale
-
-        // Make sure the start and end values are present, if they're whole numbers
-        const startEndPrio = this.scale.scaleType === ScaleType.log ? 2 : 1
-        if (domain[0] % 1 === 0)
-            ticks = [
-                {
-                    value: domain[0],
-                    priority: startEndPrio,
-                    isFirstOrLastTick: true
-                },
-                ...ticks
-            ]
-        if (domain[1] % 1 === 0 && this.scale.hideFractionalTicks)
-            ticks = [
-                ...ticks,
-                {
-                    value: domain[1],
-                    priority: startEndPrio,
-                    isFirstOrLastTick: true
-                }
-            ]
-        return uniq(ticks)
-    }
-
-    protected placeTick(tickValue: number, bounds: Bounds) {
-        const { scale, labelOffset } = this
-        return {
-            x: scale.place(tickValue) - bounds.width / 2,
-            y: bounds.bottom - labelOffset
-        }
-    }
-
-    // Add some padding before checking for intersection
-    protected doIntersect(bounds: Bounds, bounds2: Bounds) {
-        return bounds.intersects(bounds2.padWidth(-5))
-    }
-}
-
 export class HorizontalAxisBox extends React.Component<{
     bounds: Bounds
-    axis: HorizontalAxis
+    axis: HorizontalAxisView
     axisPosition: number
     maxX?: number
     showTickMarks?: boolean
@@ -557,9 +354,8 @@ export class HorizontalAxisBox extends React.Component<{
 }> {
     @computed get controls() {
         const { bounds, axis, onScaleTypeChange, maxX } = this.props
-        const { scale } = axis
         const showControls =
-            this.props.isInteractive && scale.scaleTypeOptions.length > 1
+            this.props.isInteractive && axis.scaleTypeOptions.length > 1
         if (!showControls) return undefined
 
         return (
@@ -568,7 +364,7 @@ export class HorizontalAxisBox extends React.Component<{
                     maxX={maxX}
                     x={bounds.right}
                     y={bounds.bottom}
-                    scaleTypeConfig={scale}
+                    scaleTypeConfig={axis}
                     onScaleTypeChange={onScaleTypeChange}
                 />
             </ControlsOverlay>
@@ -577,13 +373,13 @@ export class HorizontalAxisBox extends React.Component<{
 
     render() {
         const { bounds, axis, axisPosition, showTickMarks } = this.props
-        const { scale, ticks, label, labelOffset } = axis
+        const { ticks, labelTextWrap: label, labelOffset } = axis
         const textColor = "#666"
 
         const tickMarks = showTickMarks ? (
             <AxisTickMarks
                 tickMarkTopPosition={axisPosition}
-                tickMarkXPositions={ticks.map(tick => scale.place(tick))}
+                tickMarkXPositions={ticks.map(tick => axis.place(tick))}
                 color="#ccc"
             />
         ) : undefined
@@ -601,7 +397,7 @@ export class HorizontalAxisBox extends React.Component<{
                         tick,
                         i === 0 || i === ticks.length - 1
                     )
-                    const rawXPosition = scale.place(tick)
+                    const rawXPosition = axis.place(tick)
                     // Ensure the first label does not exceed the chart viewing area
                     const xPosition =
                         i === 0
