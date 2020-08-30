@@ -8,9 +8,9 @@ import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
 import {
-    AxisGridLines,
     VerticalAxisComponent,
-    AxisTickMarks
+    AxisTickMarks,
+    VerticalAxisGridLines
 } from "charts/axis/AxisViews"
 import { VerticalAxis, AxisBox } from "charts/axis/Axis"
 import { NoDataOverlay } from "../core/NoDataOverlay"
@@ -166,7 +166,7 @@ export class StackedBarChart extends React.Component<{
         })
     }
 
-    @computed get yScale() {
+    @computed private get yAxis() {
         return this.axisBox.yAxisWithRange
     }
 
@@ -252,13 +252,13 @@ export class StackedBarChart extends React.Component<{
     }
 
     @computed get tooltip() {
-        const { hoverBar, yScale, mapXValueToOffset, barWidth } = this
+        const { hoverBar, yAxis, mapXValueToOffset, barWidth } = this
         if (hoverBar === undefined) return
 
         const xPos = mapXValueToOffset.get(hoverBar.x)
         if (xPos === undefined) return
 
-        const yPos = yScale.place(hoverBar.yOffset + hoverBar.y)
+        const yPos = yAxis.place(hoverBar.yOffset + hoverBar.y)
         const { yFormatTooltip } = this.transform
 
         return (
@@ -407,7 +407,7 @@ export class StackedBarChart extends React.Component<{
             axisBox,
             renderUid,
             bounds,
-            yScale,
+            yAxis,
             legend,
             sidebarWidth,
             activeColors,
@@ -444,12 +444,11 @@ export class StackedBarChart extends React.Component<{
                 />
                 <VerticalAxisComponent
                     bounds={bounds}
-                    axis={yScale}
+                    axis={yAxis}
                     isInteractive={this.chart.isInteractive}
                 />
-                <AxisGridLines
-                    orient="left"
-                    axis={yScale}
+                <VerticalAxisGridLines
+                    verticalAxis={yAxis}
                     bounds={innerBounds}
                 />
 
@@ -508,7 +507,7 @@ export class StackedBarChart extends React.Component<{
                                             color={series.color}
                                             xOffset={xPos}
                                             opacity={barOpacity}
-                                            yAxis={yScale}
+                                            yAxis={yAxis}
                                             onBarMouseOver={this.onBarMouseOver}
                                             onBarMouseLeave={
                                                 this.onBarMouseLeave
