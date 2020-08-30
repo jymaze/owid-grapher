@@ -18,60 +18,72 @@ import classNames from "classnames"
 import { ControlsOverlay } from "charts/controls/Controls"
 import { ScaleSelector } from "charts/controls/ScaleSelector"
 
-interface AxisGridLinesProps {
-    orient: "left" | "bottom"
-    axis: AbstractAxis
-    bounds: Bounds
-}
-
 @observer
-export class AxisGridLines extends React.Component<AxisGridLinesProps> {
+export class VerticalAxisGridLines extends React.Component<{
+    verticalAxis: VerticalAxis
+    bounds: Bounds
+}> {
     render() {
-        const { orient, bounds } = this.props
-        const view = this.props.axis.clone()
-        view.range = orient === "left" ? bounds.yRange() : bounds.xRange()
+        const { bounds, verticalAxis } = this.props
+        const view = verticalAxis.clone()
+        view.range = bounds.yRange()
 
         return (
-            <g
-                className={classNames(
-                    "AxisGridLines",
-                    orient === "left" ? "horizontalLines" : "verticalLines"
-                )}
-            >
+            <g className={classNames("AxisGridLines", "horizontalLines")}>
                 {view.getTickValues().map((t, i) => {
                     const color = t.faint
                         ? "#eee"
                         : t.value === 0
                         ? "#ccc"
                         : "#d3d3d3"
-                    if (orient === "left")
-                        return (
-                            <line
-                                key={i}
-                                x1={bounds.left.toFixed(2)}
-                                y1={view.place(t.value)}
-                                x2={bounds.right.toFixed(2)}
-                                y2={view.place(t.value)}
-                                stroke={color}
-                                strokeDasharray={
-                                    t.value !== 0 ? "3,2" : undefined
-                                }
-                            />
-                        )
-                    else
-                        return (
-                            <line
-                                key={i}
-                                x1={view.place(t.value)}
-                                y1={bounds.bottom.toFixed(2)}
-                                x2={view.place(t.value)}
-                                y2={bounds.top.toFixed(2)}
-                                stroke={color}
-                                strokeDasharray={
-                                    t.value !== 0 ? "3,2" : undefined
-                                }
-                            />
-                        )
+
+                    return (
+                        <line
+                            key={i}
+                            x1={bounds.left.toFixed(2)}
+                            y1={view.place(t.value)}
+                            x2={bounds.right.toFixed(2)}
+                            y2={view.place(t.value)}
+                            stroke={color}
+                            strokeDasharray={t.value !== 0 ? "3,2" : undefined}
+                        />
+                    )
+                })}
+            </g>
+        )
+    }
+}
+
+@observer
+export class HorizontalAxisGridLines extends React.Component<{
+    horizontalAxis: HorizontalAxis
+    bounds: Bounds
+}> {
+    render() {
+        const { bounds, horizontalAxis } = this.props
+        const view = horizontalAxis.clone()
+        view.range = bounds.xRange()
+
+        return (
+            <g className={classNames("AxisGridLines", "verticalLines")}>
+                {view.getTickValues().map((t, i) => {
+                    const color = t.faint
+                        ? "#eee"
+                        : t.value === 0
+                        ? "#ccc"
+                        : "#d3d3d3"
+
+                    return (
+                        <line
+                            key={i}
+                            x1={view.place(t.value)}
+                            y1={bounds.bottom.toFixed(2)}
+                            x2={view.place(t.value)}
+                            y2={bounds.top.toFixed(2)}
+                            stroke={color}
+                            strokeDasharray={t.value !== 0 ? "3,2" : undefined}
+                        />
+                    )
                 })}
             </g>
         )
@@ -113,16 +125,14 @@ export class AxisBoxComponent extends React.Component<AxisBoxViewProps> {
                     isInteractive={this.props.isInteractive}
                 />
                 {!yAxisWithRange.hideGridlines && (
-                    <AxisGridLines
-                        orient="left"
-                        axis={yAxisWithRange}
+                    <VerticalAxisGridLines
+                        verticalAxis={yAxisWithRange}
                         bounds={innerBounds}
                     />
                 )}
                 {!xAxisWithRange.hideGridlines && (
-                    <AxisGridLines
-                        orient="bottom"
-                        axis={xAxisWithRange}
+                    <HorizontalAxisGridLines
+                        horizontalAxis={xAxisWithRange}
                         bounds={innerBounds}
                     />
                 )}
