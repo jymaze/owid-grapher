@@ -5,7 +5,6 @@ import { computed, action } from "mobx"
 import { observer } from "mobx-react"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisScale } from "charts/axis/AxisScale"
 import {
     Color,
     TickFormattingOptions,
@@ -156,37 +155,39 @@ export class DiscreteBarChart extends React.Component<{
         return this.chart.yAxisRuntime.scaleType === ScaleType.log
     }
 
-    @computed get xRange() {
+    @computed get xRange(): [number, number] {
         return [
             this.bounds.left + this.legendWidth + this.leftEndLabelWidth,
             this.bounds.right - this.rightEndLabelWidth
         ]
     }
 
-    @computed get xScale() {
-        const xAxisView = this.chart.yAxisRuntime
+    @computed get xAxisView() {
+        const view = this.chart.yAxisRuntime
             .toView()
             .updateDomain(this.xDomainDefault)
-        return new AxisScale(xAxisView).clone({
-            domain: this.xDomainDefault,
-            range: this.xRange,
-            tickFormat: this.chart.discreteBarTransform.tickFormat
-        })
+
+        view.tickFormat = this.chart.discreteBarTransform.tickFormat
+        view.range = this.xRange
+        return view
     }
 
     @computed private get horizontalAxis() {
         const that = this
-        return new HorizontalAxis({
-            get scale() {
-                return that.xScale
+        return new HorizontalAxis(
+            {
+                get scale() {
+                    return that.xAxisView
+                },
+                get labelText() {
+                    return ""
+                },
+                get fontSize() {
+                    return that.chart.baseFontSize
+                }
             },
-            get labelText() {
-                return ""
-            },
-            get fontSize() {
-                return that.chart.baseFontSize
-            }
-        })
+            that.xAxisView
+        )
     }
 
     @computed private get innerBounds() {
@@ -219,15 +220,15 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed private get barPlacements() {
-        const { currentData, xScale } = this
+        const { currentData, xAxisView } = this
         return currentData.map(d => {
             const isNegative = d.value < 0
             const barX = isNegative
-                ? xScale.place(d.value)
-                : xScale.place(this.x0)
+                ? xAxisView.place(d.value)
+                : xAxisView.place(this.x0)
             const barWidth = isNegative
-                ? xScale.place(this.x0) - barX
-                : xScale.place(d.value) - barX
+                ? xAxisView.place(this.x0) - barX
+                : xAxisView.place(d.value) - barX
 
             return { x: barX, width: barWidth }
         })
@@ -306,7 +307,7 @@ export class DiscreteBarChart extends React.Component<{
             currentData,
             bounds,
             horizontalAxis,
-            xScale,
+            xAxisView,
             innerBounds,
             barHeight,
             barSpacing,
@@ -343,17 +344,17 @@ export class DiscreteBarChart extends React.Component<{
                 />
                 <AxisGridLines
                     orient="bottom"
-                    scale={xScale}
+                    axisView={xAxisView}
                     bounds={innerBounds}
                 />
                 {currentData.map(d => {
                     const isNegative = d.value < 0
                     const barX = isNegative
-                        ? xScale.place(d.value)
-                        : xScale.place(this.x0)
+                        ? xAxisView.place(d.value)
+                        : xAxisView.place(this.x0)
                     const barWidth = isNegative
-                        ? xScale.place(this.x0) - barX
-                        : xScale.place(d.value) - barX
+                        ? xAxisView.place(this.x0) - barX
+                        : xAxisView.place(d.value) - barX
                     const valueLabel = barValueFormat(d)
                     const labelX = isNegative
                         ? barX -
@@ -399,7 +400,7 @@ export class DiscreteBarChart extends React.Component<{
                                 x={0}
                                 y={0}
                                 transform={`translate(${
-                                    xScale.place(d.value) +
+                                    xAxisView.place(d.value) +
                                     (isNegative
                                         ? -labelToBarPadding
                                         : labelToBarPadding)

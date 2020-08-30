@@ -353,8 +353,8 @@ export class ScatterPlot extends React.Component<{
                     hideLines={hideLines}
                     data={currentData}
                     bounds={axisBox.innerBounds}
-                    xScale={axisBox.xScale}
-                    yScale={axisBox.yScale}
+                    xScale={axisBox.xAxisViewWithRange}
+                    yScale={axisBox.yAxisViewWithRange}
                     colorScale={
                         this.transform.colorDimension ? colorScale : undefined
                     }

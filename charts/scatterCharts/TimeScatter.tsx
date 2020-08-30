@@ -8,7 +8,7 @@ import { ChartRuntime } from "charts/core/ChartRuntime"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { AxisBox, AxisBoxView } from "charts/axis/AxisBox"
 import { ComparisonLine } from "./ComparisonLine"
-import { AxisScale } from "charts/axis/AxisScale"
+import { AxisView } from "charts/axis/AxisScale"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 
 import {
@@ -52,8 +52,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xScale: AxisScale
-    yScale: AxisScale
+    xAxisView: AxisView
+    yAxisView: AxisView
     sizeDomain: [number, number]
     hideLines: boolean
     chart: ChartRuntime
@@ -100,14 +100,6 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
 
     @computed get bounds(): Bounds {
         return this.props.bounds
-    }
-
-    @computed private get xScale() {
-        return this.props.xScale.clone({ range: this.bounds.xRange() })
-    }
-
-    @computed private get yScale() {
-        return this.props.yScale.clone({ range: this.bounds.yRange() })
     }
 
     @computed get labelFontFamily(): string {
@@ -181,16 +173,28 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
         )
     }
 
-    @computed get series(): ScatterRenderSeries {
-        const { xScale, yScale } = this
-        const d = cloneDeep(this.props.data[0])
+    @computed private get xAxisView() {
+        const view = this.props.xAxisView.clone()
+        view.range = this.bounds.xRange()
+        return view
+    }
 
-        const points = d.values.map(v => {
+    @computed private get yAxisView() {
+        const view = this.props.yAxisView.clone()
+        view.range = this.bounds.yRange()
+        return view
+    }
+
+    @computed private get series(): ScatterRenderSeries {
+        const { xAxisView, yAxisView } = this
+        const data = cloneDeep(this.props.data[0])
+
+        const points = data.values.map(v => {
             const area = 1
             return {
                 position: new Vector2(
-                    Math.floor(xScale.place(v.x)),
-                    Math.floor(yScale.place(v.y))
+                    Math.floor(xAxisView.place(v.x)),
+                    Math.floor(yAxisView.place(v.y))
                 ),
                 size: Math.sqrt(area / Math.PI),
                 time: v.time,
@@ -200,11 +204,11 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
         })
 
         return {
-            entityDimensionKey: d.entityDimensionKey,
-            displayKey: "key-" + makeSafeForCSS(d.entityDimensionKey),
-            color: d.color,
+            entityDimensionKey: data.entityDimensionKey,
+            displayKey: "key-" + makeSafeForCSS(data.entityDimensionKey),
+            color: data.color,
             points: points,
-            text: d.label,
+            text: data.label,
             offsetVector: Vector2.zero
         }
     }
@@ -658,8 +662,8 @@ export class TimeScatter extends React.Component<{
                     hideLines={this.hideLines}
                     data={currentData}
                     bounds={axisBox.innerBounds}
-                    xScale={axisBox.xScale}
-                    yScale={axisBox.yScale}
+                    xAxisView={axisBox.xAxisViewWithRange}
+                    yAxisView={axisBox.yAxisViewWithRange}
                     sizeDomain={sizeDomain}
                     focusKeys={[]}
                     hoverKeys={[]}
