@@ -12,12 +12,7 @@ import * as React from "react"
 import { computed } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
-import {
-    VerticalAxisView,
-    HorizontalAxisView,
-    AbstractAxisView,
-    AxisBox
-} from "./AxisScale"
+import { VerticalAxis, HorizontalAxis, AbstractAxis, AxisBox } from "./Axis"
 import { ScaleType } from "charts/core/ChartConstants"
 import classNames from "classnames"
 import { ControlsOverlay } from "charts/controls/Controls"
@@ -26,7 +21,7 @@ import { AxisTickMarks } from "./AxisTickMarks"
 
 interface AxisGridLinesProps {
     orient: "left" | "bottom"
-    axisView: AbstractAxisView
+    axisView: AbstractAxis
     bounds: Bounds
 }
 
@@ -145,7 +140,7 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
 @observer
 export class VerticalAxisBox extends React.Component<{
     bounds: Bounds
-    axis: VerticalAxisView
+    axis: VerticalAxis
     isInteractive: boolean
 }> {
     @computed get controls() {
@@ -198,7 +193,7 @@ export class VerticalAxisBox extends React.Component<{
 
 export class HorizontalAxisBox extends React.Component<{
     bounds: Bounds
-    axis: HorizontalAxisView
+    axis: HorizontalAxis
     axisPosition: number
     maxX?: number
     showTickMarks?: boolean

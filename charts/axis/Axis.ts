@@ -104,15 +104,15 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
     toHorizontalView() {
-        return new HorizontalAxisView(this)
+        return new HorizontalAxis(this)
     }
 
     toVerticalView() {
-        return new VerticalAxisView(this)
+        return new VerticalAxis(this)
     }
 }
 
-export abstract class AbstractAxisView {
+export abstract class AbstractAxis {
     runTime: AxisScaleOptions
     @observable.ref domain: [number, number]
     @observable tickFormat: TickFormatFunction = d => `${d}`
@@ -391,9 +391,7 @@ export abstract class AbstractAxisView {
     // todo: test/refactor
     clone() {
         const classConstructor =
-            this instanceof HorizontalAxisView
-                ? HorizontalAxisView
-                : VerticalAxisView
+            this instanceof HorizontalAxis ? HorizontalAxis : VerticalAxis
         const view = extend(new classConstructor(this.runTime), toJS(this))
         view.runTime = this.runTime
         return view
@@ -416,12 +414,12 @@ export abstract class AbstractAxisView {
     }
 }
 
-export class HorizontalAxisView extends AbstractAxisView {
+export class HorizontalAxis extends AbstractAxis {
     private static labelPadding = 5
 
     @computed get labelOffset(): number {
         return this.labelTextWrap
-            ? this.labelTextWrap.height + HorizontalAxisView.labelPadding * 2
+            ? this.labelTextWrap.height + HorizontalAxis.labelPadding * 2
             : 0
     }
 
@@ -484,7 +482,7 @@ export class HorizontalAxisView extends AbstractAxisView {
     }
 }
 
-export class VerticalAxisView extends AbstractAxisView {
+export class VerticalAxis extends AbstractAxis {
     @computed get labelWidth() {
         return this.height
     }
@@ -519,8 +517,8 @@ export class VerticalAxisView extends AbstractAxisView {
 
 interface AxisBoxProps {
     bounds: Bounds
-    xAxisView: HorizontalAxisView
-    yAxisView: VerticalAxisView
+    xAxisView: HorizontalAxis
+    yAxisView: VerticalAxis
 }
 
 // AxisBox has the important task of coordinating two axes so that they work together!

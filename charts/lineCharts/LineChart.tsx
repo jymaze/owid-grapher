@@ -19,8 +19,8 @@ import { select } from "d3-selection"
 import { easeLinear } from "d3-ease"
 
 import { Bounds } from "charts/utils/Bounds"
-import { AxisBoxView } from "charts/axis/AxisBox"
-import { AxisBox } from "charts/axis/AxisScale"
+import { AxisBoxView } from "charts/axis/AxisViews"
+import { AxisBox } from "charts/axis/Axis"
 import { Vector2 } from "charts/utils/Vector2"
 import { LineLabelsHelper, LineLabelsComponent } from "./LineLabels"
 import {
@@ -32,7 +32,7 @@ import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { extent } from "d3-array"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { LineChartTransform } from "./LineChartTransform"
-import { HorizontalAxisView, VerticalAxisView } from "charts/axis/AxisScale"
+import { HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
 
 export interface LineChartValue {
     x: number
@@ -54,8 +54,8 @@ const BLUR_COLOR = "#eee"
 
 interface LinesProps {
     axisBox: AxisBox
-    xAxisView: HorizontalAxisView
-    yAxisView: VerticalAxisView
+    xAxisView: HorizontalAxis
+    yAxisView: VerticalAxis
     data: LineChartSeries[]
     focusKeys: EntityDimensionKey[]
     onHover: (hoverX: number | undefined) => void

@@ -7,9 +7,9 @@ import { easeLinear } from "d3-ease"
 import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisGridLines, VerticalAxisBox } from "charts/axis/AxisBox"
+import { AxisGridLines, VerticalAxisBox } from "charts/axis/AxisViews"
 import { AxisTickMarks } from "charts/axis/AxisTickMarks"
-import { VerticalAxisView, AxisBox } from "charts/axis/AxisScale"
+import { VerticalAxis, AxisBox } from "charts/axis/Axis"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { Text } from "../text/Text"
 import {
@@ -38,7 +38,7 @@ interface StackedBarSegmentProps extends React.SVGAttributes<SVGGElement> {
     bar: StackedBarValue
     color: string
     opacity: number
-    yAxisView: VerticalAxisView
+    yAxisView: VerticalAxis
     xOffset: number
     barWidth: number
     onBarMouseOver: (bar: StackedBarValue) => void
@@ -153,7 +153,7 @@ export class StackedBarChart extends React.Component<{
     }
 
     // todo: Refactor
-    @computed private get axisBox(): AxisBox {
+    @computed private get axisBox() {
         const { bounds, transform, sidebarWidth } = this
         const { xAxisView, yAxisView } = transform
         return new AxisBox({

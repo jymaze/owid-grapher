@@ -38,7 +38,7 @@ import {
     lastOfNonEmptyArray,
     find
 } from "charts/utils/Util"
-import { AxisScaleOptions } from "charts/axis/AxisScale"
+import { AxisScaleOptions } from "charts/axis/Axis"
 import {
     ChartType,
     ChartTabOption,

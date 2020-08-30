@@ -11,11 +11,11 @@ import {
     EntityDimensionKey,
     ScaleType
 } from "charts/core/ChartConstants"
-import { AxisGridLines, HorizontalAxisBox } from "charts/axis/AxisBox"
+import { AxisGridLines, HorizontalAxisBox } from "charts/axis/AxisViews"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { ControlsOverlay, AddEntityButton } from "../controls/Controls"
 import { ChartView } from "charts/core/ChartView"
-import { HorizontalAxisView } from "charts/axis/AxisScale"
+import { HorizontalAxis } from "charts/axis/Axis"
 
 export interface DiscreteBarDatum {
     entityDimensionKey: EntityDimensionKey
@@ -313,7 +313,7 @@ export class DiscreteBarChart extends React.Component<{
                     maxX={this.chartView.tabBounds.width}
                     bounds={bounds}
                     isInteractive={this.chart.isInteractive}
-                    axis={(xAxisView as any) as HorizontalAxisView}
+                    axis={(xAxisView as any) as HorizontalAxis}
                     onScaleTypeChange={
                         this.chart.yAxisRuntime.canChangeScaleType
                             ? onScaleTypeChange

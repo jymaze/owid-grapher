@@ -6,10 +6,10 @@ import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
-import { AxisBox } from "charts/axis/AxisScale"
-import { AxisBoxView } from "charts/axis/AxisBox"
+import { AxisBox } from "charts/axis/Axis"
+import { AxisBoxView } from "charts/axis/AxisViews"
 import { ComparisonLine } from "./ComparisonLine"
-import { HorizontalAxisView, VerticalAxisView } from "charts/axis/AxisScale"
+import { HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 
 import {
@@ -53,8 +53,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xAxisView: HorizontalAxisView
-    yAxisView: VerticalAxisView
+    xAxisView: HorizontalAxis
+    yAxisView: VerticalAxis
     sizeDomain: [number, number]
     hideLines: boolean
     chart: ChartRuntime
