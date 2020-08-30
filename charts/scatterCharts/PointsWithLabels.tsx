@@ -68,8 +68,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xAxisView: HorizontalAxis
-    yAxisView: VerticalAxis
+    xAxis: HorizontalAxis
+    yAxis: VerticalAxis
     colorScale?: ColorScale
     sizeDomain: [number, number]
     onMouseOver: (series: ScatterSeries) => void
@@ -295,9 +295,9 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
     // Pre-transform data for rendering
     @computed private get initialRenderData(): ScatterRenderSeries[] {
         const { data, sizeScale, fontScale, colorScale, bounds } = this
-        const xView = this.props.xAxisView.clone()
+        const xView = this.props.xAxis.clone()
         xView.range = bounds.xRange()
-        const yView = this.props.yAxisView.clone()
+        const yView = this.props.yAxis.clone()
         yView.range = this.bounds.yRange()
 
         return sortNumeric(

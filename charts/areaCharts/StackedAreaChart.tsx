@@ -16,7 +16,7 @@ import { computed, action, observable } from "mobx"
 import { observer } from "mobx-react"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisBoxView } from "charts/axis/AxisViews"
+import { AxisBoxComponent } from "charts/axis/AxisViews"
 import { AxisBox } from "charts/axis/Axis"
 import {
     LineLabelsHelper,
@@ -70,7 +70,7 @@ class Areas extends React.Component<AreasProps> {
 
         if (axisBox.innerBounds.contains(mouse)) {
             const closestPoint = minBy(data[0].values, d =>
-                Math.abs(axisBox.xAxisViewWithRange.place(d.x) - mouse.x)
+                Math.abs(axisBox.xAxisWithRange.place(d.x) - mouse.x)
             )
             if (closestPoint) {
                 const index = data[0].values.indexOf(closestPoint)
@@ -101,10 +101,7 @@ class Areas extends React.Component<AreasProps> {
 
     @computed private get areas(): JSX.Element[] {
         const { axisBox, data } = this.props
-        const {
-            xAxisViewWithRange: xScale,
-            yAxisViewWithRange: yScale
-        } = axisBox
+        const { xAxisWithRange: xScale, yAxisWithRange: yScale } = axisBox
         const xBottomLeft = [xScale.range[0], yScale.range[0]]
         const xBottomRight = [xScale.range[1], yScale.range[0]]
 
@@ -135,10 +132,7 @@ class Areas extends React.Component<AreasProps> {
 
     @computed private get borders(): JSX.Element[] {
         const { axisBox, data } = this.props
-        const {
-            xAxisViewWithRange: xScale,
-            yAxisViewWithRange: yScale
-        } = axisBox
+        const { xAxisWithRange: xScale, yAxisWithRange: yScale } = axisBox
 
         // Stacked area chart stacks each series upon the previous series, so we must keep track of the last point set we used
         return data.map(series => {
@@ -170,10 +164,7 @@ class Areas extends React.Component<AreasProps> {
 
     render() {
         const { axisBox, data } = this.props
-        const {
-            xAxisViewWithRange: xScale,
-            yAxisViewWithRange: yScale
-        } = axisBox
+        const { xAxisWithRange: xScale, yAxisWithRange: yScale } = axisBox
         const { hoverIndex } = this
 
         return (
@@ -291,19 +282,19 @@ export class StackedAreaChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const { bounds, legend, xAxisView, yAxisView } = this
+        const { bounds, legend, xAxis, yAxis } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
-            xAxisView,
-            yAxisView
+            xAxis,
+            yAxis
         })
     }
 
-    @computed private get xAxisView() {
+    @computed private get xAxis() {
         const { xDomainDefault } = this.transform
         const chart = this.chart
         const view = chart.xAxisRuntime
-            .toHorizontalView()
+            .toHorizontalAxis()
             .updateDomain(xDomainDefault)
         view.tickFormat = chart.formatYearFunction as any
         view.hideFractionalTicks = true
@@ -316,11 +307,11 @@ export class StackedAreaChart extends React.Component<{
         return [0, max(yValues) ?? 100]
     }
 
-    @computed private get yAxisView() {
+    @computed private get yAxis() {
         const { isRelativeMode, yDimensionFirst } = this.transform
         const { chart, yDomainDefault } = this
 
-        const view = chart.yAxisRuntime.toVerticalView().updateDomain(
+        const view = chart.yAxisRuntime.toVerticalAxis().updateDomain(
             isRelativeMode ? [0, 100] : [yDomainDefault[0], yDomainDefault[1]] // Stacked area chart must have its own y domain)
         )
         view.tickFormat = isRelativeMode
@@ -389,10 +380,10 @@ export class StackedAreaChart extends React.Component<{
         return (
             <Tooltip
                 tooltipContainer={this.props.chart}
-                x={axisBox.xAxisViewWithRange.place(refValue.x)}
+                x={axisBox.xAxisWithRange.place(refValue.x)}
                 y={
-                    axisBox.yAxisViewWithRange.rangeMin +
-                    axisBox.yAxisViewWithRange.rangeSize / 2
+                    axisBox.yAxisWithRange.rangeMin +
+                    axisBox.yAxisWithRange.rangeSize / 2
                 }
                 style={{ padding: "0.3em" }}
                 offsetX={5}
@@ -528,7 +519,7 @@ export class StackedAreaChart extends React.Component<{
                         ></rect>
                     </clipPath>
                 </defs>
-                <AxisBoxView
+                <AxisBoxComponent
                     isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={true}
@@ -538,7 +529,7 @@ export class StackedAreaChart extends React.Component<{
                         <LineLabelsComponent
                             legend={legend}
                             x={bounds.right - legend.width}
-                            yAxisView={axisBox.yAxisViewWithRange}
+                            yAxis={axisBox.yAxisWithRange}
                             options={chart}
                             focusKeys={this.focusKeys}
                             onClick={this.onLegendClick}

@@ -103,11 +103,11 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
 
     // Convert axis configuration to a finalized axis spec by supplying
     // any needed information calculated from the data
-    toHorizontalView() {
+    toHorizontalAxis() {
         return new HorizontalAxis(this)
     }
 
-    toVerticalView() {
+    toVerticalAxis() {
         return new VerticalAxis(this)
     }
 }
@@ -517,8 +517,8 @@ export class VerticalAxis extends AbstractAxis {
 
 interface AxisBoxProps {
     bounds: Bounds
-    xAxisView: HorizontalAxis
-    yAxisView: VerticalAxis
+    xAxis: HorizontalAxis
+    yAxis: VerticalAxis
 }
 
 // AxisBox has the important task of coordinating two axes so that they work together!
@@ -540,7 +540,7 @@ export class AxisBox {
     }
 
     @computed.struct private get currentYDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.yAxisView.domain
+        if (this.animProgress === undefined) return this.props.yAxis.domain
 
         const [prevMinY, prevMaxY] = this.prevYDomain
         const [targetMinY, targetMaxY] = this.targetYDomain
@@ -548,7 +548,7 @@ export class AxisBox {
         // If we have a log axis and are animating from linear to log do not set domain min to 0
         const progress = this.animProgress
             ? this.animProgress
-            : this.props.yAxisView.scaleType === ScaleType.log
+            : this.props.yAxis.scaleType === ScaleType.log
             ? 0.01
             : 0
 
@@ -559,7 +559,7 @@ export class AxisBox {
     }
 
     @computed.struct private get currentXDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.xAxisView.domain
+        if (this.animProgress === undefined) return this.props.xAxis.domain
 
         const [prevMinX, prevMaxX] = this.prevXDomain
         const [targetMinX, targetMaxX] = this.targetXDomain
@@ -567,7 +567,7 @@ export class AxisBox {
         // If we have a log axis and are animating from linear to log do not set domain min to 0
         const progress = this.animProgress
             ? this.animProgress
-            : this.props.xAxisView.scaleType === ScaleType.log
+            : this.props.xAxis.scaleType === ScaleType.log
             ? 0.01
             : 0
 
@@ -578,17 +578,17 @@ export class AxisBox {
     }
 
     @action.bound setupAnimation() {
-        this.targetYDomain = this.props.yAxisView.domain
-        this.targetXDomain = this.props.xAxisView.domain
+        this.targetYDomain = this.props.yAxis.domain
+        this.targetXDomain = this.props.xAxis.domain
         this.animProgress = 1
 
         reaction(
-            () => [this.props.yAxisView.domain, this.props.xAxisView.domain],
+            () => [this.props.yAxis.domain, this.props.xAxis.domain],
             () => {
                 this.prevXDomain = this.currentXDomain
                 this.prevYDomain = this.currentYDomain
-                this.targetYDomain = this.props.yAxisView.domain
-                this.targetXDomain = this.props.xAxisView.domain
+                this.targetYDomain = this.props.yAxis.domain
+                this.targetXDomain = this.props.xAxis.domain
                 this.animProgress = 0
                 requestAnimationFrame(this.frame)
             }
@@ -609,29 +609,29 @@ export class AxisBox {
     }
 
     // todo: Refactor
-    @computed private get yAxisView() {
-        const view = this.props.yAxisView.clone()
+    @computed private get yAxis() {
+        const view = this.props.yAxis.clone()
         view.domain = this.currentYDomain
         return view
     }
 
     // todo: Refactor
-    @computed private get xAxisView() {
-        const view = this.props.xAxisView.clone()
+    @computed private get xAxis() {
+        const view = this.props.xAxis.clone()
         view.domain = this.currentXDomain
         return view
     }
 
     // todo: Refactor
-    @computed get xAxisViewWithRange() {
-        const view = this.xAxisView.clone()
+    @computed get xAxisWithRange() {
+        const view = this.xAxis.clone()
         view.range = this.innerBounds.xRange()
         return view
     }
 
     // todo: Refactor
-    @computed get yAxisViewWithRange() {
-        const view = this.yAxisView.clone()
+    @computed get yAxisWithRange() {
+        const view = this.yAxis.clone()
         view.range = this.innerBounds.yRange()
         return view
     }
@@ -639,14 +639,14 @@ export class AxisBox {
     // todo: Refactor
     // We calculate an initial width/height for the axes in isolation
     @computed private get xAxisHeight() {
-        const view = this.xAxisView.clone()
+        const view = this.xAxis.clone()
         view.range = [0, this.props.bounds.width]
         return view.height
     }
 
     // todo: Refactor
     @computed private get yAxisWidth() {
-        const view = this.yAxisView.clone()
+        const view = this.yAxis.clone()
         view.range = [0, this.props.bounds.height]
         return view.width
     }
