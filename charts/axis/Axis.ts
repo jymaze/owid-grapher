@@ -112,7 +112,7 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
     }
 }
 
-export abstract class AbstractAxis {
+abstract class AbstractAxis {
     runTime: AxisScaleOptions
     @observable.ref domain: [number, number]
     @observable tickFormat: TickFormatFunction = d => `${d}`
