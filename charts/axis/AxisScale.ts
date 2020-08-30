@@ -46,6 +46,7 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
         parentOptions?: ParentOptions
     ) {
         this.update(props)
+        if (parentOptions) this.parentOptions = parentOptions
     }
 
     update(props?: AxisScaleOptionsInterface) {
@@ -60,7 +61,7 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
     @observable.ref removePointsOutsideDomain?: true = undefined
 
     // We need this to react to chart level changes
-    @observable.ref parentOptions: ParentOptions = {
+    @observable.ref private parentOptions: ParentOptions = {
         baseFontSize: 16
     }
     @computed get fontSize() {
