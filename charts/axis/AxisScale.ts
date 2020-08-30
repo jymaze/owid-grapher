@@ -7,7 +7,7 @@
  */
 
 import { scaleLog, scaleLinear, ScaleLinear, ScaleLogarithmic } from "d3-scale"
-import { observable, computed, toJS } from "mobx"
+import { observable, computed, toJS, action } from "mobx"
 
 import { extend, rollingMap, min, isMobile, uniq } from "charts/utils/Util"
 import { TickFormattingOptions, ScaleType } from "charts/core/ChartConstants"
@@ -133,6 +133,11 @@ export class AxisView {
 
     @computed get scaleType() {
         return this._scaleType ?? this.runTime.scaleType
+    }
+
+    // Call this to update the user's setting
+    @action.bound updateChartScaleType(value: ScaleType) {
+        this.runTime.scaleType = value
     }
 
     set scaleType(value: ScaleType) {

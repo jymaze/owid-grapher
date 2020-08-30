@@ -16,6 +16,7 @@ import { ScaleType } from "charts/core/ChartConstants"
 export interface ScaleTypeConfig {
     scaleType: ScaleType // This is assumed to be observable.
     scaleTypeOptions: ScaleType[] // This is assumed to be observable.
+    updateChartScaleType?: (scaleType: ScaleType) => void
 }
 
 interface ScaleSelectorOptions {
@@ -57,6 +58,8 @@ export class ScaleSelector extends React.Component<ScaleSelectorOptions> {
         const newValue = scaleTypeOptions[nextScaleTypeIndex]
 
         if (this.props.onScaleTypeChange) this.props.onScaleTypeChange(newValue)
+        else if (this.props.scaleTypeConfig.updateChartScaleType)
+            this.props.scaleTypeConfig.updateChartScaleType(newValue)
         else this.props.scaleTypeConfig.scaleType = newValue
     }
 
