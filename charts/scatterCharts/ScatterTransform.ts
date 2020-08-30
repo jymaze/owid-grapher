@@ -466,11 +466,11 @@ export class ScatterTransform extends ChartTransform {
         return (this.yDimension && this.yDimension.displayName) || ""
     }
 
-    @computed get yAxisView() {
+    @computed get yAxis() {
         const { chart, yDomainDefault, yDimension, isRelativeMode } = this
 
         const view = chart.yAxisRuntime
-            .toVerticalView()
+            .toVerticalAxis()
             .updateDomain(yDomainDefault)
         view.tickFormat =
             (yDimension && yDimension.formatValueShort) || view.tickFormat
@@ -505,7 +505,7 @@ export class ScatterTransform extends ChartTransform {
         else return xDimName
     }
 
-    @computed get xAxisView() {
+    @computed get xAxis() {
         const {
             chart,
             xDomainDefault,
@@ -515,7 +515,7 @@ export class ScatterTransform extends ChartTransform {
         } = this
 
         const view = chart.xAxisRuntime
-            .toHorizontalView()
+            .toHorizontalAxis()
             .updateDomain(xDomainDefault)
         if (isRelativeMode) {
             view.scaleTypeOptions = [ScaleType.linear]
@@ -540,13 +540,13 @@ export class ScatterTransform extends ChartTransform {
 
     @computed get yFormatTooltip(): (d: number) => string {
         return this.isRelativeMode || !this.yDimension
-            ? this.yAxisView.tickFormat
+            ? this.yAxis.tickFormat
             : this.yDimension.formatValueLong
     }
 
     @computed get xFormatTooltip(): (d: number) => string {
         return this.isRelativeMode || !this.xDimension
-            ? this.xAxisView.tickFormat
+            ? this.xAxis.tickFormat
             : this.xDimension.formatValueLong
     }
 

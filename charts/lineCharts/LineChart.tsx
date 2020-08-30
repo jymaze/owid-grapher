@@ -19,7 +19,7 @@ import { select } from "d3-selection"
 import { easeLinear } from "d3-ease"
 
 import { Bounds } from "charts/utils/Bounds"
-import { AxisBoxView } from "charts/axis/AxisViews"
+import { AxisBoxComponent } from "charts/axis/AxisViews"
 import { AxisBox } from "charts/axis/Axis"
 import { Vector2 } from "charts/utils/Vector2"
 import { LineLabelsHelper, LineLabelsComponent } from "./LineLabels"
@@ -54,8 +54,8 @@ const BLUR_COLOR = "#eee"
 
 interface LinesProps {
     axisBox: AxisBox
-    xAxisView: HorizontalAxis
-    yAxisView: VerticalAxis
+    xAxis: HorizontalAxis
+    yAxis: VerticalAxis
     data: LineChartSeries[]
     focusKeys: EntityDimensionKey[]
     onHover: (hoverX: number | undefined) => void
@@ -86,7 +86,7 @@ class Lines extends React.Component<LinesProps> {
     }
 
     @computed get renderData(): LineRenderSeries[] {
-        const { data, xAxisView, yAxisView, focusKeys } = this.props
+        const { data, xAxis, yAxis, focusKeys } = this.props
         return map(data, series => {
             return {
                 entityDimensionKey: series.entityDimensionKey,
@@ -94,8 +94,8 @@ class Lines extends React.Component<LinesProps> {
                 color: series.color,
                 values: series.values.map(v => {
                     return new Vector2(
-                        Math.round(xAxisView.place(v.x)),
-                        Math.round(yAxisView.place(v.y))
+                        Math.round(xAxis.place(v.x)),
+                        Math.round(yAxis.place(v.y))
                     )
                 }),
                 isFocus:
@@ -134,14 +134,14 @@ class Lines extends React.Component<LinesProps> {
     }
 
     @action.bound onCursorMove(ev: MouseEvent | TouchEvent) {
-        const { axisBox, xAxisView } = this.props
+        const { axisBox, xAxis } = this.props
 
         const mouse = getRelativeMouse(this.base.current, ev)
 
         let hoverX
         if (axisBox.innerBounds.contains(mouse)) {
             const closestValue = minBy(this.allValues, d =>
-                Math.abs(xAxisView.place(d.x) - mouse.x)
+                Math.abs(xAxis.place(d.x) - mouse.x)
             )
             hoverX = closestValue?.x
         }
@@ -154,10 +154,10 @@ class Lines extends React.Component<LinesProps> {
     }
 
     @computed get bounds() {
-        const { xAxisView, yAxisView } = this.props
+        const { xAxis, yAxis } = this.props
         return Bounds.fromCorners(
-            new Vector2(xAxisView.range[0], yAxisView.range[0]),
-            new Vector2(xAxisView.range[1], yAxisView.range[1])
+            new Vector2(xAxis.range[0], yAxis.range[0]),
+            new Vector2(xAxis.range[1], yAxis.range[1])
         )
     }
 
@@ -351,10 +351,10 @@ export class LineChart extends React.Component<{
         return (
             <Tooltip
                 tooltipContainer={this.options}
-                x={axisBox.xAxisViewWithRange.place(hoverX)}
+                x={axisBox.xAxisWithRange.place(hoverX)}
                 y={
-                    axisBox.yAxisViewWithRange.rangeMin +
-                    axisBox.yAxisViewWithRange.rangeSize / 2
+                    axisBox.yAxisWithRange.rangeMin +
+                    axisBox.yAxisWithRange.rangeSize / 2
                 }
                 style={{ padding: "0.3em" }}
                 offsetX={5}
@@ -455,7 +455,7 @@ export class LineChart extends React.Component<{
                                     >
                                         {!value
                                             ? "No data"
-                                            : transform.yAxisView.tickFormat(
+                                            : transform.yAxis.tickFormat(
                                                   value.y,
                                                   { noTrailingZeroes: false }
                                               )}
@@ -471,11 +471,11 @@ export class LineChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const { xAxisView, yAxisView } = this.transform
+        const { xAxis, yAxis } = this.transform
         return new AxisBox({
             bounds: this.bounds.padRight(this.legend ? this.legend.width : 20),
-            yAxisView,
-            xAxisView
+            yAxis,
+            xAxis
         })
     }
 
@@ -549,7 +549,7 @@ export class LineChart extends React.Component<{
             renderUid,
             hoverX
         } = this
-        const { xAxisViewWithRange, yAxisViewWithRange } = axisBox
+        const { xAxisWithRange, yAxisWithRange } = axisBox
         const { groupedData } = transform
 
         const comparisonLines = options.comparisonLines || []
@@ -567,7 +567,7 @@ export class LineChart extends React.Component<{
                         ></rect>
                     </clipPath>
                 </defs>
-                <AxisBoxView
+                <AxisBoxComponent
                     isInteractive={this.transform.chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={true}
@@ -585,7 +585,7 @@ export class LineChart extends React.Component<{
                             x={bounds.right - legend.width}
                             legend={legend}
                             focusKeys={this.focusKeys}
-                            yAxisView={axisBox.yAxisViewWithRange}
+                            yAxis={axisBox.yAxisWithRange}
                             onClick={this.onLegendClick}
                             options={options}
                             onMouseOver={this.onLegendMouseOver}
@@ -594,8 +594,8 @@ export class LineChart extends React.Component<{
                     )}
                     <Lines
                         axisBox={axisBox}
-                        xAxisView={axisBox.xAxisViewWithRange}
-                        yAxisView={axisBox.yAxisViewWithRange}
+                        xAxis={axisBox.xAxisWithRange}
+                        yAxis={axisBox.yAxisWithRange}
                         data={groupedData}
                         onHover={this.onHover}
                         focusKeys={this.focusKeys}
@@ -612,18 +612,18 @@ export class LineChart extends React.Component<{
                                 return (
                                     <circle
                                         key={series.entityDimensionKey}
-                                        cx={xAxisViewWithRange.place(value.x)}
-                                        cy={yAxisViewWithRange.place(value.y)}
+                                        cx={xAxisWithRange.place(value.x)}
+                                        cy={yAxisWithRange.place(value.y)}
                                         r={4}
                                         fill={series.color}
                                     />
                                 )
                         })}
                         <line
-                            x1={xAxisViewWithRange.place(hoverX)}
-                            y1={yAxisViewWithRange.range[0]}
-                            x2={xAxisViewWithRange.place(hoverX)}
-                            y2={yAxisViewWithRange.range[1]}
+                            x1={xAxisWithRange.place(hoverX)}
+                            y1={yAxisWithRange.range[0]}
+                            x2={xAxisWithRange.place(hoverX)}
+                            y2={yAxisWithRange.range[1]}
                             stroke="rgba(180,180,180,.4)"
                         />
                     </g>

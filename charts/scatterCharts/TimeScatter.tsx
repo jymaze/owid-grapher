@@ -7,7 +7,7 @@ import { Bounds } from "charts/utils/Bounds"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { AxisBox } from "charts/axis/Axis"
-import { AxisBoxView } from "charts/axis/AxisViews"
+import { AxisBoxComponent } from "charts/axis/AxisViews"
 import { ComparisonLine } from "./ComparisonLine"
 import { HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
@@ -53,8 +53,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xAxisView: HorizontalAxis
-    yAxisView: VerticalAxis
+    xAxis: HorizontalAxis
+    yAxis: VerticalAxis
     sizeDomain: [number, number]
     hideLines: boolean
     chart: ChartRuntime
@@ -156,12 +156,12 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
                     }}
                 >
                     <span>
-                        {transform.yAxisView.label}{" "}
+                        {transform.yAxis.label}{" "}
                         <strong>{transform.yFormatTooltip(value.y)}</strong>
                     </span>
                     <br />
                     <span>
-                        {transform.xAxisView.label}{" "}
+                        {transform.xAxis.label}{" "}
                         <strong>
                             {transform.xFormatTooltip(value.x)}
                             {!value.time.span && value.time.y !== value.time.x
@@ -174,28 +174,28 @@ class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
         )
     }
 
-    @computed private get xAxisView() {
-        const view = this.props.xAxisView.clone()
+    @computed private get xAxis() {
+        const view = this.props.xAxis.clone()
         view.range = this.bounds.xRange()
         return view
     }
 
-    @computed private get yAxisView() {
-        const view = this.props.yAxisView.clone()
+    @computed private get yAxis() {
+        const view = this.props.yAxis.clone()
         view.range = this.bounds.yRange()
         return view
     }
 
     @computed private get series(): ScatterRenderSeries {
-        const { xAxisView, yAxisView } = this
+        const { xAxis, yAxis } = this
         const data = cloneDeep(this.props.data[0])
 
         const points = data.values.map(v => {
             const area = 1
             return {
                 position: new Vector2(
-                    Math.floor(xAxisView.place(v.x)),
-                    Math.floor(yAxisView.place(v.y))
+                    Math.floor(xAxis.place(v.x)),
+                    Math.floor(yAxis.place(v.y))
                 ),
                 size: Math.sqrt(area / Math.PI),
                 time: v.time,
@@ -606,11 +606,11 @@ export class TimeScatter extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const { xAxisView, yAxisView } = this.transform
+        const { xAxis, yAxis } = this.transform
         return new AxisBox({
             bounds: this.bounds,
-            xAxisView,
-            yAxisView
+            xAxis,
+            yAxis
         })
     }
 
@@ -636,7 +636,7 @@ export class TimeScatter extends React.Component<{
 
         return (
             <g>
-                <AxisBoxView
+                <AxisBoxComponent
                     isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={false}
@@ -654,8 +654,8 @@ export class TimeScatter extends React.Component<{
                     hideLines={this.hideLines}
                     data={currentData}
                     bounds={axisBox.innerBounds}
-                    xAxisView={axisBox.xAxisViewWithRange}
-                    yAxisView={axisBox.yAxisViewWithRange}
+                    xAxis={axisBox.xAxisWithRange}
+                    yAxis={axisBox.yAxisWithRange}
                     sizeDomain={sizeDomain}
                     focusKeys={[]}
                     hoverKeys={[]}

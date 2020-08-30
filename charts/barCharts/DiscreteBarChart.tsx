@@ -11,7 +11,7 @@ import {
     EntityDimensionKey,
     ScaleType
 } from "charts/core/ChartConstants"
-import { AxisGridLines, HorizontalAxisBox } from "charts/axis/AxisViews"
+import { AxisGridLines, HorizontalAxisComponent } from "charts/axis/AxisViews"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { ControlsOverlay, AddEntityButton } from "../controls/Controls"
 import { ChartView } from "charts/core/ChartView"
@@ -159,9 +159,9 @@ export class DiscreteBarChart extends React.Component<{
         ]
     }
 
-    @computed get xAxisView() {
+    @computed get xAxis() {
         const view = this.chart.yAxisRuntime
-            .toVerticalView()
+            .toVerticalAxis()
             .updateDomain(this.xDomainDefault)
 
         view.tickFormat = this.chart.discreteBarTransform.tickFormat
@@ -173,7 +173,7 @@ export class DiscreteBarChart extends React.Component<{
     @computed private get innerBounds() {
         return this.bounds
             .padLeft(this.legendWidth + this.leftEndLabelWidth)
-            .padBottom(this.xAxisView.height)
+            .padBottom(this.xAxis.height)
             .padRight(this.rightEndLabelWidth)
     }
 
@@ -200,15 +200,15 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed private get barPlacements() {
-        const { currentData, xAxisView } = this
+        const { currentData, xAxis } = this
         return currentData.map(d => {
             const isNegative = d.value < 0
             const barX = isNegative
-                ? xAxisView.place(d.value)
-                : xAxisView.place(this.x0)
+                ? xAxis.place(d.value)
+                : xAxis.place(this.x0)
             const barWidth = isNegative
-                ? xAxisView.place(this.x0) - barX
-                : xAxisView.place(d.value) - barX
+                ? xAxis.place(this.x0) - barX
+                : xAxis.place(d.value) - barX
 
             return { x: barX, width: barWidth }
         })
@@ -286,7 +286,7 @@ export class DiscreteBarChart extends React.Component<{
         const {
             currentData,
             bounds,
-            xAxisView,
+            xAxis,
             innerBounds,
             barHeight,
             barSpacing,
@@ -309,11 +309,11 @@ export class DiscreteBarChart extends React.Component<{
                     opacity={0}
                     fill="rgba(255,255,255,0)"
                 />
-                <HorizontalAxisBox
+                <HorizontalAxisComponent
                     maxX={this.chartView.tabBounds.width}
                     bounds={bounds}
                     isInteractive={this.chart.isInteractive}
-                    axis={(xAxisView as any) as HorizontalAxis}
+                    axis={(xAxis as any) as HorizontalAxis}
                     onScaleTypeChange={
                         this.chart.yAxisRuntime.canChangeScaleType
                             ? onScaleTypeChange
@@ -323,17 +323,17 @@ export class DiscreteBarChart extends React.Component<{
                 />
                 <AxisGridLines
                     orient="bottom"
-                    axisView={xAxisView}
+                    axis={xAxis}
                     bounds={innerBounds}
                 />
                 {currentData.map(d => {
                     const isNegative = d.value < 0
                     const barX = isNegative
-                        ? xAxisView.place(d.value)
-                        : xAxisView.place(this.x0)
+                        ? xAxis.place(d.value)
+                        : xAxis.place(this.x0)
                     const barWidth = isNegative
-                        ? xAxisView.place(this.x0) - barX
-                        : xAxisView.place(d.value) - barX
+                        ? xAxis.place(this.x0) - barX
+                        : xAxis.place(d.value) - barX
                     const valueLabel = barValueFormat(d)
                     const labelX = isNegative
                         ? barX -
@@ -379,7 +379,7 @@ export class DiscreteBarChart extends React.Component<{
                                 x={0}
                                 y={0}
                                 transform={`translate(${
-                                    xAxisView.place(d.value) +
+                                    xAxis.place(d.value) +
                                     (isNegative
                                         ? -labelToBarPadding
                                         : labelToBarPadding)

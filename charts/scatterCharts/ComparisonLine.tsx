@@ -21,10 +21,7 @@ export class ComparisonLine extends React.Component<{
 }> {
     @computed private get controlData(): [number, number][] {
         const { comparisonLine, axisBox } = this.props
-        const {
-            xAxisViewWithRange: xScale,
-            yAxisViewWithRange: yScale
-        } = axisBox
+        const { xAxisWithRange: xScale, yAxisWithRange: yScale } = axisBox
         return generateComparisonLinePoints(
             comparisonLine.yEquals,
             xScale.domain,
@@ -37,8 +34,8 @@ export class ComparisonLine extends React.Component<{
     @computed private get linePath(): string | null {
         const { controlData } = this
         const {
-            xAxisViewWithRange: xScale,
-            yAxisViewWithRange: yScale
+            xAxisWithRange: xScale,
+            yAxisWithRange: yScale
         } = this.props.axisBox
         const line = d3_line()
             .curve(curveLinear)
@@ -55,8 +52,8 @@ export class ComparisonLine extends React.Component<{
 
         const { controlData } = this
         const {
-            xAxisViewWithRange: xScale,
-            yAxisViewWithRange: yScale,
+            xAxisWithRange: xScale,
+            yAxisWithRange: yScale,
             innerBounds
         } = this.props.axisBox
 

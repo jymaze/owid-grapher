@@ -222,7 +222,7 @@ interface ObservableObject {
 interface LineLabelsComponentProps {
     x: number
     legend: LineLabelsHelper
-    yAxisView: VerticalAxis
+    yAxis: VerticalAxis
     focusKeys: EntityDimensionKey[]
     onMouseOver?: (key: EntityDimensionKey) => void
     onClick?: (key: EntityDimensionKey) => void
@@ -252,7 +252,7 @@ export class LineLabelsComponent extends React.Component<
 
     // Naive initial placement of each mark at the target height, before collision detection
     @computed private get initialMarks(): PlacedLabel[] {
-        const { legend, x, yAxisView: yScale } = this.props
+        const { legend, x, yAxis: yScale } = this.props
 
         return sortBy(
             legend.marks.map(mark => {
@@ -291,7 +291,7 @@ export class LineLabelsComponent extends React.Component<
     }
 
     @computed get standardPlacement() {
-        const { yAxisView: yScale } = this.props
+        const { yAxis: yScale } = this.props
 
         const groups: PlacedLabel[][] = cloneDeep(
             this.initialMarks
@@ -380,8 +380,8 @@ export class LineLabelsComponent extends React.Component<
             sumBy(this.initialMarks, mark => mark.bounds.height) +
             this.initialMarks.length * LEGEND_ITEM_MIN_SPACING
         const availableHeight = this.options.canAddData
-            ? this.props.yAxisView.rangeSize - ADD_BUTTON_HEIGHT
-            : this.props.yAxisView.rangeSize
+            ? this.props.yAxis.rangeSize - ADD_BUTTON_HEIGHT
+            : this.props.yAxis.rangeSize
 
         // Need to be careful here – the controls overlay will automatically add padding if
         // needed to fit the floating 'Add country' button, therefore decreasing the space

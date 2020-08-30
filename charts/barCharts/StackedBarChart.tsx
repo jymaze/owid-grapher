@@ -7,7 +7,7 @@ import { easeLinear } from "d3-ease"
 import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisGridLines, VerticalAxisBox } from "charts/axis/AxisViews"
+import { AxisGridLines, VerticalAxisComponent } from "charts/axis/AxisViews"
 import { AxisTickMarks } from "charts/axis/AxisTickMarks"
 import { VerticalAxis, AxisBox } from "charts/axis/Axis"
 import { NoDataOverlay } from "../core/NoDataOverlay"
@@ -38,7 +38,7 @@ interface StackedBarSegmentProps extends React.SVGAttributes<SVGGElement> {
     bar: StackedBarValue
     color: string
     opacity: number
-    yAxisView: VerticalAxis
+    yAxis: VerticalAxis
     xOffset: number
     barWidth: number
     onBarMouseOver: (bar: StackedBarValue) => void
@@ -52,12 +52,12 @@ class StackedBarSegment extends React.Component<StackedBarSegmentProps> {
     @observable mouseOver: boolean = false
 
     @computed get yPos() {
-        const { bar, yAxisView: yScale } = this.props
+        const { bar, yAxis: yScale } = this.props
         return yScale.place(bar.yOffset + bar.y)
     }
 
     @computed get barHeight() {
-        const { bar, yAxisView: yScale } = this.props
+        const { bar, yAxis: yScale } = this.props
         const { yPos } = this
 
         return yScale.place(bar.yOffset) - yPos
@@ -155,16 +155,16 @@ export class StackedBarChart extends React.Component<{
     // todo: Refactor
     @computed private get axisBox() {
         const { bounds, transform, sidebarWidth } = this
-        const { xAxisView, yAxisView } = transform
+        const { xAxis, yAxis } = transform
         return new AxisBox({
             bounds: bounds.padRight(sidebarWidth + 20),
-            xAxisView,
-            yAxisView
+            xAxis,
+            yAxis
         })
     }
 
     @computed get yScale() {
-        return this.axisBox.yAxisViewWithRange
+        return this.axisBox.yAxisWithRange
     }
 
     @computed get renderUid() {
@@ -311,10 +311,10 @@ export class StackedBarChart extends React.Component<{
     @computed private get tickPlacements() {
         const { mapXValueToOffset, barWidth, axisBox } = this
         const { xValues } = this.transform
-        const { xAxisViewWithRange } = axisBox
+        const { xAxisWithRange } = axisBox
 
         return xValues.map(x => {
-            const text = xAxisViewWithRange.tickFormat(x)
+            const text = xAxisWithRange.tickFormat(x)
             const xPos = mapXValueToOffset.get(x) as number
 
             const bounds = Bounds.forText(text, { fontSize: this.tickFontSize })
@@ -439,14 +439,14 @@ export class StackedBarChart extends React.Component<{
                     opacity={0}
                     fill="rgba(255,255,255,0)"
                 />
-                <VerticalAxisBox
+                <VerticalAxisComponent
                     bounds={bounds}
                     axis={yScale}
                     isInteractive={this.chart.isInteractive}
                 />
                 <AxisGridLines
                     orient="left"
-                    axisView={yScale}
+                    axis={yScale}
                     bounds={innerBounds}
                 />
 
@@ -505,7 +505,7 @@ export class StackedBarChart extends React.Component<{
                                             color={series.color}
                                             xOffset={xPos}
                                             opacity={barOpacity}
-                                            yAxisView={yScale}
+                                            yAxis={yScale}
                                             onBarMouseOver={this.onBarMouseOver}
                                             onBarMouseLeave={
                                                 this.onBarMouseLeave

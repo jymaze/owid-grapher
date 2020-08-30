@@ -73,16 +73,16 @@ export class StackedBarTransform extends ChartTransform {
     }
 
     // TODO: Make XAxis generic
-    @computed get xAxisView() {
+    @computed get xAxis() {
         const { chart, xDomainDefault } = this
-        const axisView = chart.xAxisRuntime
-            .toHorizontalView()
+        const view = chart.xAxisRuntime
+            .toHorizontalAxis()
             .updateDomain(xDomainDefault)
         if (this.chart.formatYearFunction)
-            axisView.tickFormat = this.chart.formatYearFunction as any
-        axisView.hideGridlines = true
-        axisView.hideFractionalTicks = true
-        return axisView
+            view.tickFormat = this.chart.formatYearFunction as any
+        view.hideGridlines = true
+        view.hideFractionalTicks = true
+        return view
     }
 
     @computed get yDomainDefault(): [number, number] {
@@ -102,14 +102,14 @@ export class StackedBarTransform extends ChartTransform {
         return yDimensionFirst ? yDimensionFirst.formatValueShort : identity
     }
 
-    @computed get yAxisView() {
+    @computed get yAxis() {
         const { chart, yDomainDefault, yTickFormat } = this
-        const yAxisView = chart.yAxisRuntime
-            .toVerticalView()
+        const yAxis = chart.yAxisRuntime
+            .toVerticalAxis()
             .updateDomain(yDomainDefault)
-        yAxisView.domain = [yDomainDefault[0], yDomainDefault[1]] // Stacked chart must have its own y domain
-        yAxisView.tickFormat = yTickFormat
-        return yAxisView
+        yAxis.domain = [yDomainDefault[0], yDomainDefault[1]] // Stacked chart must have its own y domain
+        yAxis.tickFormat = yTickFormat
+        return yAxis
     }
 
     @computed get allStackedValues(): StackedBarValue[] {

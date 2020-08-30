@@ -21,7 +21,7 @@ import { AxisTickMarks } from "./AxisTickMarks"
 
 interface AxisGridLinesProps {
     orient: "left" | "bottom"
-    axisView: AbstractAxis
+    axis: AbstractAxis
     bounds: Bounds
 }
 
@@ -29,7 +29,7 @@ interface AxisGridLinesProps {
 export class AxisGridLines extends React.Component<AxisGridLinesProps> {
     render() {
         const { orient, bounds } = this.props
-        const view = this.props.axisView.clone()
+        const view = this.props.axis.clone()
         view.range = orient === "left" ? bounds.yRange() : bounds.xRange()
 
         return (
@@ -87,48 +87,43 @@ interface AxisBoxViewProps {
 }
 
 @observer
-export class AxisBoxView extends React.Component<AxisBoxViewProps> {
+export class AxisBoxComponent extends React.Component<AxisBoxViewProps> {
     componentDidMount() {
         requestAnimationFrame(this.props.axisBox.setupAnimation)
     }
 
     render() {
         const { axisBox, showTickMarks } = this.props
-        const {
-            bounds,
-            xAxisViewWithRange,
-            yAxisViewWithRange,
-            innerBounds
-        } = axisBox
+        const { bounds, xAxisWithRange, yAxisWithRange, innerBounds } = axisBox
 
         const maxX = undefined // {chartView.tabBounds.width} todo
 
         return (
             <g className="AxisBoxView">
-                <HorizontalAxisBox
+                <HorizontalAxisComponent
                     maxX={maxX}
                     bounds={bounds}
                     axisPosition={innerBounds.bottom}
-                    axis={xAxisViewWithRange}
+                    axis={xAxisWithRange}
                     showTickMarks={showTickMarks}
                     isInteractive={this.props.isInteractive}
                 />
-                <VerticalAxisBox
+                <VerticalAxisComponent
                     bounds={bounds}
-                    axis={yAxisViewWithRange}
+                    axis={yAxisWithRange}
                     isInteractive={this.props.isInteractive}
                 />
-                {!yAxisViewWithRange.hideGridlines && (
+                {!yAxisWithRange.hideGridlines && (
                     <AxisGridLines
                         orient="left"
-                        axisView={yAxisViewWithRange}
+                        axis={yAxisWithRange}
                         bounds={innerBounds}
                     />
                 )}
-                {!xAxisViewWithRange.hideGridlines && (
+                {!xAxisWithRange.hideGridlines && (
                     <AxisGridLines
                         orient="bottom"
-                        axisView={xAxisViewWithRange}
+                        axis={xAxisWithRange}
                         bounds={innerBounds}
                     />
                 )}
@@ -138,7 +133,7 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
 }
 
 @observer
-export class VerticalAxisBox extends React.Component<{
+export class VerticalAxisComponent extends React.Component<{
     bounds: Bounds
     axis: VerticalAxis
     isInteractive: boolean
@@ -191,7 +186,7 @@ export class VerticalAxisBox extends React.Component<{
     }
 }
 
-export class HorizontalAxisBox extends React.Component<{
+export class HorizontalAxisComponent extends React.Component<{
     bounds: Bounds
     axis: HorizontalAxis
     axisPosition: number

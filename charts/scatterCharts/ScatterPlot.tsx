@@ -35,7 +35,7 @@ import {
     VerticalColorLegend,
     ScatterColorLegendView
 } from "./ScatterColorLegend"
-import { AxisBoxView } from "charts/axis/AxisViews"
+import { AxisBoxComponent } from "charts/axis/AxisViews"
 import { AxisBox } from "charts/axis/Axis"
 import { ComparisonLine } from "./ComparisonLine"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
@@ -245,11 +245,11 @@ export class ScatterPlot extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const { xAxisView, yAxisView } = this.transform
+        const { xAxis, yAxis } = this.transform
         return new AxisBox({
             bounds: this.bounds.padRight(this.sidebarWidth + 20),
-            xAxisView,
-            yAxisView
+            xAxis,
+            yAxis
         })
     }
 
@@ -328,7 +328,7 @@ export class ScatterPlot extends React.Component<{
 
         return (
             <g className="ScatterPlot">
-                <AxisBoxView
+                <AxisBoxComponent
                     isInteractive={chart.isInteractive}
                     axisBox={axisBox}
                     showTickMarks={false}
@@ -345,8 +345,8 @@ export class ScatterPlot extends React.Component<{
                     hideLines={hideLines}
                     data={currentData}
                     bounds={axisBox.innerBounds}
-                    xAxisView={axisBox.xAxisViewWithRange}
-                    yAxisView={axisBox.yAxisViewWithRange}
+                    xAxis={axisBox.xAxisWithRange}
+                    yAxis={axisBox.yAxisWithRange}
                     colorScale={
                         this.transform.colorDimension ? colorScale : undefined
                     }

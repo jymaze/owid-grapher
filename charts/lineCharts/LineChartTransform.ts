@@ -43,7 +43,7 @@ export class LineChartTransform extends ChartTransform {
 
     @computed get initialData(): LineChartSeries[] {
         const { chart } = this
-        const { yAxisRuntime: yAxis } = chart
+        const { yAxisRuntime } = chart
         const { selectedKeys, selectedKeysByKey } = chart
         const filledDimensions = chart.filledDimensions
 
@@ -65,7 +65,8 @@ export class LineChartTransform extends ChartTransform {
                 // Not a selected key, don't add any data for it
                 if (!selectedKeysByKey[entityDimensionKey]) continue
                 // Can't have values <= 0 on log scale
-                if (value <= 0 && yAxis.scaleType === ScaleType.log) continue
+                if (value <= 0 && yAxisRuntime.scaleType === ScaleType.log)
+                    continue
 
                 if (!series) {
                     series = {
@@ -185,10 +186,10 @@ export class LineChartTransform extends ChartTransform {
         })
     }
 
-    @computed get xAxisView() {
+    @computed get xAxis() {
         const { xDomain } = this
         const view = this.chart.xAxisRuntime
-            .toHorizontalView()
+            .toHorizontalAxis()
             .updateDomain(xDomain)
         view.scaleType = ScaleType.linear
         view.scaleTypeOptions = [ScaleType.linear]
@@ -241,9 +242,9 @@ export class LineChartTransform extends ChartTransform {
         return this.allValues.every(val => val.y % 1 === 0)
     }
 
-    @computed get yAxisView() {
+    @computed get yAxis() {
         const { chart, yDomain, yTickFormat, isRelativeMode } = this
-        const view = chart.yAxisRuntime.toVerticalView().updateDomain(yDomain)
+        const view = chart.yAxisRuntime.toVerticalAxis().updateDomain(yDomain)
         if (isRelativeMode) view.scaleTypeOptions = [ScaleType.linear]
         view.hideFractionalTicks = this.allValues.every(val => val.y % 1 === 0) // all y axis points are integral, don't show fractional ticks in that case
         view.label = ""
@@ -257,15 +258,15 @@ export class LineChartTransform extends ChartTransform {
 
     // Filter the data so it fits within the domains
     @computed get groupedData(): LineChartSeries[] {
-        const { xAxisView } = this
+        const { xAxis } = this
         const groupedData = cloneDeep(this.predomainData)
 
         for (const g of groupedData) {
             // The values can include non-numerical values, so we need to filter with isNaN()
             g.values = g.values.filter(
                 d =>
-                    d.x >= xAxisView.domain[0] &&
-                    d.x <= xAxisView.domain[1] &&
+                    d.x >= xAxis.domain[0] &&
+                    d.x <= xAxis.domain[1] &&
                     !isNaN(d.y)
             )
         }
