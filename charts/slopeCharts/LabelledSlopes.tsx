@@ -38,7 +38,7 @@ import { TextWrap } from "charts/text/TextWrap"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { ScaleSelector, ScaleTypeConfig } from "charts/controls/ScaleSelector"
 import { ControlsOverlay } from "charts/controls/Controls"
-import { AxisRuntime } from "charts/axis/AxisScale"
+import { AxisScaleOptions } from "charts/axis/AxisScale"
 
 export interface SlopeChartValue {
     x: number
@@ -288,7 +288,7 @@ interface LabelledSlopesProps {
     data: SlopeChartSeries[]
     isInteractive: boolean
     yTickFormat: (value: number) => string
-    yAxisRuntime: AxisRuntime
+    yAxisRuntime: AxisScaleOptions
     fontSize: number
     focusKeys: string[]
     hoverKeys: string[]

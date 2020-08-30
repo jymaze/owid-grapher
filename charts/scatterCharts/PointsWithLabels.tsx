@@ -261,14 +261,6 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
         return this.props.bounds
     }
 
-    @computed private get xScale() {
-        return this.props.xAxisView.clone({ range: this.bounds.xRange() })
-    }
-
-    @computed private get yScale() {
-        return this.props.yAxisView.clone({ range: this.bounds.yRange() })
-    }
-
     // When focusing multiple entities, we hide some information to declutter
     @computed private get isSubtleForeground(): boolean {
         return (
@@ -301,8 +293,13 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
     }
 
     // Pre-transform data for rendering
-    @computed get initialRenderData(): ScatterRenderSeries[] {
-        const { data, xScale, yScale, sizeScale, fontScale, colorScale } = this
+    @computed private get initialRenderData(): ScatterRenderSeries[] {
+        const { data, sizeScale, fontScale, colorScale, bounds } = this
+        const xView = this.props.xAxisView.clone()
+        xView.range = bounds.xRange()
+        const yView = this.props.yAxisView.clone()
+        yView.range = this.bounds.yRange()
+
         return sortNumeric(
             data.map(d => {
                 const values = d.values.map(v => {
@@ -313,8 +310,8 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
                             : undefined
                     return {
                         position: new Vector2(
-                            Math.floor(xScale.place(v.x)),
-                            Math.floor(yScale.place(v.y))
+                            Math.floor(xView.place(v.x)),
+                            Math.floor(yView.place(v.y))
                         ),
                         color: scaleColor ?? d.color,
                         size: Math.sqrt(area / Math.PI),
