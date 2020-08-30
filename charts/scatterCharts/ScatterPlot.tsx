@@ -244,17 +244,11 @@ export class ScatterPlot extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const that = this
+        const { xAxisView, yAxisView } = this.transform
         return new AxisBox({
-            get bounds() {
-                return that.bounds.padRight(that.sidebarWidth + 20)
-            },
-            get xAxisView() {
-                return that.transform.xAxisView
-            },
-            get yAxisView() {
-                return that.transform.yAxisView
-            }
+            bounds: this.bounds.padRight(this.sidebarWidth + 20),
+            xAxisView,
+            yAxisView
         })
     }
 

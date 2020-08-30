@@ -475,19 +475,11 @@ export class LineChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const that = this
+        const { xAxisView, yAxisView } = this.transform
         return new AxisBox({
-            get bounds() {
-                return that.bounds.padRight(
-                    that.legend ? that.legend.width : 20
-                )
-            },
-            get yAxisView() {
-                return that.transform.yAxisView
-            },
-            get xAxisView() {
-                return that.transform.xAxisView
-            }
+            bounds: this.bounds.padRight(this.legend ? this.legend.width : 20),
+            yAxisView,
+            xAxisView
         })
     }
 

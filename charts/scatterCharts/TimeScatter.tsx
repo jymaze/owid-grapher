@@ -605,17 +605,11 @@ export class TimeScatter extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox() {
-        const that = this
+        const { xAxisView, yAxisView } = this.transform
         return new AxisBox({
-            get bounds() {
-                return that.bounds
-            },
-            get xAxisView() {
-                return that.transform.xAxisView
-            },
-            get yAxisView() {
-                return that.transform.yAxisView
-            }
+            bounds: this.bounds,
+            xAxisView,
+            yAxisView
         })
     }
 

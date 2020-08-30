@@ -290,7 +290,7 @@ export class StackedAreaChart extends React.Component<{
 
     // todo: Refactor
     @computed private get axisBox(): AxisBox {
-        const { bounds, legend, chart, xAxisView, yAxisView } = this
+        const { bounds, legend, xAxisView, yAxisView } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
             xAxisView,
