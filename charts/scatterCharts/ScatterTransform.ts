@@ -460,10 +460,10 @@ export class ScatterTransform extends ChartTransform {
             : this.chart.yAxisRuntime.scaleType
     }
 
-    @computed private get yAxisLabel(): string | undefined {
+    @computed private get yAxisLabel(): string {
         if (this.chart.script.yAxis.label && this.chart.yAxisRuntime.label)
             return this.chart.yAxisRuntime.label
-        return this.yDimension && this.yDimension.displayName
+        return (this.yDimension && this.yDimension.displayName) || ""
     }
 
     @computed get yAxisView() {
@@ -472,6 +472,8 @@ export class ScatterTransform extends ChartTransform {
         const view = chart.yAxisRuntime.toView().updateDomain(yDomainDefault)
         view.tickFormat =
             (yDimension && yDimension.formatValueShort) || view.tickFormat
+
+        view.label = this.yAxisLabel
 
         if (isRelativeMode) {
             view.scaleTypeOptions = [ScaleType.linear]
