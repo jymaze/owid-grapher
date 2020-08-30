@@ -16,8 +16,8 @@ import { computed, action, observable } from "mobx"
 import { observer } from "mobx-react"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisBoxView } from "charts/axis/AxisBox"
-import { AxisBox } from "charts/axis/AxisScale"
+import { AxisBoxView } from "charts/axis/AxisViews"
+import { AxisBox } from "charts/axis/Axis"
 import {
     LineLabelsHelper,
     LineLabel,

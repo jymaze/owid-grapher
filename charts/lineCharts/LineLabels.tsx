@@ -16,7 +16,7 @@ import {
 import { computed, action } from "mobx"
 import { observer } from "mobx-react"
 import { TextWrap } from "charts/text/TextWrap"
-import { VerticalAxisView } from "charts/axis/AxisScale"
+import { VerticalAxis } from "charts/axis/Axis"
 import { Bounds } from "charts/utils/Bounds"
 import { ControlsOverlay, AddEntityButton } from "charts/controls/Controls"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
@@ -222,7 +222,7 @@ interface ObservableObject {
 interface LineLabelsComponentProps {
     x: number
     legend: LineLabelsHelper
-    yAxisView: VerticalAxisView
+    yAxisView: VerticalAxis
     focusKeys: EntityDimensionKey[]
     onMouseOver?: (key: EntityDimensionKey) => void
     onClick?: (key: EntityDimensionKey) => void
