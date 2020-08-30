@@ -14,7 +14,7 @@ import {
     VerticalAxisBox
 } from "charts/axis/AxisBox"
 import { AxisTickMarks } from "charts/axis/AxisTickMarks"
-import { AxisScale } from "charts/axis/AxisScale"
+import { AxisView } from "charts/axis/AxisScale"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { Text } from "../text/Text"
 import {
@@ -43,7 +43,7 @@ interface StackedBarSegmentProps extends React.SVGAttributes<SVGGElement> {
     bar: StackedBarValue
     color: string
     opacity: number
-    yScale: AxisScale
+    yAxisView: AxisView
     xOffset: number
     barWidth: number
     onBarMouseOver: (bar: StackedBarValue) => void
@@ -57,12 +57,12 @@ class StackedBarSegment extends React.Component<StackedBarSegmentProps> {
     @observable mouseOver: boolean = false
 
     @computed get yPos() {
-        const { bar, yScale } = this.props
+        const { bar, yAxisView: yScale } = this.props
         return yScale.place(bar.yOffset + bar.y)
     }
 
     @computed get barHeight() {
-        const { bar, yScale } = this.props
+        const { bar, yAxisView: yScale } = this.props
         const { yPos } = this
 
         return yScale.place(bar.yOffset) - yPos
@@ -170,23 +170,26 @@ export class StackedBarChart extends React.Component<{
     }
 
     @computed get yScale() {
-        return this.axisBox.yScale
+        return this.axisBox.yAxisViewWithRange
     }
 
     // todo: Refactor
     @computed private get verticalAxis() {
         const that = this
-        return new VerticalAxis({
-            get scale() {
-                return that.yScale
+        return new VerticalAxis(
+            {
+                get scale() {
+                    return that.yScale
+                },
+                get fontSize() {
+                    return that.chart.baseFontSize
+                },
+                get labelText() {
+                    return that.transform.yAxisView.label
+                }
             },
-            get fontSize() {
-                return that.chart.baseFontSize
-            },
-            get labelText() {
-                return that.transform.yAxisView.label
-            }
-        })
+            that.yScale
+        )
     }
 
     @computed get renderUid() {
@@ -333,10 +336,10 @@ export class StackedBarChart extends React.Component<{
     @computed private get tickPlacements() {
         const { mapXValueToOffset, barWidth, axisBox } = this
         const { xValues } = this.transform
-        const { xScale } = axisBox
+        const { xAxisViewWithRange } = axisBox
 
         return xValues.map(x => {
-            const text = xScale.tickFormat(x)
+            const text = xAxisViewWithRange.tickFormat(x)
             const xPos = mapXValueToOffset.get(x) as number
 
             const bounds = Bounds.forText(text, { fontSize: this.tickFontSize })
@@ -469,7 +472,7 @@ export class StackedBarChart extends React.Component<{
                 />
                 <AxisGridLines
                     orient="left"
-                    scale={yScale}
+                    axisView={yScale}
                     bounds={innerBounds}
                 />
 
@@ -528,7 +531,7 @@ export class StackedBarChart extends React.Component<{
                                             color={series.color}
                                             xOffset={xPos}
                                             opacity={barOpacity}
-                                            yScale={yScale}
+                                            yAxisView={yScale}
                                             onBarMouseOver={this.onBarMouseOver}
                                             onBarMouseLeave={
                                                 this.onBarMouseLeave

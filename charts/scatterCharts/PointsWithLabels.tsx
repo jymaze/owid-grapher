@@ -30,7 +30,7 @@ import { computed, action } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
 import { NoDataOverlay } from "../core/NoDataOverlay"
-import { AxisScale } from "charts/axis/AxisScale"
+import { AxisView } from "charts/axis/AxisScale"
 import { Vector2 } from "charts/utils/Vector2"
 import { Triangle } from "./Triangle"
 import { select } from "d3-selection"
@@ -68,8 +68,8 @@ interface PointsWithLabelsProps {
     hoverKeys: string[]
     focusKeys: string[]
     bounds: Bounds
-    xScale: AxisScale
-    yScale: AxisScale
+    xAxisView: AxisView
+    yAxisView: AxisView
     colorScale?: ColorScale
     sizeDomain: [number, number]
     onMouseOver: (series: ScatterSeries) => void
@@ -262,11 +262,11 @@ export class PointsWithLabels extends React.Component<PointsWithLabelsProps> {
     }
 
     @computed private get xScale() {
-        return this.props.xScale.clone({ range: this.bounds.xRange() })
+        return this.props.xAxisView.clone({ range: this.bounds.xRange() })
     }
 
     @computed private get yScale() {
-        return this.props.yScale.clone({ range: this.bounds.yRange() })
+        return this.props.yAxisView.clone({ range: this.bounds.yRange() })
     }
 
     // When focusing multiple entities, we hide some information to declutter

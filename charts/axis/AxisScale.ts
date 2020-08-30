@@ -20,16 +20,6 @@ interface Tickmark {
     isFirstOrLastTick?: boolean
 }
 
-interface AxisScaleOptions {
-    scaleType?: ScaleType
-    scaleTypeOptions?: ScaleType[]
-    tickFormat?: TickFormatFunction
-    domain: [number, number]
-    range?: [number, number]
-    hideFractionalTicks?: boolean
-    hideGridlines?: boolean
-}
-
 declare type TickFormatFunction = (
     v: number,
     options?: TickFormattingOptions
@@ -46,32 +36,105 @@ export interface AxisUserOptions {
     removePointsOutsideDomain?: true
 }
 
-export class AxisScale {
-    @observable scaleType: ScaleType
-    @observable.struct scaleTypeOptions: ScaleType[]
-    @observable tickFormat: TickFormatFunction
-    @observable.struct domain: [number, number]
-    @observable.struct range: [number, number]
-    @observable hideFractionalTicks: boolean
-    @observable hideGridlines: boolean
-    @observable label: string = ""
+export class AxisRuntime implements AxisUserOptions {
+    constructor(props?: AxisUserOptions) {
+        this.update(props)
+    }
 
-    constructor({
-        scaleType = ScaleType.linear,
-        scaleTypeOptions = [ScaleType.linear],
-        tickFormat = d => d.toString(),
-        domain = [0, 0],
-        range = [0, 0],
-        hideFractionalTicks = false,
-        hideGridlines = false
-    }: AxisScaleOptions) {
-        this.scaleType = scaleType
-        this.scaleTypeOptions = scaleTypeOptions
-        this.tickFormat = tickFormat
-        this.domain = domain
-        this.range = range
-        this.hideFractionalTicks = hideFractionalTicks
-        this.hideGridlines = hideGridlines
+    update(props?: AxisUserOptions) {
+        if (props) extend(this, props)
+    }
+
+    @observable.ref min?: number = undefined
+    @observable.ref max?: number = undefined
+    @observable.ref scaleType: ScaleType = ScaleType.linear
+    @observable.ref canChangeScaleType?: true = undefined
+    @observable label: string = ""
+    @observable.ref removePointsOutsideDomain?: true = undefined
+
+    // A log scale domain cannot have values <= 0, so we
+    // double check here
+    @computed private get constrainedMin() {
+        if (this.scaleType === ScaleType.log && (this.min || 0) <= 0)
+            return Infinity
+        return this.min ?? Infinity
+    }
+
+    isOutsideDomain(value: number) {
+        return value < this.constrainedMin || value > this.constrainedMax
+    }
+
+    @computed private get constrainedMax() {
+        if (this.scaleType === ScaleType.log && (this.max || 0) <= 0)
+            return -Infinity
+        return this.max ?? -Infinity
+    }
+
+    @computed get domain(): [number, number] {
+        return [this.constrainedMin, this.constrainedMax]
+    }
+
+    @computed get scaleTypeOptions(): ScaleType[] {
+        return this.canChangeScaleType
+            ? [ScaleType.linear, ScaleType.log]
+            : [this.scaleType]
+    }
+
+    // Convert axis configuration to a finalized axis spec by supplying
+    // any needed information calculated from the data
+    toView() {
+        return new AxisView(this)
+    }
+}
+
+export class AxisView {
+    runTime: AxisRuntime
+    @observable.ref domain: [number, number]
+    @observable tickFormat: TickFormatFunction = d => `${d}`
+    @observable hideFractionalTicks = false
+    @observable hideGridlines = false
+    @observable.struct range: [number, number] = [0, 0]
+    @observable private _scaleType?: ScaleType
+    @observable private _label?: string
+    @observable private _scaleTypeOptions?: ScaleType[]
+
+    updateDomain(defaultDomain: [number, number]) {
+        this.domain = [
+            Math.min(this.domain[0], defaultDomain[0]),
+            Math.max(this.domain[1], defaultDomain[1])
+        ]
+        return this
+    }
+
+    constructor(runTime: AxisRuntime) {
+        this.runTime = runTime
+        this.domain = [runTime.domain[0], runTime.domain[1]]
+    }
+
+    @computed get scaleType() {
+        return this._scaleType ?? this.runTime.scaleType
+    }
+
+    set scaleType(value: ScaleType) {
+        this._scaleType = value
+    }
+
+    @computed get label() {
+        return this._label ?? this.runTime.label
+    }
+
+    set label(value: string) {
+        this._label = value
+    }
+
+    @computed get scaleTypeOptions(): ScaleType[] {
+        return this._scaleTypeOptions
+            ? this._scaleTypeOptions
+            : this.runTime.scaleTypeOptions
+    }
+
+    set scaleTypeOptions(value: ScaleType[]) {
+        this._scaleTypeOptions = value
     }
 
     @computed private get d3_scale():
@@ -232,109 +295,9 @@ export class AxisScale {
         return parseFloat(this.d3_scale(value).toFixed(1))
     }
 
-    clone(props: any) {
-        return new AxisScale(extend(toJS(this), props))
-    }
-}
-
-export class AxisRuntime implements AxisUserOptions {
-    constructor(props?: AxisUserOptions) {
-        this.update(props)
-    }
-
-    update(props?: AxisUserOptions) {
-        if (props) extend(this, props)
-    }
-
-    @observable.ref min?: number = undefined
-    @observable.ref max?: number = undefined
-    @observable.ref scaleType: ScaleType = ScaleType.linear
-    @observable.ref canChangeScaleType?: true = undefined
-    @observable label: string = ""
-    @observable.ref removePointsOutsideDomain?: true = undefined
-
-    // A log scale domain cannot have values <= 0, so we
-    // double check here
-    @computed private get constrainedMin() {
-        if (this.scaleType === ScaleType.log && (this.min || 0) <= 0)
-            return Infinity
-        return this.min ?? Infinity
-    }
-
-    isOutsideDomain(value: number) {
-        return value < this.constrainedMin || value > this.constrainedMax
-    }
-
-    @computed private get constrainedMax() {
-        if (this.scaleType === ScaleType.log && (this.max || 0) <= 0)
-            return -Infinity
-        return this.max ?? -Infinity
-    }
-
-    @computed get domain(): [number, number] {
-        return [this.constrainedMin, this.constrainedMax]
-    }
-
-    @computed get scaleTypeOptions(): ScaleType[] {
-        return this.canChangeScaleType
-            ? [ScaleType.linear, ScaleType.log]
-            : [this.scaleType]
-    }
-
-    // Convert axis configuration to a finalized axis spec by supplying
-    // any needed information calculated from the data
-    toView() {
-        return new AxisView(this)
-    }
-}
-
-export class AxisView {
-    runTime: AxisRuntime
-    @observable.ref domain: [number, number]
-    @observable tickFormat: TickFormatFunction = d => `${d}`
-
-    @observable hideFractionalTicks = false
-    @observable hideGridlines = false
-
-    updateDomain(defaultDomain: [number, number]) {
-        this.domain = [
-            Math.min(this.domain[0], defaultDomain[0]),
-            Math.max(this.domain[1], defaultDomain[1])
-        ]
-        return this
-    }
-
-    constructor(runTime: AxisRuntime) {
-        this.runTime = runTime
-        this.domain = [runTime.domain[0], runTime.domain[1]]
-    }
-
-    @observable private _scaleType?: ScaleType
-    @computed get scaleType() {
-        return this._scaleType ?? this.runTime.scaleType
-    }
-
-    set scaleType(value: ScaleType) {
-        this._scaleType = value
-    }
-
-    @observable private _label?: string
-    @computed get label() {
-        return this._label ?? this.runTime.label
-    }
-
-    set label(value: string) {
-        this._label = value
-    }
-
-    @observable private _scaleTypeOptions?: ScaleType[]
-    @computed get scaleTypeOptions(): ScaleType[] {
-        return this._scaleTypeOptions
-            ? this._scaleTypeOptions
-            : this.runTime.scaleTypeOptions
-    }
-
-    set scaleTypeOptions(value: ScaleType[]) {
-        this._scaleTypeOptions = value
+    clone() {
+        const view = extend(new AxisView(this.runTime), toJS(this))
+        view.runTime = this.runTime
+        return view
     }
 }

@@ -21,7 +21,10 @@ export class ComparisonLine extends React.Component<{
 }> {
     @computed private get controlData(): [number, number][] {
         const { comparisonLine, axisBox } = this.props
-        const { xScale, yScale } = axisBox
+        const {
+            xAxisViewWithRange: xScale,
+            yAxisViewWithRange: yScale
+        } = axisBox
         return generateComparisonLinePoints(
             comparisonLine.yEquals,
             xScale.domain,
@@ -33,7 +36,10 @@ export class ComparisonLine extends React.Component<{
 
     @computed private get linePath(): string | null {
         const { controlData } = this
-        const { xScale, yScale } = this.props.axisBox
+        const {
+            xAxisViewWithRange: xScale,
+            yAxisViewWithRange: yScale
+        } = this.props.axisBox
         const line = d3_line()
             .curve(curveLinear)
             .x(d => xScale.place(d[0]))
@@ -48,7 +54,11 @@ export class ComparisonLine extends React.Component<{
         if (!label) return
 
         const { controlData } = this
-        const { xScale, yScale, innerBounds } = this.props.axisBox
+        const {
+            xAxisViewWithRange: xScale,
+            yAxisViewWithRange: yScale,
+            innerBounds
+        } = this.props.axisBox
 
         // Find the points of the line that are actually placeable on the chart
         const linePoints = controlData

@@ -12,9 +12,9 @@ import * as React from "react"
 import { observable, computed, reaction, action } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisScale, AxisView } from "./AxisScale"
+import { AxisView } from "./AxisScale"
 import { ScaleType } from "charts/core/ChartConstants"
-import { extend, sortBy, maxBy, uniq } from "charts/utils/Util"
+import { sortBy, maxBy, uniq } from "charts/utils/Util"
 import classNames from "classnames"
 import { TextWrap } from "charts/text/TextWrap"
 import { ControlsOverlay } from "charts/controls/Controls"
@@ -116,36 +116,61 @@ export class AxisBox {
     }
 
     // todo: Refactor
-    @computed get yAxisSpec() {
-        return extend({}, this.props.yAxisView, { domain: this.currentYDomain })
+    @computed get yAxisView() {
+        const view = this.props.yAxisView.clone()
+        view.domain = this.currentYDomain
+        return view
     }
 
     // todo: Refactor
-    @computed get xAxisSpec() {
-        return extend({}, this.props.xAxisView, { domain: this.currentXDomain })
+    @computed get xAxisView() {
+        const view = this.props.xAxisView.clone()
+        view.domain = this.currentXDomain
+        return view
+    }
+
+    // todo: Refactor
+    @computed get xAxisViewWithRange() {
+        const view = this.xAxisView.clone()
+        view.range = this.innerBounds.xRange()
+        return view
+    }
+
+    // todo: Refactor
+    @computed get yAxisViewWithRange() {
+        const view = this.yAxisView.clone()
+        view.range = this.innerBounds.yRange()
+        return view
     }
 
     // todo: Refactor
     // We calculate an initial width/height for the axes in isolation
     @computed private get xAxisHeight() {
-        return new HorizontalAxis({
-            scale: new AxisScale(this.xAxisSpec).clone({
-                range: [0, this.props.bounds.width]
-            }),
-            labelText: this.xAxisSpec.label,
-            fontSize: this.props.fontSize
-        }).height
+        const view = this.xAxisView.clone()
+        view.range = [0, this.props.bounds.width]
+        return new HorizontalAxis(
+            {
+                scale: view,
+                labelText: view.label,
+                fontSize: this.props.fontSize
+            },
+            view
+        ).height
     }
 
     // todo: Refactor
     @computed private get yAxisWidth() {
-        return new VerticalAxis({
-            scale: new AxisScale(this.yAxisSpec).clone({
-                range: [0, this.props.bounds.height]
-            }),
-            labelText: this.yAxisSpec.label,
-            fontSize: this.props.fontSize
-        }).width
+        const view = this.yAxisView.clone()
+        view.range = [0, this.props.bounds.height]
+
+        return new VerticalAxis(
+            {
+                scale: view,
+                labelText: this.yAxisView.label,
+                fontSize: this.props.fontSize
+            },
+            view
+        ).width
     }
 
     // Now we can determine the "true" inner bounds of the axis box
@@ -156,49 +181,41 @@ export class AxisBox {
     }
 
     // todo: Refactor
-    @computed get xScale() {
-        return new AxisScale(this.xAxisSpec).clone({
-            range: this.innerBounds.xRange()
-        })
-    }
-
-    // todo: Refactor
-    @computed get yScale() {
-        return new AxisScale(this.yAxisSpec).clone({
-            range: this.innerBounds.yRange()
-        })
-    }
-
-    // todo: Refactor
     @computed get horizontalAxis() {
         const that = this
-        return new HorizontalAxis({
-            get scale() {
-                return that.xScale
+        return new HorizontalAxis(
+            {
+                get scale() {
+                    return that.xAxisViewWithRange
+                },
+                get labelText() {
+                    return that.xAxisViewWithRange.label
+                },
+                get fontSize() {
+                    return that.props.fontSize
+                }
             },
-            get labelText() {
-                return that.xAxisSpec.label
-            },
-            get fontSize() {
-                return that.props.fontSize
-            }
-        })
+            that.xAxisViewWithRange
+        )
     }
 
     // todo: Refactor
     @computed get verticalAxis() {
         const that = this
-        return new VerticalAxis({
-            get scale() {
-                return that.yScale
+        return new VerticalAxis(
+            {
+                get scale() {
+                    return that.yAxisViewWithRange
+                },
+                get labelText() {
+                    return that.yAxisViewWithRange.label
+                },
+                get fontSize() {
+                    return that.props.fontSize
+                }
             },
-            get labelText() {
-                return that.yAxisSpec.label
-            },
-            get fontSize() {
-                return that.props.fontSize
-            }
-        })
+            that.yAxisViewWithRange
+        )
     }
 
     @computed get bounds() {
@@ -208,7 +225,7 @@ export class AxisBox {
 
 interface AxisGridLinesProps {
     orient: "left" | "bottom"
-    scale: AxisScale
+    axisView: AxisView
     bounds: Bounds
 }
 
@@ -216,9 +233,8 @@ interface AxisGridLinesProps {
 export class AxisGridLines extends React.Component<AxisGridLinesProps> {
     render() {
         const { orient, bounds } = this.props
-        const scale = this.props.scale.clone({
-            range: orient === "left" ? bounds.yRange() : bounds.xRange()
-        })
+        const view = this.props.axisView.clone()
+        view.range = orient === "left" ? bounds.yRange() : bounds.xRange()
 
         return (
             <g
@@ -227,7 +243,7 @@ export class AxisGridLines extends React.Component<AxisGridLinesProps> {
                     orient === "left" ? "horizontalLines" : "verticalLines"
                 )}
             >
-                {scale.getTickValues().map((t, i) => {
+                {view.getTickValues().map((t, i) => {
                     const color = t.faint
                         ? "#eee"
                         : t.value === 0
@@ -238,9 +254,9 @@ export class AxisGridLines extends React.Component<AxisGridLinesProps> {
                             <line
                                 key={i}
                                 x1={bounds.left.toFixed(2)}
-                                y1={scale.place(t.value)}
+                                y1={view.place(t.value)}
                                 x2={bounds.right.toFixed(2)}
-                                y2={scale.place(t.value)}
+                                y2={view.place(t.value)}
                                 stroke={color}
                                 strokeDasharray={
                                     t.value !== 0 ? "3,2" : undefined
@@ -251,9 +267,9 @@ export class AxisGridLines extends React.Component<AxisGridLinesProps> {
                         return (
                             <line
                                 key={i}
-                                x1={scale.place(t.value)}
+                                x1={view.place(t.value)}
                                 y1={bounds.bottom.toFixed(2)}
-                                x2={scale.place(t.value)}
+                                x2={view.place(t.value)}
                                 y2={bounds.top.toFixed(2)}
                                 stroke={color}
                                 strokeDasharray={
@@ -284,8 +300,8 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
         const { axisBox, showTickMarks } = this.props
         const {
             bounds,
-            xScale,
-            yScale,
+            xAxisViewWithRange,
+            yAxisViewWithRange,
             horizontalAxis,
             verticalAxis,
             innerBounds
@@ -308,17 +324,17 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
                     axis={verticalAxis}
                     isInteractive={this.props.isInteractive}
                 />
-                {!yScale.hideGridlines && (
+                {!yAxisViewWithRange.hideGridlines && (
                     <AxisGridLines
                         orient="left"
-                        scale={yScale}
+                        axisView={yAxisViewWithRange}
                         bounds={innerBounds}
                     />
                 )}
-                {!xScale.hideGridlines && (
+                {!xAxisViewWithRange.hideGridlines && (
                     <AxisGridLines
                         orient="bottom"
-                        scale={xScale}
+                        axisView={xAxisViewWithRange}
                         bounds={innerBounds}
                     />
                 )}
@@ -328,15 +344,17 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
 }
 
 interface AxisProps {
-    scale: AxisScale
+    scale: AxisView
     labelText: string
     fontSize: number
 }
 
 abstract class AbstractAxis {
     protected props: AxisProps
-    constructor(props: AxisProps) {
+    protected view: AxisView
+    constructor(props: AxisProps, view: AxisView) {
         this.props = props
+        this.view = view
     }
 
     @computed get tickFontSize() {
