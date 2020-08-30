@@ -17,7 +17,6 @@ import { ScaleType } from "charts/core/ChartConstants"
 import classNames from "classnames"
 import { ControlsOverlay } from "charts/controls/Controls"
 import { ScaleSelector } from "charts/controls/ScaleSelector"
-import { AxisTickMarks } from "./AxisTickMarks"
 
 interface AxisGridLinesProps {
     orient: "left" | "bottom"
@@ -268,5 +267,29 @@ export class HorizontalAxisComponent extends React.Component<{
                 {this.controls}
             </g>
         )
+    }
+}
+
+export class AxisTickMarks extends React.Component<{
+    tickMarkTopPosition: number
+    tickMarkXPositions: number[]
+    color: string
+}> {
+    render() {
+        const { tickMarkTopPosition, tickMarkXPositions, color } = this.props
+        const tickSize = 4
+        const tickBottom = tickMarkTopPosition + tickSize
+        return tickMarkXPositions.map((tickMarkPosition, index) => {
+            return (
+                <line
+                    key={index}
+                    x1={tickMarkPosition}
+                    y1={tickMarkTopPosition}
+                    x2={tickMarkPosition}
+                    y2={tickBottom}
+                    stroke={color}
+                />
+            )
+        })
     }
 }

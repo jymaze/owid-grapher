@@ -7,8 +7,11 @@ import { easeLinear } from "d3-ease"
 import { includes, guid, uniq, makeSafeForCSS } from "../utils/Util"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { Bounds } from "charts/utils/Bounds"
-import { AxisGridLines, VerticalAxisComponent } from "charts/axis/AxisViews"
-import { AxisTickMarks } from "charts/axis/AxisTickMarks"
+import {
+    AxisGridLines,
+    VerticalAxisComponent,
+    AxisTickMarks
+} from "charts/axis/AxisViews"
 import { VerticalAxis, AxisBox } from "charts/axis/Axis"
 import { NoDataOverlay } from "../core/NoDataOverlay"
 import { Text } from "../text/Text"
