@@ -152,7 +152,7 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed get isLogScale() {
-        return this.chart.yAxisRuntime.scaleType === ScaleType.log
+        return this.chart.yAxisOptions.scaleType === ScaleType.log
     }
 
     @computed get xRange(): [number, number] {
@@ -163,7 +163,7 @@ export class DiscreteBarChart extends React.Component<{
     }
 
     @computed get xAxis() {
-        const view = this.chart.yAxisRuntime
+        const view = this.chart.yAxisOptions
             .toVerticalAxis()
             .updateDomain(this.xDomainDefault)
 
@@ -299,7 +299,7 @@ export class DiscreteBarChart extends React.Component<{
         let yOffset = innerBounds.top + barHeight / 2
 
         const onScaleTypeChange = (scaleType: ScaleType) => {
-            this.chart.yAxisRuntime.scaleType = scaleType
+            this.chart.yAxisOptions.scaleType = scaleType
         }
 
         // todo: add explanation
@@ -321,7 +321,7 @@ export class DiscreteBarChart extends React.Component<{
                     isInteractive={this.chart.isInteractive}
                     axis={xAxisAsVerticalAxis}
                     onScaleTypeChange={
-                        this.chart.yAxisRuntime.canChangeScaleType
+                        this.chart.yAxisOptions.canChangeScaleType
                             ? onScaleTypeChange
                             : undefined
                     }

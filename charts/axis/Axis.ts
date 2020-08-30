@@ -36,7 +36,7 @@ declare type TickFormatFunction = (
 ) => string
 
 // Represents the actual entered configuration state in the editor
-export interface AxisScaleOptionsInterface {
+export interface AxisOptionsInterface {
     scaleType: ScaleType
     label?: string
 
@@ -50,18 +50,18 @@ interface AxisContainerOptions {
     baseFontSize: number
 }
 
-export class AxisScaleOptions implements AxisScaleOptionsInterface {
+export class AxisOptions implements AxisOptionsInterface {
     // todo: test/refactor
     constructor(
-        props?: AxisScaleOptionsInterface,
+        props?: AxisOptionsInterface,
         containerOptions?: AxisContainerOptions
     ) {
         this.update(props)
-        this.fontSize = containerOptions!.baseFontSize
+        this.fontSize = containerOptions?.baseFontSize || 16
     }
 
     // todo: test/refactor
-    update(props?: AxisScaleOptionsInterface) {
+    update(props?: AxisOptionsInterface) {
         if (props) extend(this, props)
     }
 
@@ -113,7 +113,7 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
 }
 
 abstract class AbstractAxis {
-    runTime: AxisScaleOptions
+    protected options: AxisOptions
     @observable.ref domain: [number, number]
     @observable tickFormat: TickFormatFunction = d => `${d}`
     @observable hideFractionalTicks = false
@@ -132,21 +132,21 @@ abstract class AbstractAxis {
     }
 
     @computed get fontSize() {
-        return this.runTime.fontSize
+        return this.options.fontSize
     }
 
-    constructor(runTime: AxisScaleOptions) {
-        this.runTime = runTime
-        this.domain = [runTime.domain[0], runTime.domain[1]]
+    constructor(options: AxisOptions) {
+        this.options = options
+        this.domain = [options.domain[0], options.domain[1]]
     }
 
     @computed get scaleType() {
-        return this._scaleType ?? this.runTime.scaleType
+        return this._scaleType ?? this.options.scaleType
     }
 
     // Call this to update the user's setting
     @action.bound updateChartScaleType(value: ScaleType) {
-        this.runTime.scaleType = value
+        this.options.scaleType = value
     }
 
     set scaleType(value: ScaleType) {
@@ -154,7 +154,7 @@ abstract class AbstractAxis {
     }
 
     @computed get label() {
-        return this._label ?? this.runTime.label
+        return this._label ?? this.options.label
     }
 
     set label(value: string) {
@@ -164,7 +164,7 @@ abstract class AbstractAxis {
     @computed get scaleTypeOptions(): ScaleType[] {
         return this._scaleTypeOptions
             ? this._scaleTypeOptions
-            : this.runTime.scaleTypeOptions
+            : this.options.scaleTypeOptions
     }
 
     set scaleTypeOptions(value: ScaleType[]) {
@@ -392,9 +392,9 @@ abstract class AbstractAxis {
     clone() {
         const classConstructor =
             this instanceof HorizontalAxis ? HorizontalAxis : VerticalAxis
-        const view = extend(new classConstructor(this.runTime), toJS(this))
-        view.runTime = this.runTime
-        return view
+        const props = toJS(this) as any
+        delete props.options
+        return extend(new classConstructor(this.options), props)
     }
 
     protected abstract placeTick(

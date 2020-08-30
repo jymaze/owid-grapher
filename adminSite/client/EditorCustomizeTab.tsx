@@ -252,8 +252,8 @@ export class EditorCustomizeTab extends React.Component<{
     editor: ChartEditor
 }> {
     render() {
-        const xAxisRuntime = this.props.editor.chart.xAxisRuntime
-        const yAxisRuntime = this.props.editor.chart.yAxisRuntime
+        const xAxisRuntime = this.props.editor.chart.xAxisOptions
+        const yAxisRuntime = this.props.editor.chart.yAxisOptions
 
         const { features } = this.props.editor
         const { chart } = this.props.editor

@@ -329,8 +329,8 @@ export class ScatterTransform extends ChartTransform {
         const chart = this.chart
         dataByEntityAndYear.forEach(dataByYear => {
             dataByYear.forEach((point, year) => {
-                const yAxisRuntime = chart.yAxisRuntime
-                const xAxisRuntime = chart.xAxisRuntime
+                const yAxisRuntime = chart.yAxisOptions
+                const xAxisRuntime = chart.xAxisOptions
                 // Exclude any points with data for only one axis
                 if (!has(point, "x") || !has(point, "y"))
                     dataByYear.delete(year)
@@ -457,19 +457,19 @@ export class ScatterTransform extends ChartTransform {
     @computed private get yScaleType() {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.yAxisRuntime.scaleType
+            : this.chart.yAxisOptions.scaleType
     }
 
     @computed private get yAxisLabel(): string {
-        if (this.chart.script.yAxis.label && this.chart.yAxisRuntime.label)
-            return this.chart.yAxisRuntime.label
+        if (this.chart.script.yAxis.label && this.chart.yAxisOptions.label)
+            return this.chart.yAxisOptions.label
         return (this.yDimension && this.yDimension.displayName) || ""
     }
 
     @computed get yAxis() {
         const { chart, yDomainDefault, yDimension, isRelativeMode } = this
 
-        const view = chart.yAxisRuntime
+        const view = chart.yAxisOptions
             .toVerticalAxis()
             .updateDomain(yDomainDefault)
         view.tickFormat =
@@ -495,7 +495,7 @@ export class ScatterTransform extends ChartTransform {
     @computed private get xScaleType(): ScaleType {
         return this.isRelativeMode
             ? ScaleType.linear
-            : this.chart.xAxisRuntime.scaleType
+            : this.chart.xAxisOptions.scaleType
     }
 
     @computed private get xAxisLabelBase(): string | undefined {
@@ -514,12 +514,12 @@ export class ScatterTransform extends ChartTransform {
             xAxisLabelBase
         } = this
 
-        const view = chart.xAxisRuntime
+        const view = chart.xAxisOptions
             .toHorizontalAxis()
             .updateDomain(xDomainDefault)
         if (isRelativeMode) {
             view.scaleTypeOptions = [ScaleType.linear]
-            const label = chart.xAxisRuntime.label || xAxisLabelBase
+            const label = chart.xAxisOptions.label || xAxisLabelBase
             if (label && label.length > 1) {
                 view.label =
                     "Average annual change in " +
@@ -530,7 +530,7 @@ export class ScatterTransform extends ChartTransform {
             view.tickFormat = (v: number) => formatValue(v, { unit: "%" })
         } else {
             view.label =
-                chart.xAxisRuntime.label || xAxisLabelBase || view.label
+                chart.xAxisOptions.label || xAxisLabelBase || view.label
             view.tickFormat =
                 (xDimension && xDimension.formatValueShort) || view.tickFormat
         }

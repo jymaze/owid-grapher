@@ -38,7 +38,7 @@ import { TextWrap } from "charts/text/TextWrap"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { ScaleSelector, ScaleTypeConfig } from "charts/controls/ScaleSelector"
 import { ControlsOverlay } from "charts/controls/Controls"
-import { AxisScaleOptions } from "charts/axis/Axis"
+import { AxisOptions } from "charts/axis/Axis"
 
 export interface SlopeChartValue {
     x: number
@@ -288,7 +288,7 @@ interface LabelledSlopesProps {
     data: SlopeChartSeries[]
     isInteractive: boolean
     yTickFormat: (value: number) => string
-    yAxisRuntime: AxisScaleOptions
+    yAxisOptions: AxisOptions
     fontSize: number
     focusKeys: string[]
     hoverKeys: string[]
@@ -346,7 +346,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed private get yScaleType() {
-        return this.props.yAxisRuntime.scaleType
+        return this.props.yAxisOptions.scaleType
     }
 
     @computed private get yDomainDefault(): [number, number] {
@@ -361,7 +361,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed get yDomain(): [number, number] {
-        const domain = this.props.yAxisRuntime.domain
+        const domain = this.props.yAxisOptions.domain
         const domainDefault = this.yDomainDefault
         return [
             Math.min(domain[0], domainDefault[0]),
@@ -682,7 +682,7 @@ export class LabelledSlopes extends React.Component<LabelledSlopesProps> {
     }
 
     @computed get controls() {
-        const { yAxisRuntime } = this.props
+        const { yAxisOptions: yAxisRuntime } = this.props
         const showScaleSelector =
             this.props.isInteractive && yAxisRuntime.scaleTypeOptions.length > 1
         if (!showScaleSelector) return undefined

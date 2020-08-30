@@ -293,7 +293,7 @@ export class StackedAreaChart extends React.Component<{
     @computed private get xAxis() {
         const { xDomainDefault } = this.transform
         const chart = this.chart
-        const view = chart.xAxisRuntime
+        const view = chart.xAxisOptions
             .toHorizontalAxis()
             .updateDomain(xDomainDefault)
         view.tickFormat = chart.formatYearFunction as any
@@ -311,7 +311,7 @@ export class StackedAreaChart extends React.Component<{
         const { isRelativeMode, yDimensionFirst } = this.transform
         const { chart, yDomainDefault } = this
 
-        const view = chart.yAxisRuntime.toVerticalAxis().updateDomain(
+        const view = chart.yAxisOptions.toVerticalAxis().updateDomain(
             isRelativeMode ? [0, 100] : [yDomainDefault[0], yDomainDefault[1]] // Stacked area chart must have its own y domain)
         )
         view.tickFormat = isRelativeMode

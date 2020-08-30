@@ -142,13 +142,13 @@ export class ChartUrl implements ObservableUrl {
                 : chart.script.tab
         //params.overlay = chart.props.overlay === origChartProps.overlay ? undefined : chart.props.overlay
         params.xScale =
-            chart.xAxisRuntime.scaleType === origChartProps.xAxis.scaleType
+            chart.xAxisOptions.scaleType === origChartProps.xAxis.scaleType
                 ? undefined
-                : chart.xAxisRuntime.scaleType
+                : chart.xAxisOptions.scaleType
         params.yScale =
-            chart.yAxisRuntime.scaleType === origChartProps.yAxis.scaleType
+            chart.yAxisOptions.scaleType === origChartProps.yAxis.scaleType
                 ? undefined
-                : chart.yAxisRuntime.scaleType
+                : chart.yAxisOptions.scaleType
         params.stackMode =
             chart.script.stackMode === origChartProps.stackMode
                 ? undefined
@@ -339,14 +339,14 @@ export class ChartUrl implements ObservableUrl {
         const xScaleType = params.xScale
         if (xScaleType) {
             if (xScaleType === ScaleType.linear || xScaleType === ScaleType.log)
-                chart.xAxisRuntime.scaleType = xScaleType
+                chart.xAxisOptions.scaleType = xScaleType
             else console.error("Unexpected xScale: " + xScaleType)
         }
 
         const yScaleType = params.yScale
         if (yScaleType) {
             if (yScaleType === ScaleType.linear || yScaleType === ScaleType.log)
-                chart.yAxisRuntime.scaleType = yScaleType
+                chart.yAxisOptions.scaleType = yScaleType
             else console.error("Unexpected xScale: " + yScaleType)
         }
 
