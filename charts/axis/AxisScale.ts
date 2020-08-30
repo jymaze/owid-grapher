@@ -36,17 +36,17 @@ export interface AxisScaleOptionsInterface {
     removePointsOutsideDomain?: true
 }
 
-interface ParentOptions {
+interface AxisContainerOptions {
     baseFontSize: number
 }
 
 export class AxisScaleOptions implements AxisScaleOptionsInterface {
     constructor(
         props?: AxisScaleOptionsInterface,
-        parentOptions?: ParentOptions
+        containerOptions?: AxisContainerOptions
     ) {
         this.update(props)
-        if (parentOptions) this.parentOptions = parentOptions
+        if (containerOptions) this.containerOptions = containerOptions
     }
 
     update(props?: AxisScaleOptionsInterface) {
@@ -61,11 +61,11 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
     @observable.ref removePointsOutsideDomain?: true = undefined
 
     // We need this to react to chart level changes
-    @observable.ref private parentOptions: ParentOptions = {
+    @observable.ref private containerOptions: AxisContainerOptions = {
         baseFontSize: 16
     }
     @computed get fontSize() {
-        return this.parentOptions.baseFontSize
+        return this.containerOptions.baseFontSize
     }
 
     // A log scale domain cannot have values <= 0, so we
