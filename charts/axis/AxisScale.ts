@@ -26,7 +26,7 @@ declare type TickFormatFunction = (
 ) => string
 
 // Represents the actual entered configuration state in the editor
-export interface AxisUserOptions {
+export interface AxisScaleOptionsInterface {
     scaleType: ScaleType
     label?: string
 
@@ -36,12 +36,12 @@ export interface AxisUserOptions {
     removePointsOutsideDomain?: true
 }
 
-export class AxisRuntime implements AxisUserOptions {
-    constructor(props?: AxisUserOptions) {
+export class AxisScaleOptions implements AxisScaleOptionsInterface {
+    constructor(props?: AxisScaleOptionsInterface) {
         this.update(props)
     }
 
-    update(props?: AxisUserOptions) {
+    update(props?: AxisScaleOptionsInterface) {
         if (props) extend(this, props)
     }
 
@@ -88,7 +88,7 @@ export class AxisRuntime implements AxisUserOptions {
 }
 
 export class AxisView {
-    runTime: AxisRuntime
+    runTime: AxisScaleOptions
     @observable.ref domain: [number, number]
     @observable tickFormat: TickFormatFunction = d => `${d}`
     @observable hideFractionalTicks = false
@@ -106,7 +106,7 @@ export class AxisView {
         return this
     }
 
-    constructor(runTime: AxisRuntime) {
+    constructor(runTime: AxisScaleOptions) {
         this.runTime = runTime
         this.domain = [runTime.domain[0], runTime.domain[1]]
     }
