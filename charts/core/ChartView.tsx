@@ -324,7 +324,7 @@ export class ChartView extends React.Component<ChartViewProps> {
                 <TooltipView
                     width={this.renderWidth}
                     height={this.renderHeight}
-                    tooltipOwner={this.chart}
+                    tooltipContainer={this.chart}
                 />
                 {chart.isSelectingData && (
                     <EntitySelectorModal

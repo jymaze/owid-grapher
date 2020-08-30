@@ -349,7 +349,7 @@ export class LineChart extends React.Component<{
 
         return (
             <Tooltip
-                tooltipOwner={this.options}
+                tooltipContainer={this.options}
                 x={axisBox.xAxisViewWithRange.place(hoverX)}
                 y={
                     axisBox.yAxisViewWithRange.rangeMin +

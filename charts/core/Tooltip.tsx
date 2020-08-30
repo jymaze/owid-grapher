@@ -6,17 +6,17 @@ import { Bounds } from "charts/utils/Bounds"
 
 @observer
 export class TooltipView extends React.Component<{
-    tooltipOwner: TooltipOwner
+    tooltipContainer: TooltipContainer
     width: number
     height: number
 }> {
     @computed private get rendered() {
         const { bounds } = this
-        const tooltipOwner = this.props.tooltipOwner
+        const tooltipContainer = this.props.tooltipContainer
 
-        if (!tooltipOwner.tooltip) return null
+        if (!tooltipContainer.tooltip) return null
 
-        const tooltip = tooltipOwner.tooltip
+        const tooltip = tooltipContainer.tooltip
 
         const offsetX = tooltip.offsetX ?? 0
         let offsetY = tooltip.offsetY ?? 0
@@ -83,7 +83,7 @@ export class TooltipView extends React.Component<{
 }
 
 // We can't pass the property directly because we need it to be observable.
-interface TooltipOwner {
+interface TooltipContainer {
     tooltip?: TooltipProps
 }
 
@@ -95,29 +95,29 @@ export interface TooltipProps {
     offsetYDirection?: "upward" | "downward"
     style?: React.CSSProperties
     children?: React.ReactNode
-    tooltipOwner: TooltipOwner
+    tooltipContainer: TooltipContainer
 }
 
 @observer
 export class Tooltip extends React.Component<TooltipProps> {
     componentDidMount() {
-        this.updateChartTooltipViewProps()
+        this.connectTooltipToContainer()
     }
 
-    @action.bound private updateChartTooltipViewProps() {
-        this.props.tooltipOwner.tooltip = this.props
+    @action.bound private connectTooltipToContainer() {
+        this.props.tooltipContainer.tooltip = this.props
     }
 
-    @action.bound private removeToolTipFromChart() {
-        this.props.tooltipOwner.tooltip = undefined
+    @action.bound private removeToolTipFromContainer() {
+        this.props.tooltipContainer.tooltip = undefined
     }
 
     componentDidUpdate() {
-        this.updateChartTooltipViewProps()
+        this.connectTooltipToContainer()
     }
 
     componentWillUnmount() {
-        this.removeToolTipFromChart()
+        this.removeToolTipFromContainer()
     }
 
     render() {

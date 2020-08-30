@@ -51,14 +51,16 @@ interface AxisContainerOptions {
 }
 
 export class AxisScaleOptions implements AxisScaleOptionsInterface {
+    // todo: test/refactor
     constructor(
         props?: AxisScaleOptionsInterface,
         containerOptions?: AxisContainerOptions
     ) {
         this.update(props)
-        if (containerOptions) this.containerOptions = containerOptions
+        this.fontSize = containerOptions!.baseFontSize
     }
 
+    // todo: test/refactor
     update(props?: AxisScaleOptionsInterface) {
         if (props) extend(this, props)
     }
@@ -69,14 +71,7 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
     @observable.ref canChangeScaleType?: true = undefined
     @observable label: string = ""
     @observable.ref removePointsOutsideDomain?: true = undefined
-
-    // We need this to react to chart level changes
-    @observable.ref private containerOptions: AxisContainerOptions = {
-        baseFontSize: 16
-    }
-    @computed get fontSize() {
-        return this.containerOptions.baseFontSize
-    }
+    @observable fontSize: number
 
     // A log scale domain cannot have values <= 0, so we
     // double check here
@@ -393,7 +388,16 @@ export abstract class AbstractAxisView {
 
     abstract get labelWidth(): number
 
-    abstract clone(): AbstractAxisView
+    // todo: test/refactor
+    clone() {
+        const classConstructor =
+            this instanceof HorizontalAxisView
+                ? HorizontalAxisView
+                : VerticalAxisView
+        const view = extend(new classConstructor(this.runTime), toJS(this))
+        view.runTime = this.runTime
+        return view
+    }
 
     protected abstract placeTick(
         tickValue: number,
@@ -413,12 +417,6 @@ export abstract class AbstractAxisView {
 }
 
 export class HorizontalAxisView extends AbstractAxisView {
-    clone() {
-        const view = extend(new HorizontalAxisView(this.runTime), toJS(this))
-        view.runTime = this.runTime
-        return view
-    }
-
     private static labelPadding = 5
 
     @computed get labelOffset(): number {
@@ -487,12 +485,6 @@ export class HorizontalAxisView extends AbstractAxisView {
 }
 
 export class VerticalAxisView extends AbstractAxisView {
-    clone() {
-        const view = extend(new VerticalAxisView(this.runTime), toJS(this))
-        view.runTime = this.runTime
-        return view
-    }
-
     @computed get labelWidth() {
         return this.height
     }
