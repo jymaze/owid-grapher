@@ -1252,9 +1252,7 @@ export class ChartRuntime {
     }
 
     @action.bound toggleRelativeMode() {
-        this.script.stackMode = !this.toggleRelativeMode
-            ? "relative"
-            : "absolute"
+        this.script.stackMode = !this.isRelativeMode ? "relative" : "absolute"
     }
 
     @computed get canToggleRelativeMode(): boolean {
