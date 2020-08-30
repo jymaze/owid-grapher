@@ -475,7 +475,7 @@ export class ScatterTransform extends ChartTransform {
         view.tickFormat =
             (yDimension && yDimension.formatValueShort) || view.tickFormat
 
-        let label = this.yAxisLabel
+        const label = this.yAxisLabel
 
         if (isRelativeMode) {
             view.scaleTypeOptions = [ScaleType.linear]
