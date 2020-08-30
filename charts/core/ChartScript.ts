@@ -8,7 +8,7 @@ import {
     Color,
     RelatedQuestionsConfig
 } from "./ChartConstants"
-import { AxisScaleOptionsInterface } from "charts/axis/Axis"
+import { AxisOptionsInterface } from "charts/axis/Axis"
 import { OwidVariablesAndEntityKey } from "owidTable/OwidVariable"
 import { TimeBound, Time } from "charts/utils/TimeBounds"
 import { ChartDimensionSpec } from "./ChartDimension"
@@ -50,8 +50,8 @@ export class ChartScript {
     @observable.ref note?: string = undefined
     @observable.ref hideTitleAnnotation?: true = undefined
 
-    @observable.ref xAxis: Partial<AxisScaleOptionsInterface> = {}
-    @observable.ref yAxis: Partial<AxisScaleOptionsInterface> = {}
+    @observable.ref xAxis: Partial<AxisOptionsInterface> = {}
+    @observable.ref yAxis: Partial<AxisOptionsInterface> = {}
 
     // TODO: These 2 are currently in development. Do not save to DB.
     @observable.ref externalDataUrl?: string = undefined
