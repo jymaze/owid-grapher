@@ -338,7 +338,7 @@ export class LineChart extends React.Component<{
         )
     }
 
-    @computed get tooltip(): JSX.Element | undefined {
+    @computed private get tooltip(): JSX.Element | undefined {
         const { transform, hoverX, axisBox } = this
 
         if (hoverX === undefined) return undefined

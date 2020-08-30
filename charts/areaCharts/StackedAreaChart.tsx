@@ -60,7 +60,7 @@ class Areas extends React.Component<AreasProps> {
 
     @observable hoverIndex?: number
 
-    @action.bound onCursorMove(
+    @action.bound private onCursorMove(
         ev: React.MouseEvent<SVGGElement> | React.TouchEvent<SVGElement>
     ) {
         const { axisBox, data } = this.props
@@ -84,21 +84,21 @@ class Areas extends React.Component<AreasProps> {
         this.props.onHover(this.hoverIndex)
     }
 
-    @action.bound onCursorLeave(
+    @action.bound private onCursorLeave(
         ev: React.MouseEvent<SVGGElement> | React.TouchEvent<SVGElement>
     ) {
         this.hoverIndex = undefined
         this.props.onHover(this.hoverIndex)
     }
 
-    seriesIsBlur(series: StackedAreaSeries) {
+    private seriesIsBlur(series: StackedAreaSeries) {
         return (
             this.props.focusKeys.length > 0 &&
             !this.props.focusKeys.includes(series.entityDimensionKey)
         )
     }
 
-    @computed get areas(): JSX.Element[] {
+    @computed private get areas(): JSX.Element[] {
         const { axisBox, data } = this.props
         const {
             xAxisViewWithRange: xScale,
@@ -132,7 +132,7 @@ class Areas extends React.Component<AreasProps> {
         })
     }
 
-    @computed get borders(): JSX.Element[] {
+    @computed private get borders(): JSX.Element[] {
         const { axisBox, data } = this.props
         const {
             xAxisViewWithRange: xScale,
@@ -363,7 +363,7 @@ export class StackedAreaChart extends React.Component<{
         )
     }
 
-    @computed get tooltip(): JSX.Element | undefined {
+    @computed private get tooltip(): JSX.Element | undefined {
         if (this.hoverIndex === undefined) return undefined
 
         const { transform, hoverIndex, axisBox, chart } = this
