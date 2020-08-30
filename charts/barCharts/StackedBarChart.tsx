@@ -178,9 +178,6 @@ export class StackedBarChart extends React.Component<{
         const that = this
         return new VerticalAxis(
             {
-                get scale() {
-                    return that.yScale
-                },
                 get fontSize() {
                     return that.chart.baseFontSize
                 },

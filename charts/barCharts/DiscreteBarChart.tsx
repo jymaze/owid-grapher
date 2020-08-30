@@ -176,9 +176,6 @@ export class DiscreteBarChart extends React.Component<{
         const that = this
         return new HorizontalAxis(
             {
-                get scale() {
-                    return that.xAxisView
-                },
                 get labelText() {
                     return ""
                 },

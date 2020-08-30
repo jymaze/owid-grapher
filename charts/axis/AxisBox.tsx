@@ -150,7 +150,6 @@ export class AxisBox {
         view.range = [0, this.props.bounds.width]
         return new HorizontalAxis(
             {
-                scale: view,
                 labelText: view.label,
                 fontSize: this.props.fontSize
             },
@@ -165,7 +164,6 @@ export class AxisBox {
 
         return new VerticalAxis(
             {
-                scale: view,
                 labelText: this.yAxisView.label,
                 fontSize: this.props.fontSize
             },
@@ -185,9 +183,6 @@ export class AxisBox {
         const that = this
         return new HorizontalAxis(
             {
-                get scale() {
-                    return that.xAxisViewWithRange
-                },
                 get labelText() {
                     return that.xAxisViewWithRange.label
                 },
@@ -204,9 +199,6 @@ export class AxisBox {
         const that = this
         return new VerticalAxis(
             {
-                get scale() {
-                    return that.yAxisViewWithRange
-                },
                 get labelText() {
                     return that.yAxisViewWithRange.label
                 },
@@ -344,7 +336,6 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
 }
 
 interface AxisProps {
-    scale: AxisView
     labelText: string
     fontSize: number
 }
@@ -412,7 +403,7 @@ abstract class AbstractAxis {
     }
 
     @computed get scale() {
-        return this.props.scale
+        return this.view
     }
 
     @computed get labelFontSize() {
@@ -455,7 +446,7 @@ export class VerticalAxis extends AbstractAxis {
     @computed get width() {
         const { props, labelOffset } = this
         const longestTick = maxBy(
-            props.scale.getFormattedTicks(),
+            this.scale.getFormattedTicks(),
             tick => tick.length
         )
         return (
@@ -466,7 +457,7 @@ export class VerticalAxis extends AbstractAxis {
     }
 
     @computed get height() {
-        return this.props.scale.rangeSize
+        return this.scale.rangeSize
     }
 
     protected placeTick(tickValue: number, bounds: Bounds) {
@@ -546,12 +537,12 @@ export class HorizontalAxis extends AbstractAxis {
     }
 
     @computed get labelWidth() {
-        return this.props.scale.rangeSize
+        return this.scale.rangeSize
     }
 
     @computed get height() {
-        const { props, labelOffset } = this
-        const firstFormattedTick = props.scale.getFormattedTicks()[0]
+        const { labelOffset } = this
+        const firstFormattedTick = this.scale.getFormattedTicks()[0]
         const fontSize = this.tickFontSize
 
         return (
