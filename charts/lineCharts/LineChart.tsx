@@ -19,7 +19,8 @@ import { select } from "d3-selection"
 import { easeLinear } from "d3-ease"
 
 import { Bounds } from "charts/utils/Bounds"
-import { AxisBox, AxisBoxView } from "charts/axis/AxisBox"
+import { AxisBoxView } from "charts/axis/AxisBox"
+import { AxisBox } from "charts/axis/AxisScale"
 import { Vector2 } from "charts/utils/Vector2"
 import { LineLabelsHelper, LineLabelsComponent } from "./LineLabels"
 import {

@@ -35,7 +35,8 @@ import {
     VerticalColorLegend,
     ScatterColorLegendView
 } from "./ScatterColorLegend"
-import { AxisBox, AxisBoxView } from "charts/axis/AxisBox"
+import { AxisBoxView } from "charts/axis/AxisBox"
+import { AxisBox } from "charts/axis/AxisScale"
 import { ComparisonLine } from "./ComparisonLine"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { TimeBound } from "charts/utils/TimeBounds"

@@ -9,167 +9,20 @@
  */
 
 import * as React from "react"
-import { observable, computed, reaction, action } from "mobx"
+import { computed } from "mobx"
 import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
 import {
     VerticalAxisView,
     HorizontalAxisView,
-    AbstractAxisView
+    AbstractAxisView,
+    AxisBox
 } from "./AxisScale"
 import { ScaleType } from "charts/core/ChartConstants"
 import classNames from "classnames"
 import { ControlsOverlay } from "charts/controls/Controls"
 import { ScaleSelector } from "charts/controls/ScaleSelector"
 import { AxisTickMarks } from "./AxisTickMarks"
-
-interface AxisBoxProps {
-    bounds: Bounds
-    xAxisView: HorizontalAxisView
-    yAxisView: VerticalAxisView
-}
-
-// AxisBox has the important task of coordinating two axes so that they work together!
-// There is a *two-way dependency* between the bounding size of each axis.
-// e.g. if the y axis becomes wider because a label is present, the x axis then has less
-// space to work with, and vice versa
-export class AxisBox {
-    private props: AxisBoxProps
-
-    @observable private targetYDomain: [number, number] = [1, 100]
-    @observable private targetXDomain: [number, number] = [1, 100]
-    @observable private prevYDomain: [number, number] = [1, 100]
-    @observable private prevXDomain: [number, number] = [1, 100]
-    @observable private animProgress?: number
-    private frameStart?: number
-
-    constructor(props: AxisBoxProps) {
-        this.props = props
-    }
-
-    @computed.struct private get currentYDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.yAxisView.domain
-
-        const [prevMinY, prevMaxY] = this.prevYDomain
-        const [targetMinY, targetMaxY] = this.targetYDomain
-
-        // If we have a log axis and are animating from linear to log do not set domain min to 0
-        const progress = this.animProgress
-            ? this.animProgress
-            : this.props.yAxisView.scaleType === ScaleType.log
-            ? 0.01
-            : 0
-
-        return [
-            prevMinY + (targetMinY - prevMinY) * progress,
-            prevMaxY + (targetMaxY - prevMaxY) * this.animProgress
-        ]
-    }
-
-    @computed.struct private get currentXDomain(): [number, number] {
-        if (this.animProgress === undefined) return this.props.xAxisView.domain
-
-        const [prevMinX, prevMaxX] = this.prevXDomain
-        const [targetMinX, targetMaxX] = this.targetXDomain
-
-        // If we have a log axis and are animating from linear to log do not set domain min to 0
-        const progress = this.animProgress
-            ? this.animProgress
-            : this.props.xAxisView.scaleType === ScaleType.log
-            ? 0.01
-            : 0
-
-        return [
-            prevMinX + (targetMinX - prevMinX) * progress,
-            prevMaxX + (targetMaxX - prevMaxX) * this.animProgress
-        ]
-    }
-
-    @action.bound setupAnimation() {
-        this.targetYDomain = this.props.yAxisView.domain
-        this.targetXDomain = this.props.xAxisView.domain
-        this.animProgress = 1
-
-        reaction(
-            () => [this.props.yAxisView.domain, this.props.xAxisView.domain],
-            () => {
-                this.prevXDomain = this.currentXDomain
-                this.prevYDomain = this.currentYDomain
-                this.targetYDomain = this.props.yAxisView.domain
-                this.targetXDomain = this.props.xAxisView.domain
-                this.animProgress = 0
-                requestAnimationFrame(this.frame)
-            }
-        )
-    }
-
-    @action.bound private frame(timestamp: number) {
-        if (this.animProgress === undefined) return
-
-        if (!this.frameStart) this.frameStart = timestamp
-        this.animProgress = Math.min(
-            1,
-            this.animProgress + (timestamp - this.frameStart) / 300
-        )
-
-        if (this.animProgress < 1) requestAnimationFrame(this.frame)
-        else this.frameStart = undefined
-    }
-
-    // todo: Refactor
-    @computed private get yAxisView() {
-        const view = this.props.yAxisView.clone()
-        view.domain = this.currentYDomain
-        return view
-    }
-
-    // todo: Refactor
-    @computed private get xAxisView() {
-        const view = this.props.xAxisView.clone()
-        view.domain = this.currentXDomain
-        return view
-    }
-
-    // todo: Refactor
-    @computed get xAxisViewWithRange() {
-        const view = this.xAxisView.clone()
-        view.range = this.innerBounds.xRange()
-        return view
-    }
-
-    // todo: Refactor
-    @computed get yAxisViewWithRange() {
-        const view = this.yAxisView.clone()
-        view.range = this.innerBounds.yRange()
-        return view
-    }
-
-    // todo: Refactor
-    // We calculate an initial width/height for the axes in isolation
-    @computed private get xAxisHeight() {
-        const view = this.xAxisView.clone()
-        view.range = [0, this.props.bounds.width]
-        return view.height
-    }
-
-    // todo: Refactor
-    @computed private get yAxisWidth() {
-        const view = this.yAxisView.clone()
-        view.range = [0, this.props.bounds.height]
-        return view.width
-    }
-
-    // Now we can determine the "true" inner bounds of the axis box
-    @computed get innerBounds(): Bounds {
-        return this.props.bounds
-            .padBottom(this.xAxisHeight)
-            .padLeft(this.yAxisWidth)
-    }
-
-    @computed get bounds() {
-        return this.props.bounds
-    }
-}
 
 interface AxisGridLinesProps {
     orient: "left" | "bottom"
