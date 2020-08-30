@@ -475,11 +475,10 @@ export class ScatterTransform extends ChartTransform {
         view.tickFormat =
             (yDimension && yDimension.formatValueShort) || view.tickFormat
 
-        view.label = this.yAxisLabel
+        let label = this.yAxisLabel
 
         if (isRelativeMode) {
             view.scaleTypeOptions = [ScaleType.linear]
-            const label = view.label
             if (label && label.length > 1) {
                 view.label =
                     "Average annual change in " +
@@ -488,7 +487,7 @@ export class ScatterTransform extends ChartTransform {
                         : label.charAt(0).toLowerCase() + label.slice(1))
             }
             view.tickFormat = (v: number) => formatValue(v, { unit: "%" })
-        }
+        } else view.label = label
 
         return view
     }
