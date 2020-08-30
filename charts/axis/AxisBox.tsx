@@ -23,7 +23,6 @@ import { AxisTickMarks } from "./AxisTickMarks"
 
 interface AxisBoxProps {
     bounds: Bounds
-    fontSize: number
     xAxisView: AxisView
     yAxisView: AxisView
 }
@@ -148,27 +147,14 @@ export class AxisBox {
     @computed private get xAxisHeight() {
         const view = this.xAxisView.clone()
         view.range = [0, this.props.bounds.width]
-        return new HorizontalAxis(
-            {
-                labelText: view.label,
-                fontSize: this.props.fontSize
-            },
-            view
-        ).height
+        return new HorizontalAxis(view).height
     }
 
     // todo: Refactor
     @computed private get yAxisWidth() {
         const view = this.yAxisView.clone()
         view.range = [0, this.props.bounds.height]
-
-        return new VerticalAxis(
-            {
-                labelText: this.yAxisView.label,
-                fontSize: this.props.fontSize
-            },
-            view
-        ).width
+        return new VerticalAxis(view).width
     }
 
     // Now we can determine the "true" inner bounds of the axis box
@@ -180,34 +166,12 @@ export class AxisBox {
 
     // todo: Refactor
     @computed get horizontalAxis() {
-        const that = this
-        return new HorizontalAxis(
-            {
-                get labelText() {
-                    return that.xAxisViewWithRange.label
-                },
-                get fontSize() {
-                    return that.props.fontSize
-                }
-            },
-            that.xAxisViewWithRange
-        )
+        return new HorizontalAxis(this.xAxisViewWithRange)
     }
 
     // todo: Refactor
     @computed get verticalAxis() {
-        const that = this
-        return new VerticalAxis(
-            {
-                get labelText() {
-                    return that.yAxisViewWithRange.label
-                },
-                get fontSize() {
-                    return that.props.fontSize
-                }
-            },
-            that.yAxisViewWithRange
-        )
+        return new VerticalAxis(this.yAxisViewWithRange)
     }
 
     @computed get bounds() {
@@ -335,21 +299,14 @@ export class AxisBoxView extends React.Component<AxisBoxViewProps> {
     }
 }
 
-interface AxisProps {
-    labelText: string
-    fontSize: number
-}
-
 abstract class AbstractAxis {
-    protected props: AxisProps
-    protected view: AxisView
-    constructor(props: AxisProps, view: AxisView) {
-        this.props = props
-        this.view = view
+    scale: AxisView
+    constructor(view: AxisView) {
+        this.scale = view
     }
 
     @computed get tickFontSize() {
-        return 0.9 * this.props.fontSize
+        return 0.9 * this.scale.fontSize
     }
 
     protected doIntersect(bounds: Bounds, bounds2: Bounds) {
@@ -373,7 +330,8 @@ abstract class AbstractAxis {
     }
 
     formatTick(tick: number, isFirstOrLastTick?: boolean) {
-        const { scale, tickFormattingOptions } = this
+        const { scale } = this
+        const tickFormattingOptions = scale.getTickFormattingOptions()
         return scale.tickFormat(tick, {
             ...tickFormattingOptions,
             isFirstOrLastTick
@@ -382,7 +340,6 @@ abstract class AbstractAxis {
 
     // calculates coordinates for ticks, sorted by priority
     @computed private get tickPlacements() {
-        const { scale } = this
         return sortBy(this.baseTicks, tick => tick.priority).map(tick => {
             const bounds = Bounds.forText(
                 this.formatTick(tick.value, !!tick.isFirstOrLastTick),
@@ -398,16 +355,8 @@ abstract class AbstractAxis {
         })
     }
 
-    @computed get tickFormattingOptions() {
-        return this.scale.getTickFormattingOptions()
-    }
-
-    @computed get scale() {
-        return this.view
-    }
-
     @computed get labelFontSize() {
-        return 0.7 * this.props.fontSize
+        return 0.7 * this.scale.fontSize
     }
 
     @computed protected get baseTicks() {
@@ -422,7 +371,7 @@ abstract class AbstractAxis {
     ): { x: number; y: number }
 
     @computed get label(): TextWrap | undefined {
-        const text = this.props.labelText
+        const text = this.scale.label
         return text
             ? new TextWrap({
                   maxWidth: this.labelWidth,
@@ -444,7 +393,7 @@ export class VerticalAxis extends AbstractAxis {
     }
 
     @computed get width() {
-        const { props, labelOffset } = this
+        const { labelOffset } = this
         const longestTick = maxBy(
             this.scale.getFormattedTicks(),
             tick => tick.length

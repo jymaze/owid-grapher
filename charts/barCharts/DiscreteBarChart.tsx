@@ -169,22 +169,13 @@ export class DiscreteBarChart extends React.Component<{
 
         view.tickFormat = this.chart.discreteBarTransform.tickFormat
         view.range = this.xRange
+        view.label = ""
         return view
     }
 
     @computed private get horizontalAxis() {
         const that = this
-        return new HorizontalAxis(
-            {
-                get labelText() {
-                    return ""
-                },
-                get fontSize() {
-                    return that.chart.baseFontSize
-                }
-            },
-            that.xAxisView
-        )
+        return new HorizontalAxis(that.xAxisView)
     }
 
     @computed private get innerBounds() {

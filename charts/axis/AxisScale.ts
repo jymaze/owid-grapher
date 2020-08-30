@@ -36,8 +36,15 @@ export interface AxisScaleOptionsInterface {
     removePointsOutsideDomain?: true
 }
 
+interface ParentOptions {
+    baseFontSize: number
+}
+
 export class AxisScaleOptions implements AxisScaleOptionsInterface {
-    constructor(props?: AxisScaleOptionsInterface) {
+    constructor(
+        props?: AxisScaleOptionsInterface,
+        parentOptions?: ParentOptions
+    ) {
         this.update(props)
     }
 
@@ -51,6 +58,14 @@ export class AxisScaleOptions implements AxisScaleOptionsInterface {
     @observable.ref canChangeScaleType?: true = undefined
     @observable label: string = ""
     @observable.ref removePointsOutsideDomain?: true = undefined
+
+    // We need this to react to chart level changes
+    @observable.ref parentOptions: ParentOptions = {
+        baseFontSize: 16
+    }
+    @computed get fontSize() {
+        return this.parentOptions.baseFontSize
+    }
 
     // A log scale domain cannot have values <= 0, so we
     // double check here
@@ -104,6 +119,10 @@ export class AxisView {
             Math.max(this.domain[1], defaultDomain[1])
         ]
         return this
+    }
+
+    @computed get fontSize() {
+        return this.runTime.fontSize
     }
 
     constructor(runTime: AxisScaleOptions) {

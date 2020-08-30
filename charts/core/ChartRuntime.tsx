@@ -249,15 +249,15 @@ export class ChartRuntime {
         )
     }
 
-    @observable.ref setBaseFontSize: number = 16
+    @observable.ref private _baseFontSize: number = 16
     @computed get baseFontSize(): number {
         if (this.isMediaCard) return 24
         else if (this.isExporting) return 18
-        else return this.setBaseFontSize
+        else return this._baseFontSize
     }
 
     set baseFontSize(val: number) {
-        this.setBaseFontSize = val
+        this._baseFontSize = val
     }
 
     @computed get formatYearFunction(): (
@@ -564,8 +564,8 @@ export class ChartRuntime {
         this.script.maxTime = value[1]
     }
 
-    @observable xAxisRuntime = new AxisScaleOptions()
-    @observable yAxisRuntime = new AxisScaleOptions()
+    @observable xAxisRuntime = new AxisScaleOptions(undefined, this)
+    @observable yAxisRuntime = new AxisScaleOptions(undefined, this)
 
     // Get the dimension slots appropriate for this type of chart
     @computed get dimensionSlots(): DimensionSlot[] {

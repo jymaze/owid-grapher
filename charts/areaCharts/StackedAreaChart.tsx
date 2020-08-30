@@ -293,7 +293,6 @@ export class StackedAreaChart extends React.Component<{
         const { bounds, legend, chart, xAxisView, yAxisView } = this
         return new AxisBox({
             bounds: bounds.padRight(legend ? legend.width : 20),
-            fontSize: chart.baseFontSize,
             xAxisView,
             yAxisView
         })

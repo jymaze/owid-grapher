@@ -482,9 +482,6 @@ export class LineChart extends React.Component<{
                     that.legend ? that.legend.width : 20
                 )
             },
-            get fontSize() {
-                return that.options.baseFontSize
-            },
             get yAxisView() {
                 return that.transform.yAxisView
             },

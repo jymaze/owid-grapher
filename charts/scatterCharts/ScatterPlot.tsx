@@ -249,9 +249,6 @@ export class ScatterPlot extends React.Component<{
             get bounds() {
                 return that.bounds.padRight(that.sidebarWidth + 20)
             },
-            get fontSize() {
-                return that.chart.baseFontSize
-            },
             get xAxisView() {
                 return that.transform.xAxisView
             },

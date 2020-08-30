@@ -610,9 +610,6 @@ export class TimeScatter extends React.Component<{
             get bounds() {
                 return that.bounds
             },
-            get fontSize() {
-                return that.chart.baseFontSize
-            },
             get xAxisView() {
                 return that.transform.xAxisView
             },
