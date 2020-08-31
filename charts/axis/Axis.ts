@@ -388,15 +388,6 @@ abstract class AbstractAxis {
 
     abstract get labelWidth(): number
 
-    // todo: test/refactor
-    clone() {
-        const classConstructor =
-            this instanceof HorizontalAxis ? HorizontalAxis : VerticalAxis
-        const props = toJS(this) as any
-        delete props.options
-        return extend(new classConstructor(this.options), props)
-    }
-
     protected abstract placeTick(
         tickValue: number,
         bounds: Bounds
@@ -412,10 +403,23 @@ abstract class AbstractAxis {
               })
             : undefined
     }
+
+    // tod: factor out. switch to a parent pattern
+    _update(axis: AbstractAxis) {
+        const props = toJS(axis) as any
+        delete props.options // Don't overwrite options ref
+        extend(this, props)
+        return this
+    }
 }
 
 export class HorizontalAxis extends AbstractAxis {
     private static labelPadding = 5
+
+    // todo: test/refactor
+    clone() {
+        return new HorizontalAxis(this.options)._update(this)
+    }
 
     @computed get labelOffset(): number {
         return this.labelTextWrap
@@ -485,6 +489,11 @@ export class HorizontalAxis extends AbstractAxis {
 export class VerticalAxis extends AbstractAxis {
     @computed get labelWidth() {
         return this.height
+    }
+
+    // todo: test/refactor
+    clone() {
+        return new VerticalAxis(this.options)._update(this)
     }
 
     @computed get labelOffset(): number {

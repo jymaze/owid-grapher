@@ -25,12 +25,12 @@ export class VerticalAxisGridLines extends React.Component<{
 }> {
     render() {
         const { bounds, verticalAxis } = this.props
-        const view = verticalAxis.clone()
-        view.range = bounds.yRange()
+        const axis = verticalAxis.clone()
+        axis.range = bounds.yRange()
 
         return (
             <g className={classNames("AxisGridLines", "horizontalLines")}>
-                {view.getTickValues().map((t, i) => {
+                {axis.getTickValues().map((t, i) => {
                     const color = t.faint
                         ? "#eee"
                         : t.value === 0
@@ -41,9 +41,9 @@ export class VerticalAxisGridLines extends React.Component<{
                         <line
                             key={i}
                             x1={bounds.left.toFixed(2)}
-                            y1={view.place(t.value)}
+                            y1={axis.place(t.value)}
                             x2={bounds.right.toFixed(2)}
-                            y2={view.place(t.value)}
+                            y2={axis.place(t.value)}
                             stroke={color}
                             strokeDasharray={t.value !== 0 ? "3,2" : undefined}
                         />
