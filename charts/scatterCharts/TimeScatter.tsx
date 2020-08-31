@@ -6,7 +6,7 @@ import { observer } from "mobx-react"
 import { Bounds } from "charts/utils/Bounds"
 import { ChartRuntime } from "charts/core/ChartRuntime"
 import { NoDataOverlay } from "charts/core/NoDataOverlay"
-import { AxisBox , HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
+import { AxisBox, HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
 import { AxisBoxComponent } from "charts/axis/AxisViews"
 import { ComparisonLine } from "./ComparisonLine"
 

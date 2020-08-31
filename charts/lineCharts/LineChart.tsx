@@ -20,7 +20,7 @@ import { easeLinear } from "d3-ease"
 
 import { Bounds } from "charts/utils/Bounds"
 import { AxisBoxComponent } from "charts/axis/AxisViews"
-import { AxisBox , HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
+import { AxisBox, HorizontalAxis, VerticalAxis } from "charts/axis/Axis"
 import { Vector2 } from "charts/utils/Vector2"
 import { LineLabelsHelper, LineLabelsComponent } from "./LineLabels"
 import {
@@ -32,7 +32,6 @@ import { NoDataOverlay } from "charts/core/NoDataOverlay"
 import { extent } from "d3-array"
 import { EntityDimensionKey } from "charts/core/ChartConstants"
 import { LineChartTransform } from "./LineChartTransform"
-
 
 export interface LineChartValue {
     x: number
